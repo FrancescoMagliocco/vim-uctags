@@ -1,0 +1,9 @@
+vim:ft=changelog:norl
+
+2019-05-07 HEAD FrancescoMagliocco
+	* plugin/vim_universal_ctags.vim:	Initial Plugin
+	* doc/universal_ctags.xtx:			Initial Documentation
+	* CHANGELOG:						Initial ChangeLog
+
+2019-05-06 c7c97a6 Francesco Magliocco
+	* LICENSE, README.md: Initial Commit
