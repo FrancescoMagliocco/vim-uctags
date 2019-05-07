@@ -1,7 +1,22 @@
 vim:ft=changelog:norl
 
 2019-05-07 HEAD FrancescoMagliocco
-	* plugin/vim_universal_ctags_vim:
+	* plugin/vim_universal_ctags.vim:
+		Added an autoevent
+	* autoload/UCTags/Generate.vim:
+		Added function UCTags#Generate#GenTags()
+	* autoload/UCTags/Highlight.vim:
+		Added function UCTags#Highlight#Functions()
+	* autoload/UCTags/Parse.vim:
+		Added functions:
+			UCTags#Parse#GetTags()
+			UCTags#Parse#GetTagsForLang()
+			UCTags#Parse#GetFunctionTags()
+	* CHANGELOG:
+		Fixed typo
+
+2019-05-07 e9e70f5 FrancescoMagliocco
+	* plugin/vim_universal_ctags.vim:
 		Added globals:
 			g:universal_ctags_executable
 			g:universal_ctags_tags_name

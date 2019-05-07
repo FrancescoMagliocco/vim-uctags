@@ -75,3 +75,8 @@ endfunction
 
 let g:universal_ctags_hl_group_map  =
       \ s:ParseHlGMap(g:universal_ctags_hl_group_map)
+
+augroup universal_ctags_aug
+  autocmd!
+  autocmd BufWritePost * silent call UCTags#Generate#GenTags()
+augroup END
