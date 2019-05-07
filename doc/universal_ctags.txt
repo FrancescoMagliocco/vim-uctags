@@ -3,6 +3,7 @@ vim:si:et:sw=4:ts=4:sts=4:tw=78:ft=help:norl
 *vim-universal-ctags*
 CONTENTS:                                            *universal-ctags-contents*
     1. Requierments                              |universal-ctags-requirements|
+    2. Configuration                         |universal-ctags-global-variables|
 ===============================================================================
 1. Requirements:                                 *universal-ctags-requirements*
 |vim-universal-ctags| requires Vim to be atleast version 8.1 and
@@ -10,3 +11,119 @@ Universal-Ctags to be installed.  It may be available through your
 distributors package manager.  If not goto
 https://github.com/universal-ctags/ctags and follow the instructions on how to
 install it.
+===============================================================================
+2. Confiuration:                             *universal-ctags-global-variables*
+Here is a list of most, if not all the global variables.  There is no point in
+cluttering your vimrc with each variable shown if you're only going to keep
+the default.
+
+If you want to change the value of a variable, you can do so like this:  >
+
+    let g:enable_universal_ctags = 0
+<
+    Yes the command let is needed.
+
+*g:universal_ctags_enabled*         (Default: 1)
+    Determines weather or not |vim-universal-ctags| should be enabled and
+    used.
+
+*g:universal_ctags_executable*      (Default: "ctags-universal")
+    The executable file name universal-ctags is under.  
+
+*g:universal_ctags_tags_name*       (Default: "tags")
+    The file name of where the genereated tags will be saved to.
+
+*g:universal_ctags_max_info*        (Default: 1)
+    Whther or not to generate as much info as possible on tags.  This will
+    generate a much larger tags file.  Setting this is equibilent to the
+    following:  >
+
+        ctags-universal -R --extras=* --fields=* --all-kinds=*
+<
+    Entires that of |g:universal_ctags_extra_args| can override this setting.
+
+    Example:  If you have the following in your .vimrc >
+        
+        let g:universal_ctags_extra_args['--extras='] = 'F'
+        let g:universal_ctags_extra_args['--fields='] = 'fks'
+<
+    Even if |g:universal_ctags_max_info| is set, the effect will be equivilent
+    to the following:  >
+
+        ctags-universal -R --all-kinds=*
+>
+
+*g:universal_ctags_args*            (Default:  >
+        function! s:ParseArgs(args)
+          return extend(extend(a:args, g:universal_ctags_max_info
+                \   ? {
+                \       '--fields=': '*',
+                \       '--all-kinds=': '*'
+                \     }
+                \   : {} ), g:universal_ctags_extra_args)
+        endfunction
+
+        " This will define the default arguments.
+        let g:universal_ctags_args          = get(
+              \ g:,
+              \ 'universal_ctags_args',
+              \ {
+              \   '-R': '',
+              \   '-f': g:universal_ctags_tags_name
+              \ })
+
+        " Extends g:universal_ctags_args with g:universal_ctags_extra_args so
+        " g:universal_ctags_args can be used when needing arguments for
+        " ctags-universal.  See s:ParseArgs() body for aditional details.
+        let g:universal_ctags_args          = s:ParseArgs(g:universal_ctags_args)
+<)
+    The above code is what is used to determine the default setting for
+    |g:universal_ctags_args|.
+
+    See |g:universal_ctags_extra_arqgs| for an example of how to set
+    |g:universal_ctags_extra_args|.  The principle is the same.
+
+    It is not recommended to change this.  If you don't like the default, just
+    change those arguments in |g:universal_ctags_extra_args|.
+
+*g:universal_ctags_extra_args*      (Default: {})
+    A dictionary of extra arguemnts that will be appended to
+    |g:universal_ctags_args|.  |g:universal_ctags_extra_args| have the highest
+    presendence.
+
+*g:universal_ctags_hl_group_map*    (Default: >
+          \ {
+          \   'function'  : 'Func',
+          \   'variable'  : 'Var',
+          \   'class'     : 'Class',
+          \   'namescape' : 'Namespace'
+          \ }
+<)
+    A dictionary of group names that will be used as the highlight group for
+    all the kinds.  (You don't need to know what kind actually is)  The format
+    is {language}{Kind} where {Kind} starts with an uppercase.  This
+    dictionary is for the {Kind} portion.  With the default, all functions in
+    C will have the highligght group name of cFunc.
+
+    The default shows the valid keys.  If you want to change one of them, you
+    could do so like this:  >
+
+        let g:universal_ctags_hl_group_map['function'] = 'CustomFunc'
+<
+    With that, instead of all functions in C having the group name cFunc, they
+    will instead have cCustomFunc.
+
+===============================================================================
+2. FAQ                                                    *universal-ctags-faq* 
+
+How do I know when to use an equal size for entries for
+|g:universal_ctags_extra_args|?
+
+Running the following command in the terminal `ctags-universal --help` will
+display all available parameters.  If a paramter contains an equal sign, you
+need to use one in that particular key.  An example of a parameter that
+doesn't require an equal sign is the -f parameter.  If you wannted to specify
+-f as an extra argument, you would do so as follows:  >
+
+    let g:universal_ctags_extra_args['-f'] = 'myTags'
+<

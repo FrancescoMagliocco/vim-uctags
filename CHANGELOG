@@ -1,8 +1,23 @@
 vim:ft=changelog:norl
 
 2019-05-07 HEAD FrancescoMagliocco
+	* plugin/vim_universal_ctags_vim:
+		Added globals:
+			g:universal_ctags_executable
+			g:universal_ctags_tags_name
+			g:universal_ctags_max_info
+			g:universal_ctags_extra_args
+			g:universal_ctags_args
+			g:universal_ctags_hl_group_name
+	* doc/universal_ctags.txt:
+		Updated documentation for new globals
+		Added a FAQ
+	* CHANGELOG:
+		Fixed a typo
+
+2019-05-07 641f0d6 FrancescoMagliocco
 	* plugin/vim_universal_ctags.vim:	Initial Plugin
-	* doc/universal_ctags.xtx:			Initial Documentation
+	* doc/universal_ctags.txt:			Initial Documentation
 	* CHANGELOG:						Initial ChangeLog
 
 2019-05-06 c7c97a6 Francesco Magliocco

@@ -21,3 +21,57 @@ if exists('g:universal_ctags_enabled') && !g:universal_ctags_enabled
 endif
 
 let g:loaded_universal_ctags        = 1
+
+let g:universal_ctags_executable    =
+      \ get(g:, 'universal_ctags_name', 'ctags-universal')
+let g:universal_ctags_tags_name     =
+      \ get(g:, 'universal_ctags_tags_name', 'tags')
+let g:universal_ctags_max_info      = get(g:, 'universal_ctags_max_info', 1)
+
+let g:universal_ctags_extra_args    = get(g:, 'universal_ctags_extra_args', {})
+
+function! s:ParseArgs(args)
+  return extend(extend(a:args, g:universal_ctags_max_info
+        \   ? {
+        \       '--fields=': '*',
+        \       '--all-kinds=': '*'
+        \     }
+        \   : {} ), g:universal_ctags_extra_args)
+endfunction
+
+" This will define the default arguments.
+let g:universal_ctags_args          = get(
+      \ g:,
+      \ 'universal_ctags_args',
+      \ {
+      \   '-R': '',
+      \   '-f': g:universal_ctags_tags_name
+      \ })
+
+" Extends g:universal_ctags_args with g:universal_ctags_extra_args so
+" g:universal_ctags_args can be used when needing arguments for
+" ctags-universal.  See s:ParseArgs() body for aditional details.
+let g:universal_ctags_args          = s:ParseArgs(g:universal_ctags_args)
+
+let s:hlg_map                       =
+      \ {
+      \   'function'  : 'Func',
+      \   'variable'  : 'Var',
+      \   'class'     : 'Class',
+      \   'namescape' : 'Namespace'
+      \ }
+
+let g:universal_ctags_hl_group_map  =
+      \ get(g:, 'universal_ctags_hl_groups_map', {})
+
+" Any key in a:hlg_map that isn't in s:hlg_map will be removed.
+" Create a deepcopy() of s:hlg_map, extend said copy with a:hlg_map.
+" Remove any non-word character.
+function! s:ParseHlGMap(hlg_map)
+  return map(extend(deepcopy(s:hlg_map), filter(
+        \ a:hlg_map,
+        \ 'has_key(s:hlg_map, v:key)')), "substitute(v:val, '\W', '', 'g')")
+endfunction
+
+let g:universal_ctags_hl_group_map  =
+      \ s:ParseHlGMap(g:universal_ctags_hl_group_map)
