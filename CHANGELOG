@@ -1,6 +1,10 @@
 vim:ft=changelog:norl
 
-2019-05-08 HEAD FrancescoMagliocco
+2019-05-09 HEAD FrancescoMagliocco
+	* README.md:
+		Updated README.md very briefly
+
+2019-05-08 52102fa FrancescoMagliocco
 	* plugin/vim_universal_ctags.vim:
 		Added global g:universal_ctags_lang_map
 		Added check if tags file exists; if doesn't the don't generate tags;
