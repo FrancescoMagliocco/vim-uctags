@@ -1,6 +1,26 @@
 vim:ft=changelog:norl
 
-2019-05-07 HEAD FrancescoMagliocco
+2019-05-08 HEAD FrancescoMagliocco
+	* plugin/vim_universal_ctags.vim:
+		Added global g:universal_ctags_lang_map
+		Added check if tags file exists; if doesn't the don't generate tags;
+			tags have to manually be generated first (Not implemented yet)
+		Fixed global assignment typo
+	* autoload/UCTags/Generate.vim:
+		Fixed spacing
+	* autoload/UCTags/Highlight.vim:
+		Added functions:
+			UCTags#Highlight#Highlight()
+			UCTags#Highlight#Methods
+		Removed function UCTags#Highlight#Functions()
+	* doc/universal_ctags.txt:
+		Added in missing documentations
+		Changed how some sections were worded
+		Fixed spelling mistakes
+	* CHANGELOG:
+		Fixed typo
+
+2019-05-07 453a242 FrancescoMagliocco
 	* plugin/vim_universal_ctags.vim:
 		Added an autoevent
 	* autoload/UCTags/Generate.vim:
@@ -35,5 +55,5 @@ vim:ft=changelog:norl
 	* doc/universal_ctags.txt:			Initial Documentation
 	* CHANGELOG:						Initial ChangeLog
 
-2019-05-06 c7c97a6 Francesco Magliocco
+2019-05-06 c7c97a6 FrancescoMagliocco
 	* LICENSE, README.md: Initial Commit

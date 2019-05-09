@@ -1,4 +1,4 @@
-" Last Change:  2019-05-07
+" Last Change:  2019-05-08
 " Maintainer:   Francesco Magliocco
 " License:      GNU General Public License v3.0
 
@@ -12,5 +12,5 @@ let g:loaded_UCTags_Generate = 1
 function! UCTags#Generate#GenTags()
   execute '!' . g:universal_ctags_executable
         \ join(values(map(
-        \   copy(g:universal_ctags_args), { k, v -> k . "'" . v . "'"})), ' ')
+        \   copy(g:universal_ctags_args), { k, v -> k . "'" . v . "'" })), ' ')
 endfunction
