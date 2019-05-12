@@ -20,15 +20,40 @@ if exists('g:universal_ctags_enabled') && !g:universal_ctags_enabled
   finish
 endif
 
+" XXX Using universal_ctags as prefixes for everything, and even the plugin,
+"   kind of bothers me in a way such that what if universal-ctags actually
+"   creates a plugin..
 let g:loaded_universal_ctags        = 1
 
 let g:universal_ctags_executable    =
       \ get(g:, 'universal_ctags_name', 'ctags-universal')
+
+" COMBAK This name doesn't really 'flow'..
 let g:universal_ctags_tags_name     =
       \ get(g:, 'universal_ctags_tags_name', 'tags')
 let g:universal_ctags_max_info      = get(g:, 'universal_ctags_max_info', 1)
 
 let g:universal_ctags_extra_args    = get(g:, 'universal_ctags_extra_args', {})
+
+" universal ctags skip highlight for
+" FIXME I don't like this name
+" TODO Come up with more elaborate name
+let g:universal_ctags_skip_hl_for   = get(
+      \ g:,
+      \ 'universal_ctags_skip_hl_for',
+      \ {
+      \   'function': ['vim']
+      \ })
+
+" universal ctags kind to highlight group
+" The name for this is kind of relevant, but I'm not sure I like it..
+let g:universal_ctags_kind_to_hlg   = get(
+      \ g:,
+      \ 'universal_ctags_kind_to_hlg',
+      \ {
+      \   'function': 'functionName',
+      \   'method'  : 'methods'
+      \ })
 
 function! s:ParseArgs(args)
   return extend(extend(a:args, g:universal_ctags_max_info
@@ -59,12 +84,19 @@ let s:lang_map                      =
       \   'c++' : 'cpp'
       \ }
 
+" highlight group map
 let s:hlg_map                       =
       \ {
       \   'function'  : 'Func',
       \   'variable'  : 'Var',
       \ }
 
+" universal ctags highlight group map
+" FIXME The name for this isn't exactly relevant..
+" TODO Come up with more elaborate name.
+" This is more of a 'kind to kind but truncated' map.  So maybe rename it as
+"   'g:universal_ctags_kind_map', plus it would match the naming convention
+"   that was used for 'g:universal_ctags_lang_map'
 let g:universal_ctags_hl_group_map  =
       \ get(g:, 'universal_ctags_hl_group_map', {})
 
@@ -79,10 +111,12 @@ let g:universal_ctags_lang_map      = get(g:, 'universal_ctags_lang_map', {})
 ""        \ 'has_key(s:hlg_map, v:key)')), "substitute(v:val, '\W', '', 'g')")
 ""endfunction
 
+" TODO Rename
 function! s:ParseHlGMap(hlg_map, map)
   return map(extend(copy(a:map), a:hlg_map), "substitute(v:val, '\W', '', 'g')")
 endfunction
 
+" TODO Implement the same, but for g:universal_ctags_ctags_lang_map
 let g:universal_ctags_hl_group_map  =
       \ s:ParseHlGMap(g:universal_ctags_hl_group_map, s:hlg_map)
 
@@ -92,3 +126,5 @@ augroup universal_ctags_aug
     autocmd BufWritePost * silent call UCTags#Generate#GenTags()
   endif
 augroup END
+
+command! UpdateTags call silent UCTags#Generate#GenTags()

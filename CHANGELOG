@@ -1,6 +1,19 @@
 vim:ft=changelog:norl
 
-2019-05-09 HEAD FrancescoMagliocco
+2019-05-12 HEAD FrancescoMagliocco
+	* plugin/vim_universal_ctags.vim:
+		Added command UpdateTags
+		Added a whole bunch of informative comments, TODO's, FIXME's, COMBAK's
+			XXX's.
+		Added globals:
+			global g:universal_ctags_skip_hl_for
+			g:universal_ctags_kind_to_hlg
+	* autoload/UCTags/Highlight.vim (UCTags#Highlight#Highlight):
+		Added optional dry run
+		Added filter to skip specified highlighting
+		If a:kind isn't in g:universal_ctags_kind_to_hlg, skip highlight
+
+2019-05-09 51c25c0 FrancescoMagliocco
 	* README.md:
 		Updated README.md very briefly
 
