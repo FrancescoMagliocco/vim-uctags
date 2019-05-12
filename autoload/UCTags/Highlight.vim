@@ -1,9 +1,9 @@
-" Last Change:  2019-05-08
+" Last Change:  2019-05-12
 " Maintainer:   Francesco Magliocco
 " License:      GNU General Public License v3.0
 
-if (exists('g:universal_ctags_enabled') && !g:universal_ctags_enabled)
-      \ || !exists('g:loaded_universal_ctags')
+if (exists('g:uctags_enabled') && !g:uctags_enabled)
+      \ || !exists('g:loaded_uctags')
       \ || exists('g:loaded_UCTags_Highlight')
   finish
 endif
@@ -11,15 +11,15 @@ let g:loaded_UCTags_Highlight = 1
 
 " If any optional arguments are given, do a dry run and output some info
 function! UCTags#Highlight#Highlight(kind, ...)
-  if !has_key(g:universal_ctags_kind_to_hlg, a:kind)
+  if !has_key(g:uctags_kind_to_hlg, a:kind)
     echoerr 'No support yet for' a:kind
     return
   endif
 
   " Filter out kinds that aren't a:kind
   " Filter out out languages val, for a:kind key present in
-  "   g:universal_ctags_skip_hl_for:
-  "     Check if g:universal_ctags_skip_hl_for has key a:kind:
+  "   g:uctags_skip_hl_for:
+  "     Check if g:uctags_skip_hl_for has key a:kind:
   "       IF key a:kind is present:
   "         Check if val contains tolower(strpart(v:val[5], 9)), i.e language
   "           IF val contains said language:
@@ -43,8 +43,8 @@ function! UCTags#Highlight#Highlight(kind, ...)
   "   channel and job system.  I'm just not sure if that is possible for
   "   situtations like this.
   let l:skip =
-        \ 'has_key(g:universal_ctags_skip_hl_for, a:kind)'
-        \ . '? index(g:universal_ctags_skip_hl_for[a:kind],'
+        \ 'has_key(g:uctags_skip_hl_for, a:kind)'
+        \ . '? index(g:uctags_skip_hl_for[a:kind],'
         \     . 'tolower(strpart(v:val[5], 9))) < 0'
         \ . ': 1'
   for l:v in uniq(sort(
@@ -53,8 +53,8 @@ function! UCTags#Highlight#Highlight(kind, ...)
         \     UCTags#Parse#GetTags(), "v:val[3] ==? 'kind:" . a:kind . "'"),
         \   l:skip)))
     let l:lang  = tolower(strpart(l:v[5], 9))
-    let l:group = get(g:universal_ctags_lang_map, l:lang, l:lang)
-          \ . get(g:universal_ctags_hl_group_map, a:kind, a:kind)
+    let l:group = get(g:uctags_lang_map, l:lang, l:lang)
+          \ . get(g:uctags_hl_group_map, a:kind, a:kind)
     if a:0
       echomsg l:lang
       continue

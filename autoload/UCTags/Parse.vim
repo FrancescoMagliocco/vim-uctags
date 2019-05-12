@@ -1,22 +1,22 @@
-" Last Change:  2019-05-07
+" Last Change:  2019-05-12
 " Maintainer:   Francesco Magliocco
 " License:      GNU General Public License v3.0
 
-if (exists('g:universal_ctags_enabled') && !g:universal_ctags_enabled)
-      \ || !exists('g:loaded_universal_ctags')
+if (exists('g:uctags_enabled') && !g:uctags_enabled)
+      \ || !exists('g:loaded_uctags')
       \ || exists('g:loaded_UCTags_Parse')
   finish
 endif
 let g:loaded_UCTags_Parse = 1
 
 function! UCTags#Parse#GetTags()
-  if !filereadable(g:universal_ctags_tags_name)
+  if !filereadable(g:uctags_tags_name)
     echoerr 'no tags file'
     finish
   endif
 
   return map(
-        \ filter(readfile(g:universal_ctags_tags_name), "v:val !~# '^!_TAG'"),
+        \ filter(readfile(g:uctags_tags_name), "v:val !~# '^!_TAG'"),
         \ "split(v:val, '\t')")
 "  for l:val in l:tags
 "    let l:lang = strpart(l:val[5], 9)
@@ -36,7 +36,7 @@ function! UCTags#Parse#GetTagsForLang(lang)
 endfunction
 
 function! UCTags#Parse#GetFunctionTags()
-  if !filereadable(g:universal_ctags_tags_name)
+  if !filereadable(g:uctags_tags_name)
     echoerr 'no tags file'
     finish
   endif

@@ -1,6 +1,12 @@
 vim:ft=changelog:norl
 
 2019-05-12 HEAD FrancescoMagliocco
+	All files that had the previous name universal-ctags, have had
+	'universal-ctags' replaced with 'uctags'.  Same goes for any and all
+	variables.  The reason for this is to save on typing and save space as
+	'universal-ctags' takes up a lot of space compared to the latter.
+
+2019-05-12 4848590 FrancescoMagliocco
 	* plugin/vim_universal_ctags.vim:
 		Added command UpdateTags
 		Added a whole bunch of informative comments, TODO's, FIXME's, COMBAK's
