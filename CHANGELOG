@@ -1,6 +1,13 @@
 vim:ft=changelog:norl
 
 2019-05-12 HEAD FrancescoMagliocco
+	* doc/uctags.txt:
+		Fixed alignment and spacing
+	* plugin/vim_uctags.vim:
+		Fixed alignment and spacing
+		Fixed type in string
+
+2019-05-12 d0ecfb7 FrancescoMagliocco
 	All files that had the previous name universal-ctags, have had
 	'universal-ctags' replaced with 'uctags'.  Same goes for any and all
 	variables.  The reason for this is to save on typing and save space as

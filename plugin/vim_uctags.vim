@@ -16,29 +16,27 @@ if v:version < 801
 endif
 
 if exists('g:uctags_enabled') && !g:uctags_enabled
-  echohl moreMsg | echomsg 'vim-universal-ctags is not enabled' | echohl None
+  echohl moreMsg | echomsg 'vim-uctags is not enabled' | echohl None
   finish
 endif
 
 " XXX Using uctags as prefixes for everything, and even the plugin,
 "   kind of bothers me in a way such that what if universal-ctags actually
 "   creates a plugin..
-let g:loaded_uctags        = 1
+let g:loaded_uctags       = 1
 
-let g:uctags_executable    =
-      \ get(g:, 'uctags_name', 'ctags-universal')
+let g:uctags_executable   = get(g:, 'uctags_name', 'ctags-universal')
 
 " COMBAK This name doesn't really 'flow'..
-let g:uctags_tags_name     =
-      \ get(g:, 'uctags_tags_name', 'tags')
-let g:uctags_max_info      = get(g:, 'uctags_max_info', 1)
+let g:uctags_tags_name    = get(g:, 'uctags_tags_name', 'tags')
+let g:uctags_max_info     = get(g:, 'uctags_max_info', 1)
 
-let g:uctags_extra_args    = get(g:, 'uctags_extra_args', {})
+let g:uctags_extra_args   = get(g:, 'uctags_extra_args', {})
 
 " universal ctags skip highlight for
 " FIXME I don't like this name
 " TODO Come up with more elaborate name
-let g:uctags_skip_hl_for   = get(
+let g:uctags_skip_hl_for  = get(
       \ g:,
       \ 'uctags_skip_hl_for',
       \ {
@@ -47,45 +45,43 @@ let g:uctags_skip_hl_for   = get(
 
 " universal ctags kind to highlight group
 " The name for this is kind of relevant, but I'm not sure I like it..
-let g:uctags_kind_to_hlg   = get(
-      \ g:,
-      \ 'uctags_kind_to_hlg',
-      \ {
-      \   'function': 'functionName',
-      \   'method'  : 'methods'
+let g:uctags_kind_to_hlg  = get(
+      \ g:, 'uctags_kind_to_hlg', {
+      \   'function'  : 'functionName',
+      \   'method'    : 'methods'
       \ })
 
 function! s:ParseArgs(args)
   return extend(extend(a:args, g:uctags_max_info
         \   ? {
-        \       '--fields=': '*',
-        \       '--all-kinds=': '*'
+        \       '--fields='     : '*',
+        \       '--all-kinds='  : '*'
         \     }
         \   : {} ), g:uctags_extra_args)
 endfunction
 
 " This will define the default arguments.
-let g:uctags_args          = get(
+let g:uctags_args         = get(
       \ g:,
       \ 'uctags_args',
       \ {
-      \   '-R': '',
-      \   '-f': g:uctags_tags_name
+      \   '-R'  : '',
+      \   '-f'  : g:uctags_tags_name
       \ })
 
 " Extends g:uctags_args with g:uctags_extra_args so
 " g:uctags_args can be used when needing arguments for
 " ctags-universal.  See s:ParseArgs() body for aditional details.
-let g:uctags_args          = s:ParseArgs(g:uctags_args)
+let g:uctags_args         = s:ParseArgs(g:uctags_args)
 
-let s:lang_map                      =
+let s:lang_map            =
       \ {
       \   'c#'  : 'cSharp',
       \   'c++' : 'cpp'
       \ }
 
 " highlight group map
-let s:hlg_map                       =
+let s:hlg_map             =
       \ {
       \   'function'  : 'Func',
       \   'variable'  : 'Var',
@@ -97,10 +93,9 @@ let s:hlg_map                       =
 " This is more of a 'kind to kind but truncated' map.  So maybe rename it as
 "   'g:uctags_kind_map', plus it would match the naming convention
 "   that was used for 'g:uctags_lang_map'
-let g:uctags_hl_group_map  =
-      \ get(g:, 'uctags_hl_group_map', {})
+let g:uctags_hl_group_map = get(g:, 'uctags_hl_group_map', {})
 
-let g:uctags_lang_map      = get(g:, 'uctags_lang_map', {})
+let g:uctags_lang_map     = get(g:, 'uctags_lang_map', {})
 
 " Any key in a:hlg_map that isn't in s:hlg_map will be removed.
 " Create a deepcopy() of s:hlg_map, extend said copy with a:hlg_map.
@@ -117,8 +112,7 @@ function! s:ParseHlGMap(hlg_map, map)
 endfunction
 
 " TODO Implement the same, but for g:uctags_ctags_lang_map
-let g:uctags_hl_group_map  =
-      \ s:ParseHlGMap(g:uctags_hl_group_map, s:hlg_map)
+let g:uctags_hl_group_map = s:ParseHlGMap(g:uctags_hl_group_map, s:hlg_map)
 
 augroup uctags_aug
   autocmd!
