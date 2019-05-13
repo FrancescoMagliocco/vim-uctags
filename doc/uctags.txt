@@ -97,7 +97,7 @@ If you want to change an option, you can do so like this:  >
     |g:uctags_args|.  |g:uctags_extra_args| has the highest
     precedence.
 
-*g:uctags_hl_group_map*    (Default: >
+*g:uctags_kind_to_hlg*    (Default: >
           \ {
           \   'function'  : 'Func',
           \   'variable'  : 'Var',

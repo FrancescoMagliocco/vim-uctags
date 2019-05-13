@@ -1,4 +1,4 @@
-" Last Change:  2019-05-12
+" Last Change:  2019-05-13
 " Maintainer:   Francesco Magliocco
 " License:      GNU General Public License v3.0
 
@@ -35,10 +35,7 @@ function! UCTags#Highlight#Highlight(kind, ...)
   "   essentially remove all except one.
   "
   " COMBAK Another way to do this would be to call a function within the filter
-  "   and pass a:kind.  I could also use lambda instead which will help with
-  "   formatting a bit better, and l:skip wouldn't be needed.  But in one of my
-  "   tests, using a {expr} over lambda proved to be faster.  The tests that I
-  "   did were with  lists however.  These are dictionaries.
+  "   and pass a:kind.  
   " XXX I'm worried that if there is a significant amount of tags that Vim will
   "   halt until all the filtering is done.  TODO I wanted to implement the new
   "   channel and job system.  I'm just not sure if that is possible for
@@ -61,8 +58,13 @@ function! UCTags#Highlight#Highlight(kind, ...)
       continue
     endif
 
-    execute 'syntax matach ' . l:group . ' /\<' . l:v[0] . '\ze(/'
-    execute 'hi def link' l:group g:uctags_kind_to_hlg[l:kind]
+    execute 'syntax match ' . l:group . ' /\<' . l:v[0] . '\ze(/'
+    
+    " We are not using 'default' as we (or the user if specified) want l:group
+    "   linked to g:uctags_kind_to_hlg[l:kind].  Also using 'default' for some
+    "   goup-names such as 'vimFunction' result in 'vimFunction' actually being
+    "   linked to 'ErrorMsg'
+    execute 'hi link' l:group g:uctags_kind_to_hlg[l:kind]
   endfor
 endfunction
 
