@@ -33,7 +33,7 @@ If you want to change an option, you can do so like this:  >
     File name of the ctags-universal executable.  The default is usually
     accurate.
 
-*g:uctags_tags_name*       (Default: "tags")
+*g:uctags_tags_file*       (Default: "tags")
     File name to be used for when saving the generated |tags|.
 
 *g:uctags_max_info*        (Default: 1)
@@ -74,7 +74,7 @@ If you want to change an option, you can do so like this:  >
               \ 'uctags_args',
               \ {
               \   '-R': '',
-              \   '-f': g:uctags_tags_name
+              \   '-f': g:uctags_tags_file
               \ })
 
         " Extends g:uctags_args with g:uctags_extra_args so

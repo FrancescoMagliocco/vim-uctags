@@ -25,10 +25,9 @@ endif
 "   creates a plugin..
 let g:loaded_uctags         = 1
 
-let g:uctags_executable     = get(g:, 'uctags_name', 'ctags-universal')
+let g:uctags_executable     = get(g:, 'uctags_executable', 'ctags-universal')
 
-" COMBAK This name doesn't   really 'flow'..
-let g:uctags_tags_name      = get(g:, 'uctags_tags_name', 'tags')
+let g:uctags_tags_file      = get(g:, 'uctags_tags_file', 'tags')
 let g:uctags_max_info       = get(g:, 'uctags_max_info', 1)
 
 let g:uctags_extra_args     = get(g:, 'uctags_extra_args', {})
@@ -38,8 +37,7 @@ let g:uctags_skip_kind_for  = get(g:, 'uctags_skip_hl_for', {})
 
 " universal ctags kind to highlight group
 " The name for this is kind of relevant, but I'm not sure I like it..
-let g:uctags_kind_to_hlg    = get(
-      \ g:, 'uctags_kind_to_hlg', {
+let g:uctags_kind_to_hlg    = get(g:, 'uctags_kind_to_hlg', {
       \   'function'  : 'functionName',
       \   'method'    : 'methods'
       \ })
@@ -54,12 +52,9 @@ function! s:ParseArgs(args)
 endfunction
 
 " This will define the default arguments.
-let g:uctags_args           = get(
-      \ g:,
-      \ 'uctags_args',
-      \ {
+let g:uctags_args           = get(g:, 'uctags_args', {
       \   '-R'  : '',
-      \   '-f'  : g:uctags_tags_name
+      \   '-f'  : g:uctags_tags_file
       \ })
 
 " Extends g:uctags_args with g:uctags_extra_args so
@@ -109,7 +104,7 @@ let g:uctags_hl_group_map   = s:ParseHlGMap(g:uctags_hl_group_map, s:hlg_map)
 
 augroup uctags_aug
   autocmd!
-  if filereadable(g:uctags_tags_name)
+  if filereadable(g:uctags_tags_file)
     autocmd BufWritePost * silent call UCTags#Generate#GenTags()
   endif
 augroup END

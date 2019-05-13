@@ -2,6 +2,15 @@ vim:ft=changelog:norl
 
 2019-05-12 HEAD FrancescoMagliocco
 	* plugin/vim_uctags.vim:
+		Fixed typo
+		Reformatted some get functions.
+		Renamed global g:uctags_tags_name to g:uctags_tags_file
+	* doc/uctags.txt:
+	* autoload/UCTags/Parse.vim:
+		Renamed global g:uctags_tags_name to g:uctags_tags_file
+
+2019-05-12 dc3b053 FrancescoMagliocco
+	* plugin/vim_uctags.vim:
 		Renamed global g:uctags_skip_hl_for to g:uctags_skip_kind_for
 		Removed the default dict for g:uctags_skip_hl_for
 	* autoload/Highlight (UCTags#Highlight#Highlight()):

@@ -10,13 +10,13 @@ endif
 let g:loaded_UCTags_Parse = 1
 
 function! UCTags#Parse#GetTags()
-  if !filereadable(g:uctags_tags_name)
+  if !filereadable(g:uctags_tags_file)
     echoerr 'no tags file'
     finish
   endif
 
   return map(
-        \ filter(readfile(g:uctags_tags_name), "v:val !~# '^!_TAG'"),
+        \ filter(readfile(g:uctags_tags_file), "v:val !~# '^!_TAG'"),
         \ "split(v:val, '\t')")
 "  for l:val in l:tags
 "    let l:lang = strpart(l:val[5], 9)
@@ -36,7 +36,7 @@ function! UCTags#Parse#GetTagsForLang(lang)
 endfunction
 
 function! UCTags#Parse#GetFunctionTags()
-  if !filereadable(g:uctags_tags_name)
+  if !filereadable(g:uctags_tags_file)
     echoerr 'no tags file'
     finish
   endif
