@@ -11,8 +11,9 @@ let g:loaded_UCTags_Highlight = 1
 
 " If any optional arguments are given, do a dry run and output some info
 function! UCTags#Highlight#Highlight(kind, ...)
-  if !has_key(g:uctags_kind_to_hlg, a:kind)
-    echoerr 'No support yet for' a:kind
+  let l:kind = tolower(a:kind)
+  if !has_key(g:uctags_kind_to_hlg, l:kind)
+    echoerr 'No support yet for' l:kind
     return
   endif
 
@@ -43,25 +44,25 @@ function! UCTags#Highlight#Highlight(kind, ...)
   "   channel and job system.  I'm just not sure if that is possible for
   "   situtations like this.
   let l:skip =
-        \ 'has_key(g:uctags_skip_kind_for, a:kind)'
-        \ . '? index(g:uctags_skip_kind_for[a:kind],'
+        \ 'has_key(g:uctags_skip_kind_for, l:kind)'
+        \ . '? index(g:uctags_skip_kind_for[l:kind],'
         \     . 'tolower(strpart(v:val[5], 9))) < 0'
         \ . ': 1'
   for l:v in uniq(sort(
         \ filter(
         \   filter(
-        \     UCTags#Parse#GetTags(), "v:val[3] ==? 'kind:" . a:kind . "'"),
+        \     UCTags#Parse#GetTags(), "v:val[3] ==? 'kind:" . l:kind . "'"),
         \   l:skip)))
     let l:lang  = tolower(strpart(l:v[5], 9))
     let l:group = get(g:uctags_lang_map, l:lang, l:lang)
-          \ . get(g:uctags_hl_group_map, a:kind, a:kind)
+          \ . get(g:uctags_hl_group_map, l:kind, l:kind)
     if a:0
       echomsg l:lang
       continue
     endif
 
     execute 'syntax matach ' . l:group . ' /\<' . l:v[0] . '\ze(/'
-    execute 'hi def link' l:group 'functionName'
+    execute 'hi def link' l:group g:uctags_kind_to_hlg[l:kind]
   endfor
 endfunction
 

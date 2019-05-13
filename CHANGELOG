@@ -1,6 +1,11 @@
 vim:ft=changelog:norl
 
 2019-05-12 HEAD FrancescoMagliocco
+	* autoload/UCTags/Highlight.vim (UCTags#Highlight#Highlight()):
+		Function local l:kind is tolower(a:kind)
+		Implemented global g:uctags_kind_to_hlg
+
+2019-05-12 af907ae FrancescoMagliocco
 	* plugin/vim_uctags.vim:
 		Fixed typo
 		Reformatted some get functions.
