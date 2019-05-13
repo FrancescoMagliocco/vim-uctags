@@ -160,6 +160,25 @@ If you want to change an option, you can do so like this:  >
     You can customize this as you please for each language supported by
     uctags.  See |g:uctags_hl_group_map| for a demonstration on how to.  The
     principle is the same.
+
+*g:uctags_skip_kind_for*    (Default: {})
+    When highlighting, for each {key} {kind}, every {val} {lang} i.e language,
+    will be skipped and not highlighted.  This will not affect {kind} for
+    other languages; only the languages that are present in the |List| {val}
+    are affected.  Other "Kinds" for {lang} will not be affected.  Only the
+    {key} {kind} is affected.
+
+    The {val} must be a |List| that way if multiple languages are to have
+    {kind} skipped when highlighting, you can have them all be specified in
+    one place.
+
+    Example:~  >
+        let g:uctags_skip_kind_for['function'] = ['vim']
+<
+
+        Every "function" that is of the language "vim", will not be
+        highlighted.  A |tag| will still be created for the corresponding
+        function.
 ===============================================================================
 2. FAQ                                                             *uctags-faq* 
 

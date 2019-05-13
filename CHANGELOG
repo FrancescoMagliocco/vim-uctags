@@ -2,6 +2,15 @@ vim:ft=changelog:norl
 
 2019-05-12 HEAD FrancescoMagliocco
 	* plugin/vim_uctags.vim:
+		Renamed global g:uctags_skip_hl_for to g:uctags_skip_kind_for
+		Removed the default dict for g:uctags_skip_hl_for
+	* autoload/Highlight (UCTags#Highlight#Highlight()):
+		Renamed global g:uctags_skip_hl_for to g:uctags_skip_kind_for
+	* doc/uctags.txt:
+		Added documentation for global g:uctags_skip_kind_for
+
+2019-05-12 88aec90 FrancescoMagliocco
+	* plugin/vim_uctags.vim:
 		UpdateTags doesn't require user interaction after running
 
 2019-05-12 5d7dd60 FrancescoMagliocco

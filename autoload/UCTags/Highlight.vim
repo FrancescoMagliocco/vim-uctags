@@ -43,8 +43,8 @@ function! UCTags#Highlight#Highlight(kind, ...)
   "   channel and job system.  I'm just not sure if that is possible for
   "   situtations like this.
   let l:skip =
-        \ 'has_key(g:uctags_skip_hl_for, a:kind)'
-        \ . '? index(g:uctags_skip_hl_for[a:kind],'
+        \ 'has_key(g:uctags_skip_kind_for, a:kind)'
+        \ . '? index(g:uctags_skip_kind_for[a:kind],'
         \     . 'tolower(strpart(v:val[5], 9))) < 0'
         \ . ': 1'
   for l:v in uniq(sort(
