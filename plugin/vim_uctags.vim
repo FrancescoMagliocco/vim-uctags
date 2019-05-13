@@ -121,4 +121,4 @@ augroup uctags_aug
   endif
 augroup END
 
-command! UpdateTags call silent UCTags#Generate#GenTags()
+command! -bar UpdateTags silent call UCTags#Generate#GenTags() | redraw!
