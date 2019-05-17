@@ -1,6 +1,6 @@
 " A Universal-Ctags highlighter
-" Last Change:  2019-05-12
-" Maintainer:   Francesco Magliocco
+" Last Change:  05/17/2019
+" Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
 " We check if enabled first because if not enabled, it doesn't matter what
@@ -37,8 +37,7 @@ let g:uctags_syntax_c_enabled = get(g:, 'uctags_syntax_c_enabled', 1)
 " universal ctags skip kind for
 let g:uctags_skip_kind_for  = get(g:, 'uctags_skip_hl_for', {
       \   'chapter'       : ['markdown'],
-      \   'class'         : ['c++'],
-      \   'function'      : ['vim', 'c++', 'c'],
+      \   'function'      : ['vim'],
       \   'header'        : ['c', 'c++'],
       \   'heredoc'       : ['sh'],
       \   'hunk'          : ['diff'],
@@ -46,7 +45,6 @@ let g:uctags_skip_kind_for  = get(g:, 'uctags_skip_hl_for', {
       \   'label'         : ['dosbatch'],
       \   'modifiedfile'  : ['diff'],
       \   'parameter'     : ['c++', 'c', 'python'],
-      \   'prototype'     : ['c++'],
       \   'script'        : ['sh'],
       \   'section'       : ['markdown'],
       \   'subroutine'    : ['perl'],
