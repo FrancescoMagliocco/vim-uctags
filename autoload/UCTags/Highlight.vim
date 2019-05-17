@@ -43,7 +43,7 @@ function! UCTags#Highlight#Highlight(kind, ...)
   let l:skip =
         \ 'has_key(g:uctags_skip_kind_for, l:kind)'
         \ . '? index(g:uctags_skip_kind_for[l:kind],'
-        \     . 'tolower(strpart(v:val[5], 9))) < 0'
+        \     . 'tolower(v:val[5][9:])) < 0'
         \ . ': 1'
 
   " I HAVE REMOVED UNIQ to use filescope
@@ -92,22 +92,15 @@ function! UCTags#Highlight#Highlight(kind, ...)
       call writefile(l:lines, l:lang . '.syn')
     endif
     continue
-    execute 'syntax match' l:group l:match.start . substitute(l:v[0], '\(\.\|\$\|\\\|\~\|\$\|\^\)', '\\\1', 'g') . l:match.end
-    
-    " We are not using 'default' as we (or the user if specified) want l:group
-    "   linked to g:uctags_kind_to_hlg[l:kind].  Also using 'default' for some
-    "   goup-names such as 'vimFunction' result in 'vimFunction' actually being
-    "   linked to 'ErrorMsg'
-    execute 'hi link' l:group g:uctags_kind_to_hlg[l:kind]
   endfor
 endfunction
 
 function! UCTags#Highlight#High(tags, ...)
 
   let l:skip =
-        \ 'has_key(g:uctags_skip_kind_for, tolower(strpart(v:val[3], 5)))'
-        \ . '? index(g:uctags_skip_kind_for[tolower(strpart(v:val[3], 5))],'
-        \     . 'tolower(strpart(v:val[5], 9))) < 0'
+        \ 'has_key(g:uctags_skip_kind_for, tolower(v:val[3][5:]))'
+        \ . '? index(g:uctags_skip_kind_for[tolower(v:val[3][5:])],'
+        \     . 'tolower(v:val[5][9:])) < 0'
         \ . ': 1'
 ""  let l:tlang = ''
   let l:file = expand('%:t') . '.syn'
@@ -116,9 +109,11 @@ function! UCTags#Highlight#High(tags, ...)
   silent! let l:lines = readfile(l:file)
   for l:v in uniq(sort(
         \ filter(
-        \   filter(filter(a:tags, "v:val[1] =~? expand('%:t')  . '$'"),  'has_key(g:uctags_kind_to_hlg, tolower(strpart(v:val[3], 5)))'), l:skip)))
-    let l:kind = tolower(strpart(l:v[3], 5))
-    let l:lang  = tolower(strpart(l:v[5], 9))
+        \   filter(
+        \     filter(a:tags, "v:val[1] =~? expand('%:t')  . '$'"),
+        \     'has_key(g:uctags_kind_to_hlg, tolower(v:val[3][5:]))'), l:skip)))
+    let l:kind = tolower(l:v[3][5:])
+    let l:lang  = tolower(l:v[5][9:])
     let l:group = get(g:uctags_lang_map, l:lang, l:lang)
           \ . get(g:uctags_hl_group_map, l:kind, l:kind)
     if a:0
@@ -128,7 +123,8 @@ function! UCTags#Highlight#High(tags, ...)
       continue
     endif
     
-    let l:has_key = has_key(g:uctags_match_map, l:lang) && has_key(g:uctags_match_map[l:lang], l:kind)
+    let l:has_key = has_key(g:uctags_match_map, l:lang)
+          \ && has_key(g:uctags_match_map[l:lang], l:kind)
 
     if !l:has_key && !has_key(g:uctags_match_map, l:kind)
       continue
@@ -137,13 +133,13 @@ function! UCTags#Highlight#High(tags, ...)
     let l:match = get(
           \ l:has_key ? g:uctags_match_map[l:lang] : g:uctags_match_map, l:kind)
 
-    let l:syn = 'syntax match ' . l:group . ' ' . l:match.start . substitute(l:v[0], '\(\.\|\$\|\\\|\~\|\$\|\^\|/\|\ \|\[\|\]\)', '\\\1', 'g') . l:match.end
+    let l:syn = 'syntax match ' . l:group . ' ' . l:match.start . substitute(
+          \ l:v[0],
+          \ '\(\.\|\$\|\\\|\~\|\$\|\^\|/\|\ \|\[\|\]\)',
+          \ '\\\1',
+          \ 'g') . l:match.end
     let l:link = 'hi link' . ' ' . l:group . ' ' . g:uctags_kind_to_hlg[l:kind]
       call add(l:lines, l:syn)
-    execute 'hi link' l:group g:uctags_kind_to_hlg[l:kind]
-    continue
-    execute 'syntax match' l:group l:match.start . substitute(l:v[0], '\(\.\|\$\|\\\|\~\|\$\|\^\|/\ \)', '\\\1', 'g') . l:match.end
-    
     execute 'hi link' l:group g:uctags_kind_to_hlg[l:kind]
   endfor
 
