@@ -81,7 +81,7 @@ function! UCTags#Highlight#Highlight(kind, ...)
     endif
 
 
-    let l:syn = 'syntax match ' . l:group . ' ' . l:match.start . substitute(l:v[0], '\(\.\|\$\|\\\|\~\|\$\|\^\)', '\\\1', 'g') . l:match.end
+    let l:syn = 'syntax match ' . l:group . ' ' . l:match.start . escape(l:v[0]) . l:match.end
     let l:link = 'hi link' . ' ' . l:group . ' ' . g:uctags_kind_to_hlg[l:kind]
     if index(l:lines, l:syn) < 0
       call add(l:lines, l:syn)
@@ -133,11 +133,7 @@ function! UCTags#Highlight#High(tags, ...)
     let l:match = get(
           \ l:has_key ? g:uctags_match_map[l:lang] : g:uctags_match_map, l:kind)
 
-    let l:syn = 'syntax match ' . l:group . ' ' . l:match.start . substitute(
-          \ l:v[0],
-          \ '\(\.\|\$\|\\\|\~\|\$\|\^\|/\|\ \|\[\|\]\)',
-          \ '\\\1',
-          \ 'g') . l:match.end
+    let l:syn = 'syntax match ' . l:group . ' ' . l:match.start . escape(l:v[0]) . l:match.end
     let l:link = 'hi link' . ' ' . l:group . ' ' . g:uctags_kind_to_hlg[l:kind]
       call add(l:lines, l:syn)
     execute 'hi link' l:group g:uctags_kind_to_hlg[l:kind]
@@ -192,11 +188,7 @@ function! UCTags#Highlight#ReadTags(file, ...)
     "   We need to now source the syn file for it
     " We can't use l:file because when we split l:file with pattern '/', what was
     "   substituted here will still be in l:file when we only the file name.
-    let l:tfile = substitute(
-            \ l:file,
-            \ '\(\.\|\$\|\\\|\~\|\$\|\^\|/\|\ \|\[\|\]\)',
-            \ '\\\1',
-            \ 'g')
+    let l:tfile = fnnamescape(l:file)
     " Go through tags file search for index 1 to match l:tfile
     " Filter out all that don't match the file name without the path of l:file
     "   at index 0 of each tag.  Index 1 will match any tag that is in l:file
@@ -301,11 +293,7 @@ function! UCTags#Highlight#UpdateSyn(tags)
     let l:match = get(
           \ l:has_key ? g:uctags_match_map[l:lang] : g:uctags_match_map, l:kind)
 
-    let l:syn = 'syntax match ' . l:group . ' ' . l:match.start . substitute(
-          \ l:v[0],
-          \ '\(\.\|\$\|\\\|\~\|\$\|\^\|/\|\ \|\[\|\]\)',
-          \ '\\\1',
-          \ 'g') . l:match.end
+    let l:syn = 'syntax match ' . l:group . ' ' . l:match.start . escape(l:v[0]) . l:match.end
     let l:link = 'hi link' . ' ' . l:group . ' ' . g:uctags_kind_to_hlg[l:kind]
       call add(l:lines, l:syn)
     execute 'hi link' l:group g:uctags_kind_to_hlg[l:kind]
