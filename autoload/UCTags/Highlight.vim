@@ -1,4 +1,4 @@
-" Last Change:  05/19/2019
+" Last Change:  05/20/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -188,7 +188,7 @@ function! UCTags#Highlight#ReadTags(file, ...)
     "   We need to now source the syn file for it
     " We can't use l:file because when we split l:file with pattern '/', what was
     "   substituted here will still be in l:file when we only the file name.
-    let l:tfile = fnnamescape(l:file)
+    let l:tfile = fnameescape(l:file)
     " Go through tags file search for index 1 to match l:tfile
     " Filter out all that don't match the file name without the path of l:file
     "   at index 0 of each tag.  Index 1 will match any tag that is in l:file
