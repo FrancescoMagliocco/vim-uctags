@@ -1,5 +1,5 @@
 " A Universal-Ctags highlighter
-" Last Change:  05/17/2019
+" Last Change:  05/19/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -84,6 +84,7 @@ let g:uctags_kind_to_hlg      = get(g:, 'uctags_kind_to_hlg', {
       \   'interface'       : 'constant',
       \   'local'           : 'variable',
       \   'macro'           : 'cTagsDefinedName',
+      \   'member'          : 'member',
       \   'message'         : 'class',
       \   'method'          : 'method',
       \   'module'          : 'statement',
