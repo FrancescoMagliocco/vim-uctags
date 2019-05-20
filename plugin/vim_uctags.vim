@@ -275,3 +275,4 @@ augroup uctags_aug
 augroup END
 
 command! -bar UpdateTags silent call UCTags#Generate#GenTags() | redraw!
+command! ReadTags call UCTags#Highlight#ReadTags(expand('%'))
