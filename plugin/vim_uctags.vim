@@ -1,5 +1,5 @@
 " A Universal-Ctags highlighter
-" Last Change:  05/19/2019
+" Last Change:  05/20/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -95,6 +95,7 @@ let g:uctags_kind_to_hlg      = get(g:, 'uctags_kind_to_hlg', {
       \   'packagename'     : 'namespace',
       \   'project'         : 'title',
       \   'property'        : 'errorMsg',
+      \   'prototype'       : 'functionName',
       \   'rpc'             : 'functionName',
       \   'service'         : 'class',
       \   'struct'          : 'structure',
@@ -153,6 +154,7 @@ let g:uctags_match_map      = get(g:, 'uctags_match_map', {
       \   'packagename'     : { 'start'     : '/\<',  'end' : '\>/' },
       \   'project'         : { 'start'     : '/\<',  'end' : '\>/' },
       \   'property'        : { 'start'     : '/\<',  'end' : '\>/' },
+      \   'prototype'       : { 'start'     : '/\<',  'end' : '\ze(/' },
       \   'rpc'             : { 'start'     : '/\<',  'end' : '\ze(/' },
       \   'service'         : { 'start'     : '/\<',  'end' : '\>/' },
       \   'struct'          : { 'start'     : '/\<',  'end' : '\>/' },
@@ -222,6 +224,7 @@ let s:hlg_map               =
       \   'parameter'       : 'Param',
       \   'project'         : 'Project',
       \   'property'        : 'Property',
+      \   'prototype'       : 'Proto',
       \   'rpc'             : 'rpc',
       \   'service'         : 'Service',
       \   'struct'          : 'Struct',
