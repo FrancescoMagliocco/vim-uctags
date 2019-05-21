@@ -305,10 +305,25 @@ function! UCTags#Highlight#UpdateSyn(tags)
 
 endfunction
 
+let s:lang_map =
+      \ {
+      \   'c++'         : '\(c++\|cplusplus\|cpp\|cc\)',
+      \   'c#'          : '\(csharp\|c#\)',
+      \   'javascript'  : '\(javascript\|jscript\|js\)',
+      \ }
+
 " Call UCTags#Parse#GetTags() filters out all tags except that of a:lang.
 "   Returns the result.
 function! UCTags#Highlight#Lang(lang)
-  return filter(UCTags#Parse#GetTags(), "v:val[5] ==? 'language:" . a:lang . "'")
+  let l:lang = a:lang
+  for [l:k, l:v] in items(s:lang_map)
+    if l:lang =~? l:v
+      let l:lang = l:k
+      break
+    endif
+  endfor
+
+  return filter(UCTags#Parse#GetTags(), "v:val[5] ==? 'language:" . l:lang . "'")
 endfunction
 
 function! UCTags#Highlight#Methods()

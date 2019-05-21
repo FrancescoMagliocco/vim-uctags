@@ -277,3 +277,4 @@ augroup END
 command! -bar UpdateTags silent call UCTags#Generate#GenTags() | redraw!
 command! ReadTags call UCTags#Highlight#ReadTags(expand('%'))
 command! DeleteAllSyn !find . -name *.syn -delete
+command! UpdateSyn call UCTags#Highlight#UpdateSyn(UCTags#Highlight#Lang(&ft))
