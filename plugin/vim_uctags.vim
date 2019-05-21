@@ -138,7 +138,7 @@ let g:uctags_match_map      = get(g:, 'uctags_match_map', {
       \   'externvar'       : { 'start'     : '/\<',  'end' : '\>/' },
       \   'field'           : { 'start'     : '/\<',  'end' : '\ze(/' },
       \   'func'            : { 'start'     : '/\<',  'end' : '\ze(/' },
-      \   'function'        : { 'start'     : '/\<',  'end' : '\ze(/' },
+      \   'function'        : { 'start'     : '/\<',  'end' : '\s*\ze(/' },
       \   'implementation'  : { 'start'     : '/\<',  'end' : '\>/' },
       \   'interface'       : { 'start'     : '/\<',  'end' : '\>/' },
       \   'local'           : { 'start'     : '/\<',  'end' : '\>/' },
@@ -276,3 +276,4 @@ augroup END
 
 command! -bar UpdateTags silent call UCTags#Generate#GenTags() | redraw!
 command! ReadTags call UCTags#Highlight#ReadTags(expand('%'))
+command! DeleteAllSyn !find . -name *.syn -delete
