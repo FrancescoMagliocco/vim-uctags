@@ -1,5 +1,5 @@
 " A Universal-Ctags highlighter
-" Last Change:  05/20/2019
+" Last Change:  05/21/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -127,6 +127,7 @@ let g:uctags_kind_to_hlg      = get(g:, 'uctags_kind_to_hlg', {
 let g:uctags_match_map      = get(g:, 'uctags_match_map', {
       \   'c++'     : { 'member'  : { 'start' : '/\<', 'end' : '\>/' }},
       \   'go'      : { 'member'  : { 'start' : '/\<', 'end' : '\>/' }},
+      \   'javascript'  : { 'method' : { 'start' : '/\<', 'end' : '\(\>\|\ze(\)/'}},
       \   'python'  : { 'class'   : { 'start' : '/\<', 'end' : '\ze(/' }},
       \   'vim'     : { 'command' : { 'start' : '/\<', 'end' : '\>/' }},
       \   'alias'           : { 'start'     : '/\<',  'end' : '\>/' },
