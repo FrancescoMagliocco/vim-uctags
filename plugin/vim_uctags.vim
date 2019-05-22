@@ -1,5 +1,5 @@
 " A Universal-Ctags highlighter
-" Last Change:  05/21/2019
+" Last Change:  05/22/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -28,7 +28,7 @@ let g:loaded_uctags         = 1
 let g:uctags_executable     = get(g:, 'uctags_executable', 'ctags-universal')
 
 let g:uctags_tags_file      = get(g:, 'uctags_tags_file', 'tags')
-let g:uctags_max_info       = get(g:, 'uctags_max_info', 1)
+let g:uctags_max_info       = get(g:, 'uctags_max_info', 0)
 
 let g:uctags_extra_args     = get(g:, 'uctags_extra_args', {})
 let g:uctags_syntax_c_enabled = get(g:, 'uctags_syntax_c_enabled', 1)
@@ -190,8 +190,16 @@ endfunction
 
 " This will define the default arguments.
 let g:uctags_args           = get(g:, 'uctags_args', {
-      \   '-R'  : '',
-      \   '-f'  : g:uctags_tags_file
+      \   '-R'              : '',
+      \   '-f'              : g:uctags_tags_file,
+      \   '--extras'        : '*-{subword}{qualified}{fileScope}{anonymous}',
+      \   '--fields'        : '*-{roles}{scope}{file}',
+      \   '--kinds-all'     : '*',
+      \   '--kinds-c++'     : '-{header}',
+      \   '--kinds-c'       : '-{header}',
+      \   '--kinds-json'    : '-{number}{object}{array}',
+      \   '--kinds-maven2'  : '-{artifactId}',
+      \   '--languages'     : '-markdown,json'
       \ })
 
 " Extends g:uctags_args with g:uctags_extra_args so
