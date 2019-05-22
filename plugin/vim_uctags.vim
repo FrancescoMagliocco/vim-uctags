@@ -33,6 +33,8 @@ let g:uctags_max_info       = get(g:, 'uctags_max_info', 1)
 let g:uctags_extra_args     = get(g:, 'uctags_extra_args', {})
 let g:uctags_syntax_c_enabled = get(g:, 'uctags_syntax_c_enabled', 1)
 
+" Package for go also highlights foo in package foo, we could simply still
+"   highlight with a pattern.
 " From what I have seen so far, name in c++ is operaors rediefined.
 " universal ctags skip kind for
 let g:uctags_skip_kind_for  = get(g:, 'uctags_skip_hl_for', {
@@ -44,6 +46,7 @@ let g:uctags_skip_kind_for  = get(g:, 'uctags_skip_hl_for', {
       \   'key'           : ['javaproperties'],
       \   'label'         : ['dosbatch'],
       \   'modifiedfile'  : ['diff'],
+      \   'package'       : ['go'],
       \   'parameter'     : ['c++', 'c', 'python'],
       \   'script'        : ['sh'],
       \   'section'       : ['markdown'],
@@ -71,6 +74,7 @@ let g:uctags_skip_kind_for  = get(g:, 'uctags_skip_hl_for', {
 let g:uctags_kind_to_hlg      = get(g:, 'uctags_kind_to_hlg', {
       \   'alias'           : 'namespace',
       \   'annotation'      : 'notation',
+      \   'anonmember'      : 'type',
       \   'class'           : 'class',
       \   'const'           : 'constant',
       \   'command'         : 'command',
@@ -80,6 +84,7 @@ let g:uctags_kind_to_hlg      = get(g:, 'uctags_kind_to_hlg', {
       \   'field'           : 'method',
       \   'func'            : 'functionName',
       \   'function'        : 'functionName',
+      \   'id'              : 'identifier',
       \   'implementation'  : 'errorMsg',
       \   'interface'       : 'constant',
       \   'local'           : 'variable',
@@ -97,6 +102,7 @@ let g:uctags_kind_to_hlg      = get(g:, 'uctags_kind_to_hlg', {
       \   'property'        : 'errorMsg',
       \   'prototype'       : 'functionName',
       \   'rpc'             : 'functionName',
+      \   'selector'        : 'identifier',
       \   'service'         : 'class',
       \   'struct'          : 'structure',
       \   'symbol'          : 'identifier',
@@ -132,6 +138,7 @@ let g:uctags_match_map      = get(g:, 'uctags_match_map', {
       \   'vim'     : { 'command' : { 'start' : '/\<', 'end' : '\>/' }},
       \   'alias'           : { 'start'     : '/\<',  'end' : '\>/' },
       \   'annotation'      : { 'start'     : '/\<',  'end' : '\>/' },
+      \   'anonmember'      : { 'start'     : '/\<',  'end' : '\>/' },
       \   'class'           : { 'start'     : '/\<',  'end' : '\>/' },
       \   'const'           : { 'start'     : '/\<',  'end' : '\>/' },
       \   'enum'            : { 'start'     : '/\<',  'end' : '\>/' },
@@ -140,6 +147,7 @@ let g:uctags_match_map      = get(g:, 'uctags_match_map', {
       \   'field'           : { 'start'     : '/\<',  'end' : '\ze(/' },
       \   'func'            : { 'start'     : '/\<',  'end' : '\ze(/' },
       \   'function'        : { 'start'     : '/\<',  'end' : '\s*\ze(/' },
+      \   'id'              : { 'start'     : '/\<',  'end' : '\>/' },
       \   'implementation'  : { 'start'     : '/\<',  'end' : '\>/' },
       \   'interface'       : { 'start'     : '/\<',  'end' : '\>/' },
       \   'local'           : { 'start'     : '/\<',  'end' : '\>/' },
@@ -157,6 +165,7 @@ let g:uctags_match_map      = get(g:, 'uctags_match_map', {
       \   'property'        : { 'start'     : '/\<',  'end' : '\>/' },
       \   'prototype'       : { 'start'     : '/\<',  'end' : '\ze(/' },
       \   'rpc'             : { 'start'     : '/\<',  'end' : '\ze(/' },
+      \   'selector'        : { 'start'     : '/\<',  'end' : '\>/' },
       \   'service'         : { 'start'     : '/\<',  'end' : '\>/' },
       \   'struct'          : { 'start'     : '/\<',  'end' : '\>/' },
       \   'symbol'          : { 'start'     : '/\<',  'end' : '\>/' },
@@ -201,6 +210,7 @@ let s:hlg_map               =
       \ {
       \   'alias'           : 'Alias',
       \   'annotation'      : 'Annotation',
+      \   'anonmember'      : 'AnonMember',
       \   'class'           : 'Class',
       \   'const'           : 'Const',
       \   'enum'            : 'Enum',
@@ -209,6 +219,7 @@ let s:hlg_map               =
       \   'field'           : 'field',
       \   'func'            : 'Func',
       \   'function'        : 'Func',
+      \   'id'              : 'Id',
       \   'implementation'  : 'Impl',
       \   'interface'       : 'Interface',
       \   'local'           : 'Local',
@@ -227,6 +238,7 @@ let s:hlg_map               =
       \   'property'        : 'Property',
       \   'prototype'       : 'Proto',
       \   'rpc'             : 'rpc',
+      \   'selector'        : 'Selector',
       \   'service'         : 'Service',
       \   'struct'          : 'Struct',
       \   'symbol'          : 'Sym',
