@@ -1,4 +1,4 @@
-" Last Change:  05/20/2019
+" Last Change:  05/22/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -95,6 +95,7 @@ function! UCTags#Highlight#Highlight(kind, ...)
   endfor
 endfunction
 
+" XXX I THINK the UpdateSyn function replaces this...
 function! UCTags#Highlight#High(tags, ...)
 
   let l:skip =
@@ -102,16 +103,17 @@ function! UCTags#Highlight#High(tags, ...)
         \ . '? index(g:uctags_skip_kind_for[tolower(v:val[3][5:])],'
         \     . 'tolower(v:val[5][9:])) < 0'
         \ . ': 1'
-""  let l:tlang = ''
-  let l:file = expand('%:t') . '.syn'
+  " Took out the :t
+  let l:file = expand('%') . '.syn'
   " The reason why we are using silent! is bcause if l:file doesn';t exists, an
   "   empty list is returned which is okay.
   silent! let l:lines = readfile(l:file)
-  for l:v in uniq(sort(
+  " I took out the uniq and sort
+  for l:v in 
         \ filter(
         \   filter(
-        \     filter(a:tags, "v:val[1] =~? expand('%:t')  . '$'"),
-        \     'has_key(g:uctags_kind_to_hlg, tolower(v:val[3][5:]))'), l:skip)))
+        \     filter(a:tags, "v:val[1] =~? fnameescape(expand('%')) . '$'"),
+        \     'has_key(g:uctags_kind_to_hlg, tolower(v:val[3][5:]))'), l:skip)
     let l:kind = tolower(l:v[3][5:])
     let l:lang  = tolower(l:v[5][9:])
     let l:group = get(g:uctags_lang_map, l:lang, l:lang)
@@ -132,7 +134,6 @@ function! UCTags#Highlight#High(tags, ...)
 
     let l:match = get(
           \ l:has_key ? g:uctags_match_map[l:lang] : g:uctags_match_map, l:kind)
-
     let l:syn = 'syntax match ' . l:group . ' ' . l:match.start . escape(l:v[0]) . l:match.end
     let l:link = 'hi link' . ' ' . l:group . ' ' . g:uctags_kind_to_hlg[l:kind]
       call add(l:lines, l:syn)
@@ -141,6 +142,9 @@ function! UCTags#Highlight#High(tags, ...)
 
   call writefile(uniq(sort(l:lines)), l:file)
 endfunction
+
+let s:inc_lan = ['cpp', 'c']
+let s:pat_lang = { 'cpp': '#include', 'c': '#include', 'go': 'import'}
 
 " XXX We need to implement a check for this so this is (The part that looks
 "   through each file of includes and continues) is only done on languages that
@@ -161,6 +165,20 @@ function! UCTags#Highlight#ReadTags(file, ...)
   
   " Remove quotes
   let l:file = substitute(a:file, "\\(\"\\|\'\\)", '', 'g') 
+  let l:ofile = l:file
+
+  let l:ftype = &ft
+  echomsg l:ftype
+  if l:ftype ==? 'go' && a:0 >= 2  &&  fnameescape(l:file) !~? '\.go$'
+    echomsg a:2
+    echomsg a:2[:-len(split(a:2, '/'))]
+    let l:file = a:2[:-(len(split(a:2, '/')[-1])+1)] . substitute(l:file, '\(\.\/\|\/\)', '', 'g') . '.go'
+    echomsg l:file
+    execute 'source' l:file . '.syn'
+    return
+  endif
+  " Use for relative path
+  
 
   " syn file for l:file
   let l:syn_file = l:file . '.syn'
@@ -172,6 +190,8 @@ function! UCTags#Highlight#ReadTags(file, ...)
     " We source the syn file for a:file, then we search each line of a:file
     "   looking to see if there was any includes.
     execute 'source' l:syn_file
+  elseif index(s:inc_lan, tolower(&ft)) < 0
+    return
   else
     " To get around the current directoy not be relative to that of a:file, we
     "   we need to search  the tag file and match that relative path so we can
@@ -221,13 +241,21 @@ function! UCTags#Highlight#ReadTags(file, ...)
   " If l:lines[1] is readable, we can read that file and filter out all except
   "   includes.
   if !filereadable(l:file) | return | endif
+  let l:pat = s:pat_lang[l:ftype]
   " Read each line from l:lines[1] and filter out all lines that aren't
   "   including a header.
   " We are sorting and removing any dublicates just incase there is a header
   "   that is included twice in a file by mistake or even if it was including
   "   twice intentially.  We don't want to source that same syn file for a
   "   header twice.
-  let l:list = uniq(sort(filter(readfile(l:file), "v:val =~# '\\s*#include\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
+  "   import\s\+(\n\(\s\(\(\w\+\s\)\?\"\w\+\(\(\/\|\.\)\w\+\)\?\"\)\n\)*)
+  "echomsg filter(readfile(l:file), "v:val =~# '^import\\s\\+(\\n\\(\\s\\(\\(\\w\\+\\s\\)\\?\\\"\\w\\+\\(\\(\\/\\|\\.\\)\\w\\+\\)\\?\\\"\\)\\n\\)*)'")
+  "echo join(readfile(l:file), "\n") =~? '\nimport ('
+  echo join(readfile(l:file), "\n") =~? 'import\s\+(\n\(\s\(\(\w\+\s\)\?\"\w\+\(\(\/\|\.\)\w\+\)\?\"\)\n\)*)'
+  "echomsg join(readfile(l:file), '\n') =~? 'import\\s\\+(\\n\\(\\s\\(\\(\\w\\+\\s\\)\\?\\\"\\w\\+\\(\\(\\/\\|\\.\\)\\w\\+\\)\\?\\\"\\)\\n\\)*)'
+  return
+  let l:list = uniq(sort(filter(readfile(l:file), "v:val =~# '\\s*" . l:pat . "\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
+  "let l:list = uniq(sort(filter(readfile(l:file), "v:val =~# '\\s*#include\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
   " We could probably take out any duplicates that  may be in a:1 and l:list
   "   when extended together, but that would just make the iteration longer
   for l:file in l:list
@@ -238,7 +266,8 @@ function! UCTags#Highlight#ReadTags(file, ...)
     "   that is read and taking out of the list from iteration, but that maybe
     "   included in some other header again.
     if a:0 && index(a:1, l:file) >= 0 | continue | endif
-    call UCTags#Highlight#ReadTags(substitute(l:file, '^.*#include\s\+', '', 'g'), extend(a:0 ? a:1 : [], l:list))
+    call UCTags#Highlight#ReadTags(substitute(l:file, '^.*' . l:pat . '\s\+', '', 'g'), extend(a:0 ? a:1 : [], l:list), l:ofile)
+    "call UCTags#Highlight#ReadTags(substitute(l:file, '^.*#include\s\+', '', 'g'), extend(a:0 ? a:1 : [], l:list), l:ofile)
   endfor
 
 endfunction
@@ -253,10 +282,64 @@ function! UCTags#Highlight#UpdateSyn(tags)
         \ . ': 1'
   let l:file = ''
   let l:lines = []
-  " COMBAK THIS MAY BE THE CULPRIT AS TO WHY THERE IS ONLY ONE MATCH IN EACH
-  " SYN FILE
+
+  " FIXME Sorting the results by index 1, i.e the file a given tag is located
+  "   in, will probably improve performance greatly as we wont have to keep
+  "   reading and writing files every time a following iteration is of a tag
+  "   that doesn't share the same location is the tag from the previous
+  "   iteration.  Instead we will only have to write and read a file after we
+  "   have parsed through each tag of a given location.
+  "
+  " Filters through a:tags accepting tags where the {kind} of tag is present
+  "   present in dictionary g:uctags_kind_to_hlg as a key.  We do this because
+  "   we only want to accept tags that have a highlight group to be linked to.
+  " Filter through the results of the previous filter, only accepting tags
+  "   that obey the following condition:
+  "     The {kind} of tag not be present in dictionary g:uctags_skip_kind_for
+  "     If {kind} of tag is present in dictionary g:uctags_skip_kind_for, the
+  "       language for the corresponding tag can't be present in the dictionary
+  "       g:uctags_skip_kind_for[{kind}]
+  " Iterates through the results of the previous filter.
+  " We read the syn file of the current tag of the iteration and store each
+  "   line in a list using readfile().  If the syn file doesn't exists, an
+  "   empty list will represent said syn file.
+  " A group-name for {kind} is generated by first search g:uctags_lang_map for
+  "   language of the current tag and using the value that the language is
+  "   mapped to.  If there isn't one, the language is used as is.  Then we do
+  "   the same for {kind}; g:uctags_hl_group_map is searched for {kind}, and
+  "   the value that {kind} maps to (Or using {kind} itself if there isn't one)
+  "   and concoatinate the result to the result of the language for the current
+  "   tag.
+  " If g:uctags_match_map has the language of the current tag as a key and
+  "   g:uctags_match_map[{language}] has {kind} as a key, a positive result is
+  "   stored.  Otherwise negative results are stored.
+  "
+  "   If negaitve results were store, and g:uctags_match_map doesn't have
+  "   {kind} as a key, the current iteration is skipped and continued onto the
+  "   next iteration.
+  "
+  " A match for current iterated tag {kind} is built.  The start and end part
+  "   of the match is retrieved from the dictionary g:uctags_match_map using
+  "   the results of the previous check.
+  "
+  "   {kind} is used as a key to retrieve the pattern for the start and end of
+  "   the match.
+  "
+  "   If the results from the previous check were positive, the pattern is
+  "   retrieved from g:uctags_match_map[{language}].  If thy were negative, the
+  "   pattern is retrieved from g:uctags_match_map.
+  "
+  "   The middle of the match; the actual 'tag' is at index 0 of the current
+  "   iterated tag.
+  " A link is built to link the previously generated group-name to a unambigious
+  "   highlight group retrieved from g:uctags_kind_to_hlg using {kind} as a
+  "   key.
+  " The built match is added to a list of matches.
+  " The built link is executed.
   for l:v in 
         \ filter(filter(a:tags, 'has_key(g:uctags_kind_to_hlg, tolower(v:val[3][5:]))'), l:skip)
+    
+    " TODO Rename
     let l:tfile = l:v[1]
     if empty(l:file)
       let l:file = l:tfile . '.syn'
@@ -293,7 +376,7 @@ function! UCTags#Highlight#UpdateSyn(tags)
     let l:match = get(
           \ l:has_key ? g:uctags_match_map[l:lang] : g:uctags_match_map, l:kind)
 
-    let l:syn = 'syntax match ' . l:group . ' ' . l:match.start . escape(l:v[0]) . l:match.end
+    let l:syn = 'syntax match ' . l:group . ' ' . l:match.start . escape(l:v[0], '$.*~\^[]/') . l:match.end
     let l:link = 'hi link' . ' ' . l:group . ' ' . g:uctags_kind_to_hlg[l:kind]
       call add(l:lines, l:syn)
     execute 'hi link' l:group g:uctags_kind_to_hlg[l:kind]
