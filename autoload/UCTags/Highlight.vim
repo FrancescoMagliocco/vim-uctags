@@ -81,7 +81,10 @@ function! UCTags#Highlight#Highlight(kind, ...)
     endif
 
 
-    let l:syn = 'syntax match ' . l:group . ' ' . l:match.start . escape(l:v[0]) . l:match.end
+    let l:syn = 'syntax match ' . l:group . ' '
+          \ . l:match.start
+          \ . escape(l:v[0])
+          \ . l:match.end
     let l:link = 'hi link' . ' ' . l:group . ' ' . g:uctags_kind_to_hlg[l:kind]
     if index(l:lines, l:syn) < 0
       call add(l:lines, l:syn)
@@ -134,7 +137,10 @@ function! UCTags#Highlight#High(tags, ...)
 
     let l:match = get(
           \ l:has_key ? g:uctags_match_map[l:lang] : g:uctags_match_map, l:kind)
-    let l:syn = 'syntax match ' . l:group . ' ' . l:match.start . escape(l:v[0]) . l:match.end
+    let l:syn = 'syntax match '. l:group . ' '
+          \ . l:match.start
+          \ . escape(l:v[0])
+          \ . l:match.end
     let l:link = 'hi link' . ' ' . l:group . ' ' . g:uctags_kind_to_hlg[l:kind]
       call add(l:lines, l:syn)
     execute 'hi link' l:group g:uctags_kind_to_hlg[l:kind]
@@ -143,6 +149,7 @@ function! UCTags#Highlight#High(tags, ...)
   call writefile(uniq(sort(l:lines)), l:file)
 endfunction
 
+let g:uctags_enable_go = get(g:, 'uctags_enable_go', 0)
 let s:inc_lan = ['cpp', 'c']
 let s:pat_lang = { 'cpp': '#include', 'c': '#include', 'go': 'import'}
 
@@ -162,23 +169,19 @@ let s:pat_lang = { 'cpp': '#include', 'c': '#include', 'go': 'import'}
 "   again, but that would kind of be redundant as there is already a check for
 "   the readable part..
 function! UCTags#Highlight#ReadTags(file, ...)
+    if &ft ==? 'go' && !g:uctags_enable_go | return | endif
   
   " Remove quotes
   let l:file = substitute(a:file, "\\(\"\\|\'\\)", '', 'g') 
-  let l:ofile = l:file
 
-  let l:ftype = &ft
-  echomsg l:ftype
-  if l:ftype ==? 'go' && a:0 >= 2  &&  fnameescape(l:file) !~? '\.go$'
-    echomsg a:2
-    echomsg a:2[:-len(split(a:2, '/'))]
-    let l:file = a:2[:-(len(split(a:2, '/')[-1])+1)] . substitute(l:file, '\(\.\/\|\/\)', '', 'g') . '.go'
-    echomsg l:file
-    execute 'source' l:file . '.syn'
-    return
+  if g:uctags_enable_go
+    let l:ofile = l:file
+    if &ft ==? 'go' && a:0 >= 2  &&  fnameescape(l:file) !~? '\.go$'
+      let l:file = a:2[:-(len(split(a:2, '/')[-1])+1)] . substitute(
+            \ l:file, '\(\.\/\|\/\)', '', 'g') . '.go'
+      execute 'source' l:file . '.syn'
+    endif
   endif
-  " Use for relative path
-  
 
   " syn file for l:file
   let l:syn_file = l:file . '.syn'
@@ -217,7 +220,8 @@ function! UCTags#Highlight#ReadTags(file, ...)
     "   tags in index 0 that are the same file name of a:file, so to
     "   differentiate and get the correct one, we search index 1 of each tag
     "   for the pattern included in the header.
-    let l:lines = filter(filter(UCTags#Parse#GetTags(), 'v:val[1] =~# l:tfile'), "v:val[0] ==# split(l:file, '/')[-1]")
+    let l:lines = filter(filter(UCTags#Parse#GetTags(),
+          \ 'v:val[1] =~# l:tfile'), "v:val[0] ==# split(l:file, '/')[-1]")
 
     if empty(l:lines) | return | endif
     " It may be safe here to now set l:file to l:lines[1] as we will need the
@@ -241,7 +245,7 @@ function! UCTags#Highlight#ReadTags(file, ...)
   " If l:lines[1] is readable, we can read that file and filter out all except
   "   includes.
   if !filereadable(l:file) | return | endif
-  let l:pat = s:pat_lang[l:ftype]
+  let l:pat = s:pat_lang[&ft]
   " Read each line from l:lines[1] and filter out all lines that aren't
   "   including a header.
   " We are sorting and removing any dublicates just incase there is a header
@@ -249,13 +253,14 @@ function! UCTags#Highlight#ReadTags(file, ...)
   "   twice intentially.  We don't want to source that same syn file for a
   "   header twice.
   "   import\s\+(\n\(\s\(\(\w\+\s\)\?\"\w\+\(\(\/\|\.\)\w\+\)\?\"\)\n\)*)
-  "echomsg filter(readfile(l:file), "v:val =~# '^import\\s\\+(\\n\\(\\s\\(\\(\\w\\+\\s\\)\\?\\\"\\w\\+\\(\\(\\/\\|\\.\\)\\w\\+\\)\\?\\\"\\)\\n\\)*)'")
-  "echo join(readfile(l:file), "\n") =~? '\nimport ('
-  echo join(readfile(l:file), "\n") =~? 'import\s\+(\n\(\s\(\(\w\+\s\)\?\"\w\+\(\(\/\|\.\)\w\+\)\?\"\)\n\)*)'
-  "echomsg join(readfile(l:file), '\n') =~? 'import\\s\\+(\\n\\(\\s\\(\\(\\w\\+\\s\\)\\?\\\"\\w\\+\\(\\(\\/\\|\\.\\)\\w\\+\\)\\?\\\"\\)\\n\\)*)'
-  return
-  let l:list = uniq(sort(filter(readfile(l:file), "v:val =~# '\\s*" . l:pat . "\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
-  "let l:list = uniq(sort(filter(readfile(l:file), "v:val =~# '\\s*#include\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
+  "echo split(matchstr(join(readfile(l:file), "\n"), 
+  "      \ 'import\s\+(\n\(\s\(\(\w\+\s\)\?\"\w\+\(\(\/\|\.\)\w\+\)\?\"\)\n\)*)'),
+  "      \ "\n")
+
+  let l:list = uniq(sort(filter(readfile(l:file),
+        \ "v:val =~# '\\s*" . l:pat . "\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
+  "let l:list = uniq(sort(filter(readfile(l:file),
+  "      \ "v:val =~# '\\s*#include\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
   " We could probably take out any duplicates that  may be in a:1 and l:list
   "   when extended together, but that would just make the iteration longer
   for l:file in l:list
@@ -266,7 +271,9 @@ function! UCTags#Highlight#ReadTags(file, ...)
     "   that is read and taking out of the list from iteration, but that maybe
     "   included in some other header again.
     if a:0 && index(a:1, l:file) >= 0 | continue | endif
-    call UCTags#Highlight#ReadTags(substitute(l:file, '^.*' . l:pat . '\s\+', '', 'g'), extend(a:0 ? a:1 : [], l:list), l:ofile)
+    call UCTags#Highlight#ReadTags(substitute(
+          \   l:file, '^.*' . l:pat . '\s\+', '', 'g'),
+          \ extend(a:0 ? a:1 : [], l:list), l:ofile)
     "call UCTags#Highlight#ReadTags(substitute(l:file, '^.*#include\s\+', '', 'g'), extend(a:0 ? a:1 : [], l:list), l:ofile)
   endfor
 
@@ -336,8 +343,9 @@ function! UCTags#Highlight#UpdateSyn(tags)
   "   key.
   " The built match is added to a list of matches.
   " The built link is executed.
-  for l:v in 
-        \ filter(filter(a:tags, 'has_key(g:uctags_kind_to_hlg, tolower(v:val[3][5:]))'), l:skip)
+  for l:v in filter(
+        \ filter(a:tags, 'has_key(g:uctags_kind_to_hlg, tolower(v:val[3][5:]))'),
+        \ l:skip)
     
     " TODO Rename
     let l:tfile = l:v[1]
@@ -376,7 +384,10 @@ function! UCTags#Highlight#UpdateSyn(tags)
     let l:match = get(
           \ l:has_key ? g:uctags_match_map[l:lang] : g:uctags_match_map, l:kind)
 
-    let l:syn = 'syntax match ' . l:group . ' ' . l:match.start . escape(l:v[0], '$.*~\^[]/') . l:match.end
+    let l:syn = 'syntax match ' . l:group . ' '
+          \ . l:match.start
+          \ . escape(l:v[0], '$.*~\^[]/')
+          \ . l:match.end
     let l:link = 'hi link' . ' ' . l:group . ' ' . g:uctags_kind_to_hlg[l:kind]
       call add(l:lines, l:syn)
     execute 'hi link' l:group g:uctags_kind_to_hlg[l:kind]
