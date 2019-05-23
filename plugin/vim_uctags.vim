@@ -192,14 +192,14 @@ endfunction
 let g:uctags_args           = get(g:, 'uctags_args', {
       \   '-R'              : '',
       \   '-f'              : g:uctags_tags_file,
-      \   '--extras'        : '*-{subword}{qualified}{fileScope}{anonymous}',
-      \   '--fields'        : '*-{roles}{scope}{file}',
-      \   '--kinds-all'     : '*',
-      \   '--kinds-c++'     : '-{header}',
-      \   '--kinds-c'       : '-{header}',
-      \   '--kinds-json'    : '-{number}{object}{array}',
-      \   '--kinds-maven2'  : '-{artifactId}',
-      \   '--languages'     : '-markdown,json'
+      \   '--extras='        : '*-{subword}{qualified}{fileScope}{anonymous}',
+      \   '--fields='        : '*-{roles}{scope}{file}',
+      \   '--kinds-all='     : '*',
+      \   '--kinds-c++='     : '-{header}',
+      \   '--kinds-c='       : '-{header}',
+      \   '--kinds-json='    : '-{number}{object}{array}',
+      \   '--kinds-maven2='  : '-{artifactId}',
+      \   '--languages='     : '-markdown,json'
       \ })
 
 " Extends g:uctags_args with g:uctags_extra_args so
@@ -297,5 +297,5 @@ augroup END
 
 command! -bar UpdateTags silent call UCTags#Generate#GenTags() | redraw!
 command! ReadTags call UCTags#Highlight#ReadTags(expand('%'))
-command! DeleteAllSyn !find . -name *.syn -delete
+command! -bar DeleteAllSyn silent execute '!find . -name *.syn -delete' | redraw!
 command! UpdateSyn call UCTags#Highlight#UpdateSyn(UCTags#Highlight#Lang(&ft))
