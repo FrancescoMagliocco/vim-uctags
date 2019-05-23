@@ -400,19 +400,19 @@ function! UCTags#Highlight#UpdateSyn(tags)
 endfunction
 
 let s:lang_map =
-      \ {
-      \   'c++'         : '\(c++\|cplusplus\|cpp\|cc\)',
-      \   'c#'          : '\(csharp\|c#\)',
-      \   'javascript'  : '\(javascript\|jscript\|js\)',
-      \ }
+      \ [
+      \   ['c++', 'cplusplus', 'cpp', 'cc'],
+      \   ['csharp', 'c#'],
+      \   ['javascript', 'jscript', 'js']
+      \ ]
 
 " Call UCTags#Parse#GetTags() filters out all tags except that of a:lang.
 "   Returns the result.
 function! UCTags#Highlight#Lang(lang)
   let l:lang = a:lang
-  for [l:k, l:v] in items(s:lang_map)
-    if l:lang =~? l:v
-      let l:lang = l:k
+  for l:v in s:lang_map
+    if index(l:v, l:lang) >= 0
+      let l:lang = l:v[0]
       break
     endif
   endfor
