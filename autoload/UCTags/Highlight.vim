@@ -1,4 +1,4 @@
-" Last Change:  05/22/2019
+" Last Change:  05/23/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -34,8 +34,6 @@ function! UCTags#Highlight#Highlight(kind, ...)
   "   definitions of methods, given they have different signatures.  This will
   "   essentially remove all except one.
   "
-  " COMBAK Another way to do this would be to call a function within the filter
-  "   and pass a:kind.  
   " XXX I'm worried that if there is a significant amount of tags that Vim will
   "   halt until all the filtering is done.  TODO I wanted to implement the new
   "   channel and job system.  I'm just not sure if that is possible for
@@ -79,7 +77,6 @@ function! UCTags#Highlight#Highlight(kind, ...)
     if filereadable(l:lang . '.syn')
       let l:lines = readfile(l:lang . '.syn')
     endif
-
 
     let l:syn = 'syntax match ' . l:group . ' '
           \ . l:match.start
@@ -150,8 +147,8 @@ function! UCTags#Highlight#High(tags, ...)
 endfunction
 
 let g:uctags_enable_go = get(g:, 'uctags_enable_go', 0)
-let s:inc_lan = ['cpp', 'c']
-let s:pat_lang = { 'cpp': '#include', 'c': '#include', 'go': 'import'}
+let s:inc_lan = ['cpp', 'c', 'asm']
+let s:pat_lang = { 'asm': '%include', 'cpp': '#include', 'c': '#include', 'go': 'import'}
 
 " XXX We need to implement a check for this so this is (The part that looks
 "   through each file of includes and continues) is only done on languages that
@@ -169,13 +166,13 @@ let s:pat_lang = { 'cpp': '#include', 'c': '#include', 'go': 'import'}
 "   again, but that would kind of be redundant as there is already a check for
 "   the readable part..
 function! UCTags#Highlight#ReadTags(file, ...)
-    if &ft ==? 'go' && !g:uctags_enable_go | return | endif
+  if &ft ==? 'go' && !g:uctags_enable_go | return | endif
   
   " Remove quotes
   let l:file = substitute(a:file, "\\(\"\\|\'\\)", '', 'g') 
+  let l:ofile = l:file
 
   if g:uctags_enable_go
-    let l:ofile = l:file
     if &ft ==? 'go' && a:0 >= 2  &&  fnameescape(l:file) !~? '\.go$'
       let l:file = a:2[:-(len(split(a:2, '/')[-1])+1)] . substitute(
             \ l:file, '\(\.\/\|\/\)', '', 'g') . '.go'
@@ -211,7 +208,7 @@ function! UCTags#Highlight#ReadTags(file, ...)
     "   We need to now source the syn file for it
     " We can't use l:file because when we split l:file with pattern '/', what was
     "   substituted here will still be in l:file when we only the file name.
-    let l:tfile = fnameescape(l:file)
+    let l:tfile = escape(l:file, '^.$\*')
     " Go through tags file search for index 1 to match l:tfile
     " Filter out all that don't match the file name without the path of l:file
     "   at index 0 of each tag.  Index 1 will match any tag that is in l:file
@@ -221,7 +218,8 @@ function! UCTags#Highlight#ReadTags(file, ...)
     "   differentiate and get the correct one, we search index 1 of each tag
     "   for the pattern included in the header.
     let l:lines = filter(filter(UCTags#Parse#GetTags(),
-          \ 'v:val[1] =~# l:tfile'), "v:val[0] ==# split(l:file, '/')[-1]")
+          \ 'v:val[1] =~# l:tfile'), "v:val[0] ==# split(l:file, '/')[-1]")[-1]
+
 
     if empty(l:lines) | return | endif
     " It may be safe here to now set l:file to l:lines[1] as we will need the
@@ -401,6 +399,7 @@ endfunction
 
 let s:lang_map =
       \ [
+      \   ['asm', 'nasm', 'fasm', 'masm'],
       \   ['c++', 'cplusplus', 'cpp', 'cc'],
       \   ['csharp', 'c#'],
       \   ['javascript', 'jscript', 'js']
@@ -416,6 +415,9 @@ function! UCTags#Highlight#Lang(lang)
       break
     endif
   endfor
+  if l:lang ==? 'c'
+    return filter(UCTags#Parse#GetTags(), "v:val[5] =~? 'language:\\(c\\|c++\\)\\>'")
+  endif
 
   return filter(UCTags#Parse#GetTags(), "v:val[5] ==? 'language:" . l:lang . "'")
 endfunction
