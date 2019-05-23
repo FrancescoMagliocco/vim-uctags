@@ -150,9 +150,6 @@ let g:uctags_enable_go = get(g:, 'uctags_enable_go', 0)
 let s:inc_lan = ['cpp', 'c', 'asm']
 let s:pat_lang = { 'asm': '%include', 'cpp': '#include', 'c': '#include', 'go': 'import'}
 
-" XXX We need to implement a check for this so this is (The part that looks
-"   through each file of includes and continues) is only done on languages that
-"   actually havve something like this.
 " TODO The implementation for python, java etc..  Is going to be different...
 " Source a:file . '.syn' if it is readable
 " If it's not readable, it may not be relative to the current directory.
@@ -185,7 +182,7 @@ function! UCTags#Highlight#ReadTags(file, ...)
   " If the syn file for a:file is readable, we source it.  
   " If the syn file for a:file is not readable, ods are the header that was
   "   passed to a:file is relative to that of the file it was included in, and
-  "   the current directory we are in, is not relative to that path.
+  "   the current directory we are in, is not relative to the header.
   if filereadable(l:syn_file)
     " We source the syn file for a:file, then we search each line of a:file
     "   looking to see if there was any includes.
@@ -202,50 +199,45 @@ function! UCTags#Highlight#ReadTags(file, ...)
     "   FooBar.c is located in bar/foo
     "   The current directory we are in is ./ (Obviously)
     "   The current directory has the tags file
-    "   ./boo/bar/FooBar.h does ot exist
+    "   ./foo/bar/FooBar.h does ot exist
     "   We search each tag and try to match index 1 with foo/bar/FooBar.h
     "   We match bar/foo/foo/bar/FooBar.h
     "   We need to now source the syn file for it
     " We can't use l:file because when we split l:file with pattern '/', what was
     "   substituted here will still be in l:file when we only the file name.
     let l:tfile = escape(l:file, '^.$\*')
-    " Go through tags file search for index 1 to match l:tfile
-    " Filter out all that don't match the file name without the path of l:file
-    "   at index 0 of each tag.  Index 1 will match any tag that is in l:file
-    "   which there could be many, so we only need the one that index 0 matches
-    "   just the file name without the path of a:file.  There could be multiple
-    "   tags in index 0 that are the same file name of a:file, so to
-    "   differentiate and get the correct one, we search index 1 of each tag
-    "   for the pattern included in the header.
+    " Index 1 is the location of a file, and files usually have more than one
+    "   tag, and becuase they have more than one tag, that file will be listed
+    "   multiple times.  We only need the tag that equals just the filename of
+    "   l:file (So without the path) at index 0.  In order for this to work
+    "   correctly, we need to have the kind 'file' enabled on universal-ctags.
+    "   Now just like at index 1, even though we were looking for just the
+    "   filename of l:file at index 0; being that it is just the name of a
+    "   file, there is a chance that there is more than one file that has the
+    "   same as l:file.  l:file is the actual text that followed an include
+    "   directive; our problem was that it was relative to the file that was
+    "   including it.  Because we were looking for tags that equal the filename
+    "   of l:file at index 0, we can search through those tags and look for a
+    "   tag l:file will match to the end at index 1.  The beginning  of index 1
+    "   will be different than l:file which is why we are matching rather than
+    "   checking for the text at index 1 to be equal to l:file.  The reason for
+    "   this is, because we have the kind 'file' enabled on universal-ctags;
+    "   once we match l:file to the end of one of the tags that index 0 was
+    "   equal to just the filename of l:file..  We have found the location of
+    "   the header we were looking for.
     let l:lines = filter(filter(UCTags#Parse#GetTags(),
           \ 'v:val[1] =~# l:tfile'), "v:val[0] ==# split(l:file, '/')[-1]")[-1]
 
-
     if empty(l:lines) | return | endif
-    " It may be safe here to now set l:file to l:lines[1] as we will need the
-    "   file for the when matching includes
     let l:file = l:lines[1]
-    " If there is no match, something probal went wrong, and we return and
-    "   continue what was going on prevvilsy which may have been the samething
-    "   process.  If l:lines is empty, there is no file to read for the next
-    "   part.
-
-    " If l:lines[1] . '.syn' is readable, we source
-    "   it.
     let l:syn_file = l:file . '.syn'
     if filereadable(l:syn_file)
       execute 'source' l:syn_file
     endif
   endif
 
-  " l:lines wont be set if the syn file for a:file was readable in the first
-  "   place
-  " If l:lines[1] is readable, we can read that file and filter out all except
-  "   includes.
   if !filereadable(l:file) | return | endif
   let l:pat = s:pat_lang[&ft]
-  " Read each line from l:lines[1] and filter out all lines that aren't
-  "   including a header.
   " We are sorting and removing any dublicates just incase there is a header
   "   that is included twice in a file by mistake or even if it was including
   "   twice intentially.  We don't want to source that same syn file for a
@@ -263,11 +255,9 @@ function! UCTags#Highlight#ReadTags(file, ...)
   "   when extended together, but that would just make the iteration longer
   for l:file in l:list
     " Since this funcion can be recursive, we only attempt to read tags for
-    "   includes on files that aren't already to be read, which is why we send
-    "   the current list as an optinal so we don't read something twice.  This
-    "   isn't to say that this still can't happen.  There can be an include
-    "   that is read and taking out of the list from iteration, but that maybe
-    "   included in some other header again.
+    "   includes on files that aren't already in queue to be read, which is why
+    "   we send the current list as an optinal so we don't read something
+    "   twice.     
     if a:0 && index(a:1, l:file) >= 0 | continue | endif
     call UCTags#Highlight#ReadTags(substitute(
           \   l:file, '^.*' . l:pat . '\s\+', '', 'g'),
