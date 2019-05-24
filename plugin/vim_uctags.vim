@@ -33,6 +33,9 @@ let g:uctags_max_info       = get(g:, 'uctags_max_info', 0)
 let g:uctags_extra_args     = get(g:, 'uctags_extra_args', {})
 let g:uctags_syntax_c_enabled = get(g:, 'uctags_syntax_c_enabled', 1)
 
+" TODO Change name
+let g:uctags_max_lines_header_search = get(g:, 'uctags_max_lines_header_search', 0)
+
 " Package for go also highlights foo in package foo, we could simply still
 "   highlight with a pattern.
 " From what I have seen so far, name in c++ is operaors rediefined.
@@ -305,7 +308,9 @@ let g:uctags_lang_map       = s:ParseHlGMap(g:uctags_lang_map, s:lang_map)
 augroup uctags_aug
   autocmd!
   if filereadable(g:uctags_tags_file)
-    autocmd BufWritePost * silent call UCTags#Generate#GenTags()
+    " COMBAK For some reason all of a sudden we need to redraw...  Why?  Maybe
+    "   because my laptop isn't plugged in?..
+    autocmd BufWritePost * silent call UCTags#Generate#GenTags() | redraw!
   endif
 augroup END
 

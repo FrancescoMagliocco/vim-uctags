@@ -1,4 +1,4 @@
-" Last Change:  05/23/2019
+" Last Change:  05/24/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -247,8 +247,15 @@ function! UCTags#Highlight#ReadTags(file, ...)
   "      \ 'import\s\+(\n\(\s\(\(\w\+\s\)\?\"\w\+\(\(\/\|\.\)\w\+\)\?\"\)\n\)*)'),
   "      \ "\n")
 
-  let l:list = uniq(sort(filter(readfile(l:file),
+  let l:list = uniq(sort(filter(
+        \ function(
+        \   'readfile',
+        \   g:uctags_max_lines_header_search
+        \     ? [l:file, '', g:uctags_max_lines_header_search]
+        \     : [l:file])(),
         \ "v:val =~# '\\s*" . l:pat . "\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
+""  let l:list = uniq(sort(filter(readfile(l:file),
+""        \ "v:val =~# '\\s*" . l:pat . "\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
   "let l:list = uniq(sort(filter(readfile(l:file),
   "      \ "v:val =~# '\\s*#include\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
   " We could probably take out any duplicates that  may be in a:1 and l:list
