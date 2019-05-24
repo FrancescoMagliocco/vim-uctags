@@ -45,6 +45,7 @@ let g:uctags_max_syn = get(g:, 'uctags_max_syn', 0)
 " universal ctags skip kind for
 let g:uctags_skip_kind_for  = get(g:, 'uctags_skip_hl_for', {
       \   'chapter'       : ['markdown'],
+      \   'externvar'     : ['c', 'c++'],
       \   'function'      : ['vim'],
       \   'header'        : ['c', 'c++'],
       \   'heredoc'       : ['sh'],
@@ -141,10 +142,15 @@ let g:uctags_kind_to_hlg      = get(g:, 'uctags_kind_to_hlg', {
 "
 " macro for make is already highlightedd by makeIndent, but there is too much
 "   that is highlighted by makeIndent
+" FIXME member for c++ wont match members that have either . or -> before the
+"   member and not after.  We need to figure out a way to match either before
+"   or after, not both or the results will be the same as before and just
+"   highlgith the word and if there is a word that is a variable that is also a
+"   member, it will be highlighted...
 let g:uctags_match_map      = get(g:, 'uctags_match_map', {
-      \   'c++'     : { 'member'  : { 'start' : '/\<', 'end' : '\>/' }},
+      \   'c++'     : { 'member'  : { 'start' : '/\<', 'end' : '\>\%\(\ze\%\(\.\|->\)\)/' }},
       \   'go'      : { 'member'  : { 'start' : '/\<', 'end' : '\>/' }},
-      \   'javascript'  : { 'method' : { 'start' : '/\<', 'end' : '\(\>\|\ze(\)/'}},
+      \   'javascript'  : { 'method' : { 'start' : '/\<', 'end' : '\%\(\>\|\ze(\)/'}},
       \   'python'  : { 'class'   : { 'start' : '/\<', 'end' : '\ze(/' }},
       \   'vim'     : { 'command' : { 'start' : '/\<', 'end' : '\>/' }},
       \   'alias'           : { 'start'     : '/\<',  'end' : '\>/' },
