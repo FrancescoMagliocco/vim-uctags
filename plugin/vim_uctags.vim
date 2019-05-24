@@ -36,6 +36,9 @@ let g:uctags_syntax_c_enabled = get(g:, 'uctags_syntax_c_enabled', 1)
 " TODO Change name
 let g:uctags_max_lines_header_search = get(g:, 'uctags_max_lines_header_search', 0)
 
+let g:uctags_verbose = get(g:, 'uctags_verbose', 0)
+let g:uctags_max_syn = get(g:, 'uctags_max_syn', 0)
+
 " Package for go also highlights foo in package foo, we could simply still
 "   highlight with a pattern.
 " From what I have seen so far, name in c++ is operaors rediefined.

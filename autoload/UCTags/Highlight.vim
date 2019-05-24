@@ -162,8 +162,18 @@ let s:pat_lang = { 'asm': '%include', 'cpp': '#include', 'c': '#include', 'go': 
 "   the function..   Or could check if it is readable then call the funcion
 "   again, but that would kind of be redundant as there is already a check for
 "   the readable part..
+let s:max_syn_msg = 'Max amount of sourced syn files for a particular file reached'
 function! UCTags#Highlight#ReadTags(file, ...)
   if &ft ==? 'go' && !g:uctags_enable_go | return | endif
+  if assert_false(g:uctags_max_syn && a:0 && a:1 >= g:uctags_max_syn, s:max_syn_msg)
+    if g:uctags_verbose
+      echohl warningMsg | echomsg v:errors[-1] | echohl None
+    endif
+
+    return
+  endif
+
+  let l:sourced_syn = a:0 ? a:1 : 0
   
   " Remove quotes
   let l:file = substitute(a:file, "\\(\"\\|\'\\)", '', 'g') 
@@ -171,9 +181,10 @@ function! UCTags#Highlight#ReadTags(file, ...)
 
   if g:uctags_enable_go
     if &ft ==? 'go' && a:0 >= 2  &&  fnameescape(l:file) !~? '\.go$'
-      let l:file = a:2[:-(len(split(a:2, '/')[-1])+1)] . substitute(
+      let l:file = a:3[:-(len(split(a:3, '/')[-1])+1)] . substitute(
             \ l:file, '\(\.\/\|\/\)', '', 'g') . '.go'
       execute 'source' l:file . '.syn'
+      let l:sourced_syn += 1
     endif
   endif
 
@@ -187,6 +198,7 @@ function! UCTags#Highlight#ReadTags(file, ...)
     " We source the syn file for a:file, then we search each line of a:file
     "   looking to see if there was any includes.
     execute 'source' l:syn_file
+    let l:sourced_syn += 1
   elseif index(s:inc_lan, tolower(&ft)) < 0
     return
   else
@@ -233,6 +245,7 @@ function! UCTags#Highlight#ReadTags(file, ...)
     let l:syn_file = l:file . '.syn'
     if filereadable(l:syn_file)
       execute 'source' l:syn_file
+      let l:sourced_syn += 1
     endif
   endif
 
@@ -265,10 +278,10 @@ function! UCTags#Highlight#ReadTags(file, ...)
     "   includes on files that aren't already in queue to be read, which is why
     "   we send the current list as an optinal so we don't read something
     "   twice.     
-    if a:0 && index(a:1, l:file) >= 0 | continue | endif
+    if a:0 && index(a:2, l:file) >= 0 | continue | endif
     call UCTags#Highlight#ReadTags(substitute(
           \   l:file, '^.*' . l:pat . '\s\+', '', 'g'),
-          \ extend(a:0 ? a:1 : [], l:list), l:ofile)
+          \ l:sourced_syn, extend(a:0 ? a:2 : [], l:list), l:ofile)
     "call UCTags#Highlight#ReadTags(substitute(l:file, '^.*#include\s\+', '', 'g'), extend(a:0 ? a:1 : [], l:list), l:ofile)
   endfor
 
