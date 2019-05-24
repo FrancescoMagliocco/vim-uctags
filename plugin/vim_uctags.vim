@@ -299,14 +299,12 @@ let g:uctags_lang_map       = get(g:, 'uctags_lang_map', {})
 ""        \ 'has_key(s:hlg_map, v:key)')), "substitute(v:val, '\W', '', 'g')")
 ""endfunction
 
-" TODO Rename
-function! s:ParseHlGMap(hlg_map, map)
-  return map(extend(copy(a:map), a:hlg_map), "substitute(v:val, '\W', '', 'g')")
+function! s:ParseMap(expr1, expr2)
+  return map(extend(copy(a:expr1), a:expr2), "substitute(v:val, '\W', '', 'g')")
 endfunction
 
-" TODO Implement the same, but for g:uctags_ctags_lang_map
-let g:uctags_hl_group_map   = s:ParseHlGMap(g:uctags_hl_group_map, s:hlg_map)
-let g:uctags_lang_map       = s:ParseHlGMap(g:uctags_lang_map, s:lang_map)
+let g:uctags_hl_group_map   = s:ParseMap(s:hlg_map, g:uctags_hl_group_map)
+let g:uctags_lang_map       = s:ParseMap(s:lang_map, g:uctags_lang_map)
 
 augroup uctags_aug
   autocmd!
