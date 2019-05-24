@@ -1,5 +1,5 @@
 " A Universal-Ctags highlighter
-" Last Change:  05/22/2019
+" Last Change:  05/24/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -52,7 +52,8 @@ let g:uctags_skip_kind_for  = get(g:, 'uctags_skip_hl_for', {
       \   'section'       : ['markdown'],
       \   'subroutine'    : ['perl'],
       \   'subsubsection' : ['markdown'],
-      \   'variable'      : ['vim']
+      \   'var'           : ['vim', 'c', 'c++'],
+      \   'variable'      : ['vim', 'c', 'c++']
       \ })
 
 " I'M NOT SURE IF I WANT TO DISABLE THE FIELD FILE OR NOT
@@ -71,6 +72,7 @@ let g:uctags_skip_kind_for  = get(g:, 'uctags_skip_hl_for', {
 " XXX Service
 " XXX Symbol
 " XXX Table
+" XXX section is also used for asm
 let g:uctags_kind_to_hlg      = get(g:, 'uctags_kind_to_hlg', {
       \   'alias'           : 'namespace',
       \   'annotation'      : 'notation',
@@ -78,6 +80,7 @@ let g:uctags_kind_to_hlg      = get(g:, 'uctags_kind_to_hlg', {
       \   'class'           : 'class',
       \   'const'           : 'constant',
       \   'command'         : 'command',
+      \   'define'          : 'cTagsDefinedName',
       \   'enum'            : 'class',
       \   'enumerator'      : 'cTagsDefinedName',
       \   'externvar'       : 'variable',
@@ -87,6 +90,7 @@ let g:uctags_kind_to_hlg      = get(g:, 'uctags_kind_to_hlg', {
       \   'id'              : 'identifier',
       \   'implementation'  : 'errorMsg',
       \   'interface'       : 'constant',
+      \   'label'           : 'label',
       \   'local'           : 'variable',
       \   'macro'           : 'cTagsDefinedName',
       \   'member'          : 'member',
@@ -102,6 +106,7 @@ let g:uctags_kind_to_hlg      = get(g:, 'uctags_kind_to_hlg', {
       \   'property'        : 'errorMsg',
       \   'prototype'       : 'functionName',
       \   'rpc'             : 'functionName',
+      \   'section'         : 'identifier',
       \   'selector'        : 'identifier',
       \   'service'         : 'class',
       \   'struct'          : 'structure',
@@ -144,12 +149,14 @@ let g:uctags_match_map      = get(g:, 'uctags_match_map', {
       \   'enum'            : { 'start'     : '/\<',  'end' : '\>/' },
       \   'enumerator'      : { 'start'     : '/\<',  'end' : '\>/' },
       \   'externvar'       : { 'start'     : '/\<',  'end' : '\>/' },
+      \   'define'          : { 'start'     : '/\<',  'end' : '\>/' },
       \   'field'           : { 'start'     : '/\<',  'end' : '\ze(/' },
       \   'func'            : { 'start'     : '/\<',  'end' : '\ze(/' },
       \   'function'        : { 'start'     : '/\<',  'end' : '\s*\ze(/' },
       \   'id'              : { 'start'     : '/\<',  'end' : '\>/' },
       \   'implementation'  : { 'start'     : '/\<',  'end' : '\>/' },
       \   'interface'       : { 'start'     : '/\<',  'end' : '\>/' },
+      \   'label'           : { 'start'     : '/\<',  'end' : '\>/' },
       \   'local'           : { 'start'     : '/\<',  'end' : '\>/' },
       \   'macro'           : { 'start'     : '/\<',  'end' : '\>/' },
       \   'member'          : { 'start'     : '/\<',  'end' : '\ze\s*(/' },
@@ -165,6 +172,7 @@ let g:uctags_match_map      = get(g:, 'uctags_match_map', {
       \   'property'        : { 'start'     : '/\<',  'end' : '\>/' },
       \   'prototype'       : { 'start'     : '/\<',  'end' : '\ze(/' },
       \   'rpc'             : { 'start'     : '/\<',  'end' : '\ze(/' },
+      \   'section'         : { 'start'     : '/\<',  'end' : '\>/' },
       \   'selector'        : { 'start'     : '/\<',  'end' : '\>/' },
       \   'service'         : { 'start'     : '/\<',  'end' : '\>/' },
       \   'struct'          : { 'start'     : '/\<',  'end' : '\>/' },
@@ -190,16 +198,19 @@ endfunction
 
 " This will define the default arguments.
 let g:uctags_args           = get(g:, 'uctags_args', {
-      \   '-R'              : '',
-      \   '-f'              : g:uctags_tags_file,
-      \   '--extras='        : '*-{subword}{qualified}{fileScope}{anonymous}',
-      \   '--fields='        : '*-{roles}{scope}{file}',
-      \   '--kinds-all='     : '*',
-      \   '--kinds-c++='     : '-{header}',
-      \   '--kinds-c='       : '-{header}',
-      \   '--kinds-json='    : '-{number}{object}{array}',
-      \   '--kinds-maven2='  : '-{artifactId}',
-      \   '--languages='     : '-markdown,json'
+      \   '-R'                      : '',
+      \   '-f'                      : g:uctags_tags_file,
+      \   '--extras='               :
+      \     '*-{subword}{qualified}{fileScope}{anonymous}',
+      \   '--fields='               : '*-{roles}{scope}{file}',
+      \   '--kinds-all='            : '*',
+      \   '--kinds-c++='            : '-{header}',
+      \   '--kinds-c='              : '-{header}',
+      \   '--kinds-cpreprocessor='  : '-{header}',
+      \   '--kinds-html='           : '-{heading`}',
+      \   '--kinds-json='           : '-{number}{object}{array}',
+      \   '--kinds-maven2='         : '-{artifactId}',
+      \   '--languages='            : '-markdown,json'
       \ })
 
 " Extends g:uctags_args with g:uctags_extra_args so
@@ -224,12 +235,14 @@ let s:hlg_map               =
       \   'enum'            : 'Enum',
       \   'enumerator'      : 'Enumerator',
       \   'externvar'       : 'ExternVar',
+      \   'define'          : 'Define',
       \   'field'           : 'field',
       \   'func'            : 'Func',
       \   'function'        : 'Func',
       \   'id'              : 'Id',
       \   'implementation'  : 'Impl',
       \   'interface'       : 'Interface',
+      \   'label'           : 'Label',
       \   'local'           : 'Local',
       \   'macro'           : 'Macro',
       \   'member'          : 'Member',
@@ -246,6 +259,7 @@ let s:hlg_map               =
       \   'property'        : 'Property',
       \   'prototype'       : 'Proto',
       \   'rpc'             : 'rpc',
+      \   'section'         : 'Section',
       \   'selector'        : 'Selector',
       \   'service'         : 'Service',
       \   'struct'          : 'Struct',
