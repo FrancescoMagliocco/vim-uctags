@@ -1,5 +1,5 @@
 " A Universal-Ctags highlighter
-" Last Change:  05/24/2019
+" Last Change:  05/26/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -219,7 +219,7 @@ let g:uctags_args           = get(g:, 'uctags_args', {
       \   '--kinds-c++='            : '-{header}',
       \   '--kinds-c='              : '-{header}',
       \   '--kinds-cpreprocessor='  : '-{header}',
-      \   '--kinds-html='           : '-{heading`}',
+      \   '--kinds-html='           : '-{heading1`}',
       \   '--kinds-json='           : '-{number}{object}{array}',
       \   '--kinds-maven2='         : '-{artifactId}',
       \   '--languages='            : '-markdown,json'
