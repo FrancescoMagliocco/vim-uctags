@@ -445,13 +445,7 @@ let s:lang_map =
 " Call UCTags#Parse#GetTags() filters out all tags except that of a:lang.
 "   Returns the result.
 function! UCTags#Highlight#Lang(lang)
-  let l:lang = a:lang
-  for l:v in s:lang_map
-    if index(l:v, l:lang) >= 0
-      let l:lang = l:v[0]
-      break
-    endif
-  endfor
+  let l:lang = UCTags#Utils#GetLang(a:lang)
   if l:lang ==? 'c'
     return filter(UCTags#Parse#GetTags(), "v:val[5] =~? 'language:\\(c\\|c++\\)\\>'")
   endif
