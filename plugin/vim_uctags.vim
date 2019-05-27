@@ -1,5 +1,5 @@
 " A Universal-Ctags highlighter
-" Last Change:  05/26/2019
+" Last Change:  05/27/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -142,13 +142,8 @@ let g:uctags_kind_to_hlg      = get(g:, 'uctags_kind_to_hlg', {
 "
 " macro for make is already highlightedd by makeIndent, but there is too much
 "   that is highlighted by makeIndent
-" FIXME member for c++ wont match members that have either . or -> before the
-"   member and not after.  We need to figure out a way to match either before
-"   or after, not both or the results will be the same as before and just
-"   highlgith the word and if there is a word that is a variable that is also a
-"   member, it will be highlighted...
 let g:uctags_match_map      = get(g:, 'uctags_match_map', {
-      \   'c++'     : { 'member'  : { 'start' : '/\<', 'end' : '\>\%\(\ze\%\(\.\|->\)\)/' }},
+      \   'c++'     : { 'member'  : { 'start' : '/\%\(\.\|->\)\<\zs', 'end' : '\>/' }},
       \   'go'      : { 'member'  : { 'start' : '/\<', 'end' : '\>/' }},
       \   'javascript'  : { 'method' : { 'start' : '/\<', 'end' : '\%\(\>\|\ze(\)/'}},
       \   'python'  : { 'class'   : { 'start' : '/\<', 'end' : '\ze(/' }},

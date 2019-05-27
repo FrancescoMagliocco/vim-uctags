@@ -1,4 +1,4 @@
-" Last Change:  05/24/2019
+" Last Change:  05/27/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -197,7 +197,8 @@ function! UCTags#Highlight#ReadTags(file, ...)
   if filereadable(l:syn_file)
     " We source the syn file for a:file, then we search each line of a:file
     "   looking to see if there was any includes.
-    execute 'source' l:syn_file
+      call UCTags#Highlight#TestSyn(l:syn_file)
+    "execute 'source' l:syn_file
     let l:sourced_syn += 1
   elseif index(s:inc_lan, tolower(&ft)) < 0
     return
@@ -244,7 +245,8 @@ function! UCTags#Highlight#ReadTags(file, ...)
     let l:file = l:lines[1]
     let l:syn_file = l:file . '.syn'
     if filereadable(l:syn_file)
-      execute 'source' l:syn_file
+      call UCTags#Highlight#TestSyn(l:syn_file)
+      "execute 'source' l:syn_file
       let l:sourced_syn += 1
     endif
   endif
@@ -285,6 +287,31 @@ function! UCTags#Highlight#ReadTags(file, ...)
     "call UCTags#Highlight#ReadTags(substitute(l:file, '^.*#include\s\+', '', 'g'), extend(a:0 ? a:1 : [], l:list), l:ofile)
   endfor
 
+endfunction
+
+
+" So this is kind of a good idea, it just needs to be improved a bit more.
+"   I am going to try to make this do is make a new syn file for <sfile> with
+"   all the matches that it needs.  That way we don't need to read through each
+"   header every time.  It seems to kind of be really slow for how it is right
+"   now which is understable..
+"
+" So after it was done..  It was still reallllllllllllllly slow navigating
+"   through a file that was almost 5000 lines but also had a lot of imports.
+"   I don't even know if it was faster than just how we included the match from
+"   all the headers.  Another thing I want to try is make a list of matches,
+"   and only add new matches if they aren't present in the list.
+let s:list = []
+function! UCTags#Highlight#TestSyn(...)
+  silent! let l:lines = readfile(expand('%'))
+  for l:t in readfile(a:1)
+    if empty(filter(getline(2, line('$')), "v:val =~# escape(split(l:t, ' ')[-1], '\')[1:-2]")) || index(l:lines, l:t) >=0
+      continue
+    endif
+      call add(l:lines, l:t)
+  endfor
+
+  call writefile(l:lines, expand('%'))
 endfunction
 
 " Iterates through each tag in a:tags.  Filters out all tags that {kind} isn't
