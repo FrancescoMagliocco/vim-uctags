@@ -303,7 +303,7 @@ endfunction
 "   and only add new matches if they aren't present in the list.
 let s:list = []
 function! UCTags#Highlight#TestSyn(...)
-  silent! let l:lines = readfile(expand('%'))
+  silent! let l:lines = readfile(expand('%') . '.syn')
   for l:t in readfile(a:1)
     if empty(filter(getline(2, line('$')), "v:val =~# escape(split(l:t, ' ')[-1], '\')[1:-2]")) || index(l:lines, l:t) >=0
       continue
@@ -311,7 +311,7 @@ function! UCTags#Highlight#TestSyn(...)
       call add(l:lines, l:t)
   endfor
 
-  call writefile(l:lines, expand('%'))
+  call writefile(l:lines, expand('%') . '.syn')
 endfunction
 
 " Iterates through each tag in a:tags.  Filters out all tags that {kind} isn't
