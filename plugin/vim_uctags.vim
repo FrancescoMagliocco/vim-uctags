@@ -1,5 +1,5 @@
 " A Universal-Ctags highlighter
-" Last Change:  05/27/2019
+" Last Change:  05/29/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -37,6 +37,8 @@ let g:uctags_syntax_c_enabled = get(g:, 'uctags_syntax_c_enabled', 1)
 let g:uctags_max_lines_header_search = get(g:, 'uctags_max_lines_header_search', 0)
 
 let g:uctags_verbose = get(g:, 'uctags_verbose', 0)
+let s:no_perl = "Perl isn't supported!"
+let g:uctags_use_perl = assert_true(has('perl'), s:no_perl) && get(g:, 'uctags_use_perl', 1)
 let g:uctags_max_syn = get(g:, 'uctags_max_syn', 0)
 
 " Package for go also highlights foo in package foo, we could simply still
@@ -132,9 +134,6 @@ let g:uctags_kind_to_hlg      = get(g:, 'uctags_kind_to_hlg', {
 "   inside $() and have $() be highlighted as different.  BUT  $() may already
 "   be overriden to be highlighted on their own by the syntax file for Make and
 "   others that may be of correspondance.
-" FIXME Some targets have % in the target, I'm not sure if that has to be
-"   escaped or not.
-" FIXME Some targets have . present.  We need to escape that.
 " For target we are using + as the delimiter because in the name of some
 "   targets, there is / present.
 " TODO WE ONLY WANT TO MATCH THAT OF WHAT IS INSIDE $(), so we can probably
