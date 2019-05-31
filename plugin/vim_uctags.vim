@@ -1,5 +1,5 @@
 " A Universal-Ctags highlighter
-" Last Change:  05/29/2019
+" Last Change:  05/31/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -38,7 +38,10 @@ let g:uctags_max_lines_header_search = get(g:, 'uctags_max_lines_header_search',
 
 let g:uctags_verbose = get(g:, 'uctags_verbose', 0)
 let s:no_perl = "Perl isn't supported!"
-let g:uctags_use_perl = assert_true(has('perl'), s:no_perl) && get(g:, 'uctags_use_perl', 1)
+
+" assert_true returns 0 if {actual} is non-zero
+let g:uctags_use_perl =
+      \ !assert_true(has('perl'), s:no_perl) && get(g:, 'uctags_use_perl', 1)
 let g:uctags_max_syn = get(g:, 'uctags_max_syn', 0)
 
 " Package for go also highlights foo in package foo, we could simply still
@@ -213,7 +216,7 @@ let g:uctags_args           = get(g:, 'uctags_args', {
       \   '--kinds-c++='            : '-{header}',
       \   '--kinds-c='              : '-{header}',
       \   '--kinds-cpreprocessor='  : '-{header}',
-      \   '--kinds-html='           : '-{heading1`}',
+      \   '--kinds-html='           : '-{heading1}',
       \   '--kinds-json='           : '-{number}{object}{array}',
       \   '--kinds-maven2='         : '-{artifactId}',
       \   '--languages='            : '-markdown,json'
@@ -289,15 +292,6 @@ let s:hlg_map               =
 let g:uctags_hl_group_map   = get(g:, 'uctags_hl_group_map', {})
 
 let g:uctags_lang_map       = get(g:, 'uctags_lang_map', {})
-
-" Any key in a:hlg_map that isn't in s:hlg_map will be removed.
-" Create a deepcopy() of s:hlg_map, extend said copy with a:hlg_map.
-" Remove any non-word character.
-"function! s:ParseHlGMap(hlg_map)
-""  return map(extend(deepcopy(s:hlg_map), filter(
-""        \ a:hlg_map,
-""        \ 'has_key(s:hlg_map, v:key)')), "substitute(v:val, '\W', '', 'g')")
-""endfunction
 
 function! s:ParseMap(expr1, expr2)
   return map(extend(copy(a:expr1), a:expr2), "substitute(v:val, '\W', '', 'g')")
