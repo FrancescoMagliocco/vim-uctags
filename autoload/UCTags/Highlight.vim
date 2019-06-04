@@ -21,9 +21,23 @@ function! UCTags#Highlight#UpdateSynFile(file)
 endfunction
 
 function! s:UpdateSyn(file)
-  perl << EOF
+  if !g:uctags_use_perl || !has('perl')
+
+    silent! let l:lines = filter(readfile(expand('%') . '.syn'), "v:val !~# '^\\s*\\\"'")
+    for l:t in readfile(a:file)
+      if empty(filter(getline(2, line('$')), "v:val =~# escape(split(l:t, ' ')[-1], '\')[1:-2]")) || index(l:lines, l:t) >=0
+        continue
+      endif
+        call add(l:lines, l:t)
+    endfor
+
+    call writefile(l:lines, expand('%') . '.syn')
+  else
+
+    perl << EOF
       UpdateSyn(scalar VIM::Eval('a:file'));
 EOF
+  endif
 endfunction
 
 function! s:UpdateSynFor(file, ...)
@@ -97,6 +111,10 @@ endfunction
 "   the function..   Or could check if it is readable then call the funcion
 "   again, but that would kind of be redundant as there is already a check for
 "   the readable part..
+"
+"
+" XXX XXX XXX XXX This may not be needed anymore...  It may be replacable with
+"   UCTags#Highlight#UpdateSynFile() function
 let s:max_syn_msg = 'Max amount of sourced syn files for a particular file reached'
 function! UCTags#Highlight#ReadTags(file, ...)
   if &ft ==? 'go' && !g:uctags_enable_go | return | endif
@@ -132,7 +150,8 @@ function! UCTags#Highlight#ReadTags(file, ...)
   if filereadable(l:syn_file)
     " We source the syn file for a:file, then we search each line of a:file
     "   looking to see if there was any includes.
-      call UCTags#Highlight#TestSyn(l:syn_file)
+    throw 'Needs implementation!'
+      "call UCTags#Highlight#TestSyn(l:syn_file)
     "execute 'source' l:syn_file
     let l:sourced_syn += 1
   elseif index(s:inc_lan, tolower(&ft)) < 0
@@ -180,7 +199,8 @@ function! UCTags#Highlight#ReadTags(file, ...)
     let l:file = l:lines[1]
     let l:syn_file = l:file . '.syn'
     if filereadable(l:syn_file)
-      call UCTags#Highlight#TestSyn(l:syn_file)
+      throw 'Needs implementation!'
+      "call UCTags#Highlight#TestSyn(l:syn_file)
       "execute 'source' l:syn_file
       let l:sourced_syn += 1
     endif
@@ -294,125 +314,6 @@ EOF
   endfunction
   call DefPerl()
 endif
-
-function! UCTags#Highlight#TestSyn(...)
-perl << EOF
-
-# Ignore the odd amount of lements in hash warning
-# use warnings;
-  use List::Util qw(first none any);
-  use Data::Munge qw(list2re);
-  
-    my %trans = (
-        '\%\(' => '(?:',
-        '\('   => '(',
-        '\)'   => ')',
-        '\|'   => '|',
-        '\.'   => '.',
-        # Do these need to be escaped?
-        '\<'   => '\\b',
-        '\>'   => '\\b',
-        '\ze'  => '',
-        '\zs'  => '',
-
-        '('    => '\\(',
-        ')'    => '\\)',
-        '|'    => '\\|',
-        '.'    => '\\.',
-    );
-
-  # Gets filename including path: fftools/ffmpeg.c
-  # This will not change
-  my $file = VIM::Eval("expand('%')");
-
-  # Reads fftools/ffmpeg.c.syn
-  open(DES, "<", "$file.syn");
-
-  my @des = <DES>;
-
-  # Gets argument of the called Vim function: this will always be some type of
-  #   syn file: fftools/ffmpeg.h.syn
-  my $so = VIM::Eval('a:1');
-
-  # Read $so
-  open(SRC, "<", "$so");
-
-  # Gets each line of the current buffer opened in Vim
-  #   https://github.com/FFmpeg/FFmpeg/blob/master/fftools/ffmpeg.c
-  my @lines =  $curbuf->Get(1 .. VIM::Eval('line("$")'));
-
-  # Iterates through each line of syn file
-  while (my $x = <SRC>) {
-    # A few examples of lines that are in syn files:
-    #   syntax match cFunc /\<term_exit\s*\ze(/
-    #   syntax match cppMember /\%\(\.\|->\)\<\zssync_stream_index\>/
-    #   syntax match cppTypeDef /\<StreamMap\>/
-    #
-    # We only need the pattern, which for the previous shown lines are:
-    #   /\<term_exit\s*\ze(/
-    #   /\%\(\.\|->\)\<\zssync_stream_index\>/
-    #   /\<StreamMap\>/
-    my $str = +(split(' ', $x))[-1];
-
-    # We take off the surounding / which would result in:
-    #   \<term_exit\s*\ze(
-    #   \%\(\.\|->\)\<\zssync_stream_index\>
-    #   \<StreamMap\>
-    $str = substr($str, 1, -1);
-
-    # We turn list of keys in hash %trans into regex
-    my $re = list2re keys %trans;
-
-    # We port over the Vim regex syntax to match Perl's regex syntax.
-    #   So for the previous pattern, the would be:
-    #     \bterm_exit\s*\(
-    #     (?:.|->)\bsync_stream_index\b
-    #     \bStreamMap\b
-    $str =~ s/($re)/$trans{$1}/g;
-
-    # If no line in @lines matches pattern $str, try the next line in the syn file
-    #    if (none { m/$str/g } @lines ){
-    #  print "NOPE\n";
-    #  next;
-    #  }
-    #else {
-      # If there are any matches, print YUP
-      # There never is match...
-      # This is the exact file that I'm reading:
-      #   https://github.com/FFmpeg/FFmpeg/blob/master/fftools/ffmpeg.c
-      # Almost 5000 lines
-      #  print "YUP\n";
-      #next;
-      #}
-      next if none { m/$str/g } @lines;
-      next if any {$_ eq $x} @des;
-
-      push @des, $x;
-  }
-
-  close(DES);
-  open(ASDF, ">", "$file.syn");
-  foreach (@des) {
-    print ASDF $_;
-    }
-    
-    close(ASDF);
-
-  close SRC;
-
-EOF
-return
-  " Filter out lines starting with a comment
-  silent! let l:lines = filter(readfile(expand('%') . '.syn'), "v:val !~# '^\\s*\\\"'")
-  for l:t in readfile(a:1)
-    if empty(filter(getline(2, line('$')), "v:val =~# escape(split(l:t, ' ')[-1], '\')[1:-2]")) || index(l:lines, l:t) >=0
-      continue
-    endif
-      call add(l:lines, l:t)
-  endfor
-
-  call writefile(l:lines, expand('%') . '.syn')
-endfunction
 
 " Iterates through each tag in a:tags.  Filters out all tags that {kind} isn't
 "   present in g:uctags_kind_to_hlg
