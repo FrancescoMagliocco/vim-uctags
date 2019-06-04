@@ -546,7 +546,3 @@ function! UCTags#Highlight#Lang(lang)
 
   return filter(UCTags#Parse#GetTags(), "v:val[5] ==? 'language:" . l:lang . "'")
 endfunction
-
-function! UCTags#Highlight#Methods()
-  call UCTags#Highlight#Highlight('method')
-endfunction
