@@ -9,57 +9,6 @@ if (exists('g:uctags_enabled') && !g:uctags_enabled)
 endif
 let g:loaded_UCTags_Highlight = 1
 
-" XXX I THINK the UpdateSyn function replaces this...
-function! UCTags#Highlight#High(tags, ...)
-
-  let l:skip =
-        \ 'has_key(g:uctags_skip_kind_for, tolower(v:val[3][5:]))'
-        \ . '? index(g:uctags_skip_kind_for[tolower(v:val[3][5:])],'
-        \     . 'tolower(v:val[5][9:])) < 0'
-        \ . ': 1'
-  " Took out the :t
-  let l:file = expand('%') . '.syn'
-  " The reason why we are using silent! is bcause if l:file doesn';t exists, an
-  "   empty list is returned which is okay.
-  silent! let l:lines = readfile(l:file)
-  " I took out the uniq and sort
-  for l:v in 
-        \ filter(
-        \   filter(
-        \     filter(a:tags, "v:val[1] =~? fnameescape(expand('%')) . '$'"),
-        \     'has_key(g:uctags_kind_to_hlg, tolower(v:val[3][5:]))'), l:skip)
-    let l:kind = tolower(l:v[3][5:])
-    let l:lang  = tolower(l:v[5][9:])
-    let l:group = get(g:uctags_lang_map, l:lang, l:lang)
-          \ . get(g:uctags_hl_group_map, l:kind, l:kind)
-    if a:0
-      echomsg l:lang
-      echomsg l:kind
-      echomsg l:group
-      continue
-    endif
-    
-    let l:has_key = has_key(g:uctags_match_map, l:lang)
-          \ && has_key(g:uctags_match_map[l:lang], l:kind)
-
-    if !l:has_key && !has_key(g:uctags_match_map, l:kind)
-      continue
-    endif
-
-    let l:match = get(
-          \ l:has_key ? g:uctags_match_map[l:lang] : g:uctags_match_map, l:kind)
-    let l:syn = 'syntax match '. l:group . ' '
-          \ . l:match.start
-          \ . escape(l:v[0])
-          \ . l:match.end
-    let l:link = 'hi link' . ' ' . l:group . ' ' . g:uctags_kind_to_hlg[l:kind]
-      call add(l:lines, l:syn)
-    execute 'hi link' l:group g:uctags_kind_to_hlg[l:kind]
-  endfor
-
-  call writefile(uniq(sort(l:lines)), l:file)
-endfunction
-
 let g:uctags_enable_go = get(g:, 'uctags_enable_go', 0)
 let s:inc_lan = ['cpp', 'c', 'asm']
 let s:pat_lang = { 'asm': '%include', 'cpp': '#include', 'c': '#include', 'go': 'import'}
