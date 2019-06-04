@@ -1,4 +1,4 @@
-" Last Change:  05/27/2019
+" Last Change:  06/03/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -289,7 +289,6 @@ function! UCTags#Highlight#ReadTags(file, ...)
 
 endfunction
 
-
 " So this is kind of a good idea, it just needs to be improved a bit more.
 "   I am going to try to make this do is make a new syn file for <sfile> with
 "   all the matches that it needs.  That way we don't need to read through each
@@ -301,9 +300,115 @@ endfunction
 "   I don't even know if it was faster than just how we included the match from
 "   all the headers.  Another thing I want to try is make a list of matches,
 "   and only add new matches if they aren't present in the list.
-let s:list = []
 function! UCTags#Highlight#TestSyn(...)
-  silent! let l:lines = readfile(expand('%') . '.syn')
+perl << EOF
+
+# Ignore the odd amount of lements in hash warning
+# use warnings;
+  use List::Util qw(first none any);
+  use Data::Munge qw(list2re);
+  
+    my %trans = (
+        '\%\(' => '(?:',
+        '\('   => '(',
+        '\)'   => ')',
+        '\|'   => '|',
+        '\.'   => '.',
+        # Do these need to be escaped?
+        '\<'   => '\\b',
+        '\>'   => '\\b',
+        '\ze'  => '',
+        '\zs'  => '',
+
+        '('    => '\\(',
+        ')'    => '\\)',
+        '|'    => '\\|',
+        '.'    => '\\.',
+    );
+
+  # Gets filename including path: fftools/ffmpeg.c
+  # This will not change
+  my $file = VIM::Eval("expand('%')");
+
+  # Reads fftools/ffmpeg.c.syn
+  open(DES, "<", "$file.syn");
+
+  my @des = <DES>;
+
+  # Gets argument of the called Vim function: this will always be some type of
+  #   syn file: fftools/ffmpeg.h.syn
+  my $so = VIM::Eval('a:1');
+
+  # Read $so
+  open(SRC, "<", "$so");
+
+  # Gets each line of the current buffer opened in Vim
+  #   https://github.com/FFmpeg/FFmpeg/blob/master/fftools/ffmpeg.c
+  my @lines =  $curbuf->Get(1 .. VIM::Eval('line("$")'));
+
+  # Iterates through each line of syn file
+  while (my $x = <SRC>) {
+    # A few examples of lines that are in syn files:
+    #   syntax match cFunc /\<term_exit\s*\ze(/
+    #   syntax match cppMember /\%\(\.\|->\)\<\zssync_stream_index\>/
+    #   syntax match cppTypeDef /\<StreamMap\>/
+    #
+    # We only need the pattern, which for the previous shown lines are:
+    #   /\<term_exit\s*\ze(/
+    #   /\%\(\.\|->\)\<\zssync_stream_index\>/
+    #   /\<StreamMap\>/
+    my $str = +(split(' ', $x))[-1];
+
+    # We take off the surounding / which would result in:
+    #   \<term_exit\s*\ze(
+    #   \%\(\.\|->\)\<\zssync_stream_index\>
+    #   \<StreamMap\>
+    $str = substr($str, 1, -1);
+
+    # We turn list of keys in hash %trans into regex
+    my $re = list2re keys %trans;
+
+    # We port over the Vim regex syntax to match Perl's regex syntax.
+    #   So for the previous pattern, the would be:
+    #     \bterm_exit\s*\(
+    #     (?:.|->)\bsync_stream_index\b
+    #     \bStreamMap\b
+    $str =~ s/($re)/$trans{$1}/g;
+
+    # If no line in @lines matches pattern $str, try the next line in the syn file
+    #    if (none { m/$str/g } @lines ){
+    #  print "NOPE\n";
+    #  next;
+    #  }
+    #else {
+      # If there are any matches, print YUP
+      # There never is match...
+      # This is the exact file that I'm reading:
+      #   https://github.com/FFmpeg/FFmpeg/blob/master/fftools/ffmpeg.c
+      # Almost 5000 lines
+      #  print "YUP\n";
+      #next;
+      #}
+      next if none { m/$str/g } @lines;
+      next if any {$_ eq $x} @des;
+
+      push @des, $x;
+  }
+
+  close(DES);
+  open(ASDF, ">", "$file.syn");
+  foreach (@des) {
+    print ASDF $_;
+    }
+    
+    close(ASDF);
+
+  close SRC;
+
+EOF
+return
+  " Filter out lines starting with a comment
+  silent! let l:lines = filter(readfile(expand('%') . '.syn'), "v:val !~# '^\\s*\\\"'")
   for l:t in readfile(a:1)
     if empty(filter(getline(2, line('$')), "v:val =~# escape(split(l:t, ' ')[-1], '\')[1:-2]")) || index(l:lines, l:t) >=0
       continue
@@ -312,6 +417,45 @@ function! UCTags#Highlight#TestSyn(...)
   endfor
 
   call writefile(l:lines, expand('%') . '.syn')
+endfunction
+
+function! UCTags#Highlight#UpdateSynPerl()
+  perl << EOF
+  use warnings;
+
+sub GetTags {
+
+      my $file = VIM::Eval('g:uctags_tags_file');
+      open FH, "<", $file;
+      my @lines;
+      while (my $line = <FH>) {
+        next if $line =~ /^!_TAG/; 
+        next if $line !~ /language:C/;
+        chomp $line; 
+        my @cols = split /\t/, $line;
+        #        s/'/''/g for @cols;
+        #push @lines, '[' . join(', ', map { "'$_'" } @cols) . ']';
+        push @lines, @cols;
+        }
+
+        #      my $x = '[' . join(', ', @lines) . ']';
+      close FH;
+      return @lines;
+
+}
+
+sub UpdateSyn {
+    my (@tags) = @_;
+    my $file = '';
+    my @lines = ();
+    foreach (grep { VIM::Eval("has_key(g:uctags_skip_kind_for, '" . lc(substr($_[3], 5)) . "') ? index(g:uctags_skip_kind_for['" . lc(substr($_[3], 5)) . "'], '" . lc(substr($_[5], 9)) . "') < 0 : 1") } grep { VIM::Eval("has_key(g:uctags_kind_to_hlg, '". lc(substr($_[3], 5)) . "')") } @tags) {
+      my $tfile = $_[1];
+    }
+
+
+}
+UpdateSyn(GetTags);
+EOF
 endfunction
 
 " Iterates through each tag in a:tags.  Filters out all tags that {kind} isn't
@@ -390,8 +534,9 @@ function! UCTags#Highlight#UpdateSyn(tags)
 
     if l:file !=# l:tfile
       if !empty(l:lines)
-        call  writefile(uniq(sort(l:lines)), l:file)
+        call writefile(uniq(sort(l:lines)), l:file)
       endif
+
       let l:file = l:tfile . '.syn'
       " The reason why we are using silent! is bcause if l:file doesn';t
       "   exists, an empty list is returned which is okay.
@@ -423,14 +568,38 @@ function! UCTags#Highlight#UpdateSyn(tags)
           \ . l:match.start
           \ . escape(l:v[0], '$.*~\^[]/')
           \ . l:match.end
-    let l:link = 'hi link' . ' ' . l:group . ' ' . g:uctags_kind_to_hlg[l:kind]
+""    let l:link = 'hi link' . ' ' . l:group . ' ' . g:uctags_kind_to_hlg[l:kind]
+      " We can't use extend (Not until I check the results and out come)
       call add(l:lines, l:syn)
-    execute 'hi link' l:group g:uctags_kind_to_hlg[l:kind]
+""    execute 'hi link' l:group g:uctags_kind_to_hlg[l:kind]
   endfor
 
   if !empty(l:lines)
     call writefile(uniq(sort(l:lines)), l:file)
   endif
+
+endfunction
+
+function! UCTags#Highlight#Perl()
+perl << EOF
+  use List::Util;
+  open DES, "> test.vim";
+  open SRC, "fuck";
+  my @src = <SRC>;
+  my %hash = map { $hash{$_} = $_ } @src;
+  $hash{foo} = 'asdf';
+  print %hash{foo};
+  if ($hash{t}) {
+    print 'YES';
+    } else {
+    print 'NO';
+    }
+    
+    close(DES);
+    close(SRC);
+
+
+EOF
 
 endfunction
 
