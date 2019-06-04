@@ -150,6 +150,78 @@ let g:uctags_enable_go = get(g:, 'uctags_enable_go', 0)
 let s:inc_lan = ['cpp', 'c', 'asm']
 let s:pat_lang = { 'asm': '%include', 'cpp': '#include', 'c': '#include', 'go': 'import'}
 
+function! UCTags#Highlight#UpdateSynFile(file)
+  echo 'hello'
+  echomsg 'Doing shit..  This may be a while'
+  echomsg UCTags#Highlight#UpdateSynFor(a:file)
+
+endfunction
+
+function! s:UpdateSyn(file)
+  perl << EOF
+      UpdateSyn(scalar VIM::Eval('a:file'));
+EOF
+endfunction
+
+function! s:UpdateSynFor(file, ...)
+  if &ft ==? 'go' && !g:uctags_enable_go | return | endif
+  if assert_false(g:uctags_max_syn && a:0 && a:1 >= g:uctags_max_syn, s:max_syn_msg)
+    if g:uctags_verbose
+      echohl warningMsg | echomsg v:errors[-1] | echohl None
+    endif
+
+    return
+  endif
+
+  let l:sourced_syn = a:0 ? a:1 : 0
+  
+  " Remove quotes
+  let l:file = substitute(a:file, "\\(\"\\|\'\\)", '', 'g') 
+  let l:ofile = l:file
+
+  let l:syn_file = l:file . '.syn'
+  if filereadable(l:syn_file)
+      call s:UpdateSyn(l:syn_file)
+    "execute 'source' l:syn_file
+    let l:sourced_syn += 1
+  elseif index(s:inc_lan, tolower(&ft)) < 0
+    return
+  else
+    let l:tfile = escape(l:file, '^.$\*')
+    let l:lines = filter(filter(UCTags#Parse#GetTags(),
+          \ 'v:val[1] =~# l:tfile'), "v:val[0] ==# split(l:file, '/')[-1]")[-1]
+
+    if empty(l:lines) | return | endif
+    let l:file = l:lines[1]
+    let l:syn_file = l:file . '.syn'
+    if filereadable(l:syn_file)
+      call s:UpdateSyn(l:syn_file)
+      "execute 'source' l:syn_file
+      let l:sourced_syn += 1
+    endif
+  endif
+
+  if !filereadable(l:file) | return | endif
+  let l:pat = s:pat_lang[&ft]
+  let l:list = uniq(sort(filter(
+        \ function(
+        \   'readfile',
+        \   g:uctags_max_lines_header_search
+        \     ? [l:file, '', g:uctags_max_lines_header_search]
+        \     : [l:file])(),
+        \ "v:val =~# '\\s*" . l:pat . "\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
+  for l:file in l:list
+    if a:0 && index(a:2, l:file) >= 0 | continue | endif
+    call s:UpdateSynFor(substitute(
+          \   l:file, '^.*' . l:pat . '\s\+', '', 'g'),
+          \ l:sourced_syn, extend(a:0 ? a:2 : [], l:list), l:ofile)
+  endfor
+
+  return l:syn_file
+
+endfunction
+
+
 " TODO The implementation for python, java etc..  Is going to be different...
 " Source a:file . '.syn' if it is readable
 " If it's not readable, it may not be relative to the current directory.
@@ -300,6 +372,66 @@ endfunction
 "   I don't even know if it was faster than just how we included the match from
 "   all the headers.  Another thing I want to try is make a list of matches,
 "   and only add new matches if they aren't present in the list.
+if has('perl')
+  function! DefPerl()
+    perl << EOF
+      use List::Util qw(first none any);
+      use Data::Munge qw(list2re);
+      use warnings;
+      my %trans = (
+          '\%\(' => '(?:',
+          '\('   => '(',
+          '\)'   => ')',
+          '\|'   => '|',
+          '\.'   => '.',
+          # Do these need to be escaped?
+          '\<'   => '\\b',
+          '\>'   => '\\b',
+          '\ze'  => '',
+          '\zs'  => '',
+
+          '('    => '\\(',
+          ')'    => '\\)',
+          '|'    => '\\|',
+          '.'    => '\\.',
+      );
+
+      sub UpdateSyn {
+        my ($arg) = @_;
+        my $file = VIM::Eval("expand('%')");
+
+        # syn file for the current Vim buffer
+        open(BUFSYN, "<", "$file.syn");
+        my @buf = <BUFSYN>;
+        
+        #my $so = VIM::Eval('a:1');
+        open(INSYN, "<", "$arg");
+        #open(my $in_syn, "<", VIM::Eval('a:1'));
+        my @lines =  $curbuf->Get(1 .. VIM::Eval('line("$")'));
+        while (my $line = <INSYN>) {
+          my $str = +(split(' ', $line))[-1];
+          $str = substr($str, 1, -1);
+          my $re = list2re keys %trans;
+          $str =~ s/($re)/$trans{$1}/g;
+            next if none { m/$str/g } @lines;
+            next if any {$_ eq $line} @buf;
+            push @buf, $line;
+        }
+
+        close BUFSYN;
+        open(OUTSYN, ">", "$file.syn");
+        foreach (@buf) {
+          print OUTSYN $_;
+          }
+        close(OUTSYN);
+        close INSYN;
+        }
+
+EOF
+  endfunction
+  call DefPerl()
+endif
+
 function! UCTags#Highlight#TestSyn(...)
 perl << EOF
 
@@ -417,45 +549,6 @@ return
   endfor
 
   call writefile(l:lines, expand('%') . '.syn')
-endfunction
-
-function! UCTags#Highlight#UpdateSynPerl()
-  perl << EOF
-  use warnings;
-
-sub GetTags {
-
-      my $file = VIM::Eval('g:uctags_tags_file');
-      open FH, "<", $file;
-      my @lines;
-      while (my $line = <FH>) {
-        next if $line =~ /^!_TAG/; 
-        next if $line !~ /language:C/;
-        chomp $line; 
-        my @cols = split /\t/, $line;
-        #        s/'/''/g for @cols;
-        #push @lines, '[' . join(', ', map { "'$_'" } @cols) . ']';
-        push @lines, @cols;
-        }
-
-        #      my $x = '[' . join(', ', @lines) . ']';
-      close FH;
-      return @lines;
-
-}
-
-sub UpdateSyn {
-    my (@tags) = @_;
-    my $file = '';
-    my @lines = ();
-    foreach (grep { VIM::Eval("has_key(g:uctags_skip_kind_for, '" . lc(substr($_[3], 5)) . "') ? index(g:uctags_skip_kind_for['" . lc(substr($_[3], 5)) . "'], '" . lc(substr($_[5], 9)) . "') < 0 : 1") } grep { VIM::Eval("has_key(g:uctags_kind_to_hlg, '". lc(substr($_[3], 5)) . "')") } @tags) {
-      my $tfile = $_[1];
-    }
-
-
-}
-UpdateSyn(GetTags);
-EOF
 endfunction
 
 " Iterates through each tag in a:tags.  Filters out all tags that {kind} isn't
@@ -579,37 +672,6 @@ function! UCTags#Highlight#UpdateSyn(tags)
   endif
 
 endfunction
-
-function! UCTags#Highlight#Perl()
-perl << EOF
-  use List::Util;
-  open DES, "> test.vim";
-  open SRC, "fuck";
-  my @src = <SRC>;
-  my %hash = map { $hash{$_} = $_ } @src;
-  $hash{foo} = 'asdf';
-  print %hash{foo};
-  if ($hash{t}) {
-    print 'YES';
-    } else {
-    print 'NO';
-    }
-    
-    close(DES);
-    close(SRC);
-
-
-EOF
-
-endfunction
-
-let s:lang_map =
-      \ [
-      \   ['asm', 'nasm', 'fasm', 'masm'],
-      \   ['c++', 'cplusplus', 'cpp', 'cc'],
-      \   ['csharp', 'c#'],
-      \   ['javascript', 'jscript', 'js']
-      \ ]
 
 " Call UCTags#Parse#GetTags() filters out all tags except that of a:lang.
 "   Returns the result.
