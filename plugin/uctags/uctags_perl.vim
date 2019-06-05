@@ -36,14 +36,17 @@ if has('perl')
 
       sub UpdateSyn {
         my ($arg) = @_;
+        die "Need an argument for " . (caller(0))[3] if not $arg;
         my $file = VIM::Eval("expand('%')");
 
         # syn file for the current Vim buffer
-        open(BUFSYN, "<", "$file.syn");
+        open BUFSYN, "<", "$file.syn"
+          or die "Couldn't open '$file' $! " . (caller(0))[3];
         my @buf = <BUFSYN>;
         
         #my $so = VIM::Eval('a:1');
-        open(INSYN, "<", "$arg");
+        open INSYN, "<", "$arg"
+          or die "Couldn't open '$arg' $! " . (caller(0))[3];
         #open(my $in_syn, "<", VIM::Eval('a:1'));
         my $curbuf;
         my @lines =  $curbuf->Get(1 .. VIM::Eval('line("$")'));
@@ -58,7 +61,8 @@ if has('perl')
         }
 
         close BUFSYN;
-        open(OUTSYN, ">", "$file.syn");
+        open OUTSYN, ">", "$file.syn"
+          or die "Couldn't write '$file' $! " . (caller(0))[3];
         foreach (@buf) {
           print OUTSYN $_;
           }
@@ -68,8 +72,8 @@ if has('perl')
 
       sub GetTags {
         my $tag_file = VIM::Eval('g:uctags_tags_file');
-        open(my $tags, "<", $tag_file)
-          or die "Couldn't open '$tag_file' $!";
+        open my $tags, "<", $tag_file
+          or die "Couldn't open '$tag_file' $! " . (caller(0))[3];
 
         my @lines = ();
         while (my $line = <$tags>) {
@@ -83,8 +87,8 @@ if has('perl')
 
       sub GetTagsVim {
         my $tag_file = VIM::Eval('g:uctags_tags_file');
-        open(my $tags, "<", $tag_file)
-          or die "Couldn't open '$tag_file' $!";
+        open my $tags, "<", $tag_file
+          or die "Couldn't open '$tag_file' $!" . (caller(0))[3];
         my @lines;
         while (my $line = <$tags>) {
           next if $line =~ /^!_TAG/;
@@ -107,6 +111,7 @@ if has('perl')
 
       sub GetLangVim {
         my ($lang) = @_;
+        die("Need an argument for " . (caller(0))[3]) if not $lang;
         my $pat = lc($lang) eq 'c' ? '(?:\bc|c\+\+)(?!\S)' : "\\b$lang(?!\\S)";
         #my @langs = grep { $_->[5] =~ /language:$pat/gi } GetTags;
         my @lines;
