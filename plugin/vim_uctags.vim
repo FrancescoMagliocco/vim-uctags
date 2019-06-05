@@ -27,6 +27,7 @@ endif
 "   creates a plugin..
 let g:loaded_uctags         = 1
 runtime plugin/uctags/uctags_globals.vim
+runtime plugin/uctags/uctags_perl.vim
 
 augroup uctags_aug
   autocmd!
