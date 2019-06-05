@@ -106,7 +106,7 @@ if has('perl')
       }
 
       sub GetLangVim {
-        my $lang = VIM::Eval('l:lang');
+        my ($lang) = @_;
         my $pat = lc($lang) eq 'c' ? '(?:\bc|c\+\+)(?!\S)' : "\\b$lang(?!\\S)";
         #my @langs = grep { $_->[5] =~ /language:$pat/gi } GetTags;
         my @lines;

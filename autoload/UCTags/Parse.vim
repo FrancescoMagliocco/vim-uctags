@@ -38,15 +38,12 @@ function! s:GetTags()
         \ "split(v:val, '\t')")
 endfunction
 
-function! UCTags#Parse#Lang(lang)
+function! UCTags#Parse#GetLang(lang)
   let l:lang = UCTags#Utils#GetLang(a:lang)
-  perl << EOF
-    use warnings;
+  if !g:uctags_use_perl || !has('perl')
+    let l:pat = l:lang ==? 'c' ? '\\(c\\|c++\\)\\>' : l:lang
+    return filter(UCTags#Parse#GetTags(), "v:val[5] ==? 'language:" . l:lang ==? 'c' ? '\\(c\\|c++\\)\\>' : l:lang . "'")
+  endif
 
-    my @list = GetTags;
-    print $list[0][5];
-    my @l = (grep { $_->[5] =~ /language:(?:\bc(?!\S)\b|c\+\+(?!\S))/gi } GetTags);
-    print $l[0][0];
-
-EOF
+  perl GetLangVim(scalar VIM::Eval('l:lang'))
 endfunction
