@@ -1,4 +1,5 @@
-" Last Change:  06/03/2019
+" File:         Highlight.vim
+" Last Change:  06/05/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -12,13 +13,6 @@ let g:loaded_UCTags_Highlight = 1
 let g:uctags_enable_go = get(g:, 'uctags_enable_go', 0)
 let s:inc_lan = ['cpp', 'c', 'asm']
 let s:pat_lang = { 'asm': '%include', 'cpp': '#include', 'c': '#include', 'go': 'import'}
-
-function! UCTags#Highlight#UpdateSynFile(file)
-  echo 'hello'
-  echomsg 'Doing shit..  This may be a while'
-  echomsg UCTags#Highlight#UpdateSynFor(a:file)
-
-endfunction
 
 function! s:UpdateSyn(file)
   if !g:uctags_use_perl || !has('perl')
@@ -98,6 +92,11 @@ function! s:UpdateSynFor(file, ...)
 
 endfunction
 
+function! UCTags#Highlight#UpdateSynFile(file)
+  echomsg 'Doing shit..  This may be a while'
+  execute 'source' s:UpdateSynFor(a:file)
+
+endfunction
 
 " TODO The implementation for python, java etc..  Is going to be different...
 " Source a:file . '.syn' if it is readable
@@ -243,77 +242,6 @@ function! UCTags#Highlight#ReadTags(file, ...)
   endfor
 
 endfunction
-
-" So this is kind of a good idea, it just needs to be improved a bit more.
-"   I am going to try to make this do is make a new syn file for <sfile> with
-"   all the matches that it needs.  That way we don't need to read through each
-"   header every time.  It seems to kind of be really slow for how it is right
-"   now which is understable..
-"
-" So after it was done..  It was still reallllllllllllllly slow navigating
-"   through a file that was almost 5000 lines but also had a lot of imports.
-"   I don't even know if it was faster than just how we included the match from
-"   all the headers.  Another thing I want to try is make a list of matches,
-"   and only add new matches if they aren't present in the list.
-if has('perl')
-  function! DefPerl()
-    perl << EOF
-      use List::Util qw(first none any);
-      use Data::Munge qw(list2re);
-      use warnings;
-      my %trans = (
-          '\%\(' => '(?:',
-          '\('   => '(',
-          '\)'   => ')',
-          '\|'   => '|',
-          '\.'   => '.',
-          # Do these need to be escaped?
-          '\<'   => '\\b',
-          '\>'   => '\\b',
-          '\ze'  => '',
-          '\zs'  => '',
-
-          '('    => '\\(',
-          ')'    => '\\)',
-          '|'    => '\\|',
-          '.'    => '\\.',
-      );
-
-      sub UpdateSyn {
-        my ($arg) = @_;
-        my $file = VIM::Eval("expand('%')");
-
-        # syn file for the current Vim buffer
-        open(BUFSYN, "<", "$file.syn");
-        my @buf = <BUFSYN>;
-        
-        #my $so = VIM::Eval('a:1');
-        open(INSYN, "<", "$arg");
-        #open(my $in_syn, "<", VIM::Eval('a:1'));
-        my @lines =  $curbuf->Get(1 .. VIM::Eval('line("$")'));
-        while (my $line = <INSYN>) {
-          my $str = +(split(' ', $line))[-1];
-          $str = substr($str, 1, -1);
-          my $re = list2re keys %trans;
-          $str =~ s/($re)/$trans{$1}/g;
-            next if none { m/$str/g } @lines;
-            next if any {$_ eq $line} @buf;
-            push @buf, $line;
-        }
-
-        close BUFSYN;
-        open(OUTSYN, ">", "$file.syn");
-        foreach (@buf) {
-          print OUTSYN $_;
-          }
-        close(OUTSYN);
-        close INSYN;
-        }
-
-EOF
-  endfunction
-  call DefPerl()
-endif
 
 " Iterates through each tag in a:tags.  Filters out all tags that {kind} isn't
 "   present in g:uctags_kind_to_hlg
