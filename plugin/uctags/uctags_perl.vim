@@ -99,13 +99,18 @@ if has('perl')
         VIM::DoCommand("return $x");
       }
 
+      sub GetLang {
+        my ($lang) = @_;
+        my $pat = lc($lang) eq 'c' ? '(?:\bc|c\+\+)(?!\S)' : "\\b$lang(?!\\S)";
+        return grep { $_->[5] =~ /language:$pat/gi } GetTags;
+      }
+
       sub GetLangVim {
         my $lang = VIM::Eval('l:lang');
         my $pat = lc($lang) eq 'c' ? '(?:\bc|c\+\+)(?!\S)' : "\\b$lang(?!\\S)";
-        my @l = GetTags;
-        my @langs = grep { $_->[5] =~ /language:$pat/gi } @l;
+        #my @langs = grep { $_->[5] =~ /language:$pat/gi } GetTags;
         my @lines;
-        foreach (@langs) {
+        foreach (grep { $_->[5] =~ /language:$pat/gi } GetTags) {
           my @cols = @$_;
           s/'/''/g for @cols;
           push @lines, '[' . join(', ', map { "'$_'" } @cols) . ']';
