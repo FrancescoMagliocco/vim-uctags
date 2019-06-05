@@ -1,4 +1,4 @@
-" File:         perl.vim
+" File:         uctags_perl.vim
 " Last Change:  06/05/2019
 " Maintainer:   FrancescoMagliocco
 
@@ -15,6 +15,7 @@ if has('perl')
       use List::Util qw(first none any);
       use Data::Munge qw(list2re);
       use warnings;
+      use strict;
       my %trans = (
           '\%\(' => '(?:',
           '\('   => '(',
@@ -44,6 +45,7 @@ if has('perl')
         #my $so = VIM::Eval('a:1');
         open(INSYN, "<", "$arg");
         #open(my $in_syn, "<", VIM::Eval('a:1'));
+        my $curbuf;
         my @lines =  $curbuf->Get(1 .. VIM::Eval('line("$")'));
         while (my $line = <INSYN>) {
           my $str = +(split(' ', $line))[-1];
@@ -64,7 +66,6 @@ if has('perl')
         close INSYN;
         }
 
-      use warnings;
       sub GetTags {
         my $tag_file = VIM::Eval('g:uctags_tags_file');
         open(my $tags, "<", $tag_file)
@@ -94,6 +95,21 @@ if has('perl')
           #push @lines, '[' . join(', ', map { "'$_'" } (s/'/''/gr for split(/ t/, $line)));
         }
 
+        my $x = '[' . join(', ', @lines) . ']';
+        VIM::DoCommand("return $x");
+      }
+
+      sub GetLangVim {
+        my $lang = VIM::Eval('l:lang');
+        my $pat = lc($lang) eq 'c' ? '(?:\bc|c\+\+)(?!\S)' : "\\b$lang(?!\\S)";
+        my @l = GetTags;
+        my @langs = grep { $_->[5] =~ /language:$pat/gi } @l;
+        my @lines;
+        foreach (@langs) {
+          my @cols = @$_;
+          s/'/''/g for @cols;
+          push @lines, '[' . join(', ', map { "'$_'" } @cols) . ']';
+        }
         my $x = '[' . join(', ', @lines) . ']';
         VIM::DoCommand("return $x");
       }
