@@ -15,7 +15,8 @@ if has('perl')
       use List::Util qw(first none any);
       use Data::Munge qw(list2re);
       use warnings;
-      use strict;
+            use strict;
+            our $curbuf;
       my %trans = (
           '\%\(' => '(?:',
           '\('   => '(',
@@ -48,7 +49,7 @@ if has('perl')
         open INSYN, "<", "$arg"
           or die "Couldn't open '$arg' $! " . (caller(0))[3];
         #open(my $in_syn, "<", VIM::Eval('a:1'));
-        my $curbuf;
+        #        my $curbuf;
         my @lines =  $curbuf->Get(1 .. VIM::Eval('line("$")'));
         while (my $line = <INSYN>) {
           my $str = +(split(' ', $line))[-1];
@@ -122,6 +123,18 @@ if has('perl')
         }
         my $x = '[' . join(', ', @lines) . ']';
         VIM::DoCommand("return $x");
+      }
+
+      sub UpdateSynFilter {
+        my ($tfile, $file) = @_;
+        my @l = grep { $_->[1] =~ /$tfile/ } GetTags;
+        my $str = +(split('/', $file))[-1];
+        my @lines = grep { @$_[0] eq $str } @l;
+        my @a = @{$lines[-1]};
+        s/'/''/g for @a;
+        my $ret =  '[' . join(', ', map { "'$_'" } @a) . ']';
+        
+        VIM::DoCommand("return $ret");
       }
 EOF
   endfunction

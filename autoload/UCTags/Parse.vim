@@ -18,6 +18,7 @@ function! UCTags#Parse#GetTags()
     finish
   endif
 
+  echohl uctagsInfo | echon '  Using Perl GetTagsVim()' | echohl None
   perl GetTagsVim
 endfunction
 
@@ -31,6 +32,7 @@ function! s:GetTags()
     echohl warningMsg | echomsg 'Not using Perl!' | echohl None
   endif
 
+  echohl uctagsInfo | echon '  Reading tag file' | echohl None
   return map(
         \ filter(readfile(g:uctags_tags_file), "v:val !~# '^!_TAG'"),
         \ "split(v:val, '\t')")
@@ -38,6 +40,7 @@ endfunction
 
 function! UCTags#Parse#GetLang(lang)
   let l:lang = UCTags#Utils#GetLang(a:lang)
+  echohl uctagsInfo | echon "\rGetting" l:lang 'tags            ' | echohl None
   if !g:uctags_use_perl || !has('perl')
     let l:pat = l:lang ==? 'c' ? '\\(c\\|c++\\)\\>' : l:lang
     return filter(
@@ -47,5 +50,6 @@ function! UCTags#Parse#GetLang(lang)
           \   : l:lang . "'")
   endif
 
+  echohl uctagsInfo | echon '  Using Perl GetLangVim()' | echohl None
   perl GetLangVim(scalar VIM::Eval('l:lang'))
 endfunction

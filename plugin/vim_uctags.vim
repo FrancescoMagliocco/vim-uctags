@@ -22,6 +22,8 @@ if exists('g:uctags_enabled') && !g:uctags_enabled
   finish
 endif
 
+hi uctagsInfo guifg=#F8F800 guibg=NONE    cterm=none
+
 " XXX Using uctags as prefixes for everything, and even the plugin,
 "   kind of bothers me in a way such that what if universal-ctags actually
 "   creates a plugin..
