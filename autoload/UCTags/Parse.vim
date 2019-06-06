@@ -11,9 +11,7 @@ endif
 let g:loaded_UCTags_Parse = 1
 
 function! UCTags#Parse#GetTags()
-  if !g:uctags_use_perl || !has('perl')
-    return s:GetTags()
-  endif
+  if !g:uctags_use_perl || !has('perl') | return s:GetTags() | endif
 
   if !filereadable(g:uctags_tags_file)
     echoerr 'no tags file'
@@ -42,7 +40,11 @@ function! UCTags#Parse#GetLang(lang)
   let l:lang = UCTags#Utils#GetLang(a:lang)
   if !g:uctags_use_perl || !has('perl')
     let l:pat = l:lang ==? 'c' ? '\\(c\\|c++\\)\\>' : l:lang
-    return filter(UCTags#Parse#GetTags(), "v:val[5] ==? 'language:" . l:lang ==? 'c' ? '\\(c\\|c++\\)\\>' : l:lang . "'")
+    return filter(
+          \ UCTags#Parse#GetTags(),
+          \ "v:val[5] ==? 'language:" . l:lang ==? 'c'
+          \   ? '\\(c\\|c++\\)\\>'
+          \   : l:lang . "'")
   endif
 
   perl GetLangVim(scalar VIM::Eval('l:lang'))
