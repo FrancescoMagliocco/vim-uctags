@@ -17,9 +17,12 @@ let s:pat_lang = { 'asm': '%include', 'cpp': '#include', 'c': '#include', 'go': 
 function! s:UpdateSyn(file)
   if !g:uctags_use_perl || !has('perl')
 
-    silent! let l:lines = filter(readfile(expand('%') . '.syn'), "v:val !~# '^\\s*\\\"'")
+    silent! let l:lines =
+          \ filter(readfile(expand('%') . '.syn'), "v:val !~# '^\\s*\\\"'")
     for l:t in readfile(a:file)
-      if empty(filter(getline(2, line('$')), "v:val =~# escape(split(l:t, ' ')[-1], '\')[1:-2]")) || index(l:lines, l:t) >=0
+      if empty(filter(getline(2, line('$')),
+            \   "v:val =~# escape(split(l:t, ' ')[-1], '\')[1:-2]"))
+            \ || index(l:lines, l:t) >=0
         continue
       endif
         call add(l:lines, l:t)
@@ -363,15 +366,4 @@ function! UCTags#Highlight#UpdateSyn(tags)
     call writefile(uniq(sort(l:lines)), l:file)
   endif
 
-endfunction
-
-" Call UCTags#Parse#GetTags() filters out all tags except that of a:lang.
-"   Returns the result.
-function! UCTags#Highlight#Lang(lang)
-  let l:lang = UCTags#Utils#GetLang(a:lang)
-  if l:lang ==? 'c'
-    return filter(UCTags#Parse#GetTags(), "v:val[5] =~? 'language:\\(c\\|c++\\)\\>'")
-  endif
-
-  return filter(UCTags#Parse#GetTags(), "v:val[5] ==? 'language:" . l:lang . "'")
 endfunction
