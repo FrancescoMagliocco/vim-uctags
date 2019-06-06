@@ -30,11 +30,11 @@ endfunction
 
 function! UCTags#Utils#Readfile(file, ...)
   if !g:uctags_use_perl || !has('perl') || !filereadable(a:file)
-    silent! return readfile(a:file)
+    execute 'silent! return readfile(a:file' . (a:0 && a:1 ? ", '', a:1)" : ')')
   endif
 
   execute "perl ReadfileVim(scalar VIM::Eval('a:file')"
-        \ . (a:0 ? ", scalar VIM::Eval('a:1'))" : ')')
+        \ . (a:0 && a:1 ? ", scalar VIM::Eval('a:1'))" : ')')
 endfunction
 
 let s:kinds =
