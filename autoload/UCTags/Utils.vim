@@ -1,5 +1,5 @@
 " File:         Utils.vim
-" Last Change:  05/27/2019
+" Last Change:  06/06/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -26,6 +26,15 @@ function! UCTags#Utils#GetLang(lang)
   endfor
 
   return a:lang
+endfunction
+
+function! UCTags#Utils#Readfile(file, ...)
+  if !g:uctags_use_perl || !has('perl') || !filereadable(a:file)
+    silent! return readfile(a:file)
+  endif
+
+  execute "perl ReadfileVim(scalar VIM::Eval('a:file')"
+        \ . (a:0 ? ", scalar VIM::Eval('a:1'))" : ')')
 endfunction
 
 let s:kinds =

@@ -1,5 +1,5 @@
 " File:         uctags_perl.vim
-" Last Change:  06/05/2019
+" Last Change:  06/06/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -125,6 +125,7 @@ if has('perl')
         VIM::DoCommand("return $x");
       }
 
+      # TODO New Name
       sub UpdateSynFilter {
         my ($tfile, $file) = @_;
         my @l = grep { $_->[1] =~ /$tfile/ } GetTags;
@@ -135,6 +136,23 @@ if has('perl')
         my $ret =  '[' . join(', ', map { "'$_'" } @a) . ']';
         
         VIM::DoCommand("return $ret");
+      }
+
+      sub ReadfileVim {
+        my ($file, $arg2) = @_;
+        open my $in_file, "<", "$file"
+          or die "Couldn't open '$file' $! " . (caller(0))[3];
+        my @lines;
+        my $count = 0;
+        while (defined(my $line = <$in_file>)
+            and not ($arg2 and ++$count  >= $arg2)) {
+          chomp $line;
+          push @lines, $line =~ s/'/''/gr;
+        }
+
+        #my $ret =  '[' . join(', ', map { "'$_'" } @lines) . ']';
+        VIM::DoCommand(
+          "return " . '[' . join(', ', map { "'$_'" } @lines) . ']');
       }
 EOF
   endfunction
