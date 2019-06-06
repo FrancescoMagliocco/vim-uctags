@@ -1,5 +1,5 @@
 " File:         Highlight.vim
-" Last Change:  06/05/2019
+" Last Change:  06/06/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -96,12 +96,15 @@ function! s:UpdateSynFor(file, ...)
   let l:pat = s:pat_lang[&ft]
   echohl uctagsInfo | echon "\rReadfile function                " | echohl None
   let l:list = uniq(sort(filter(
-        \ function(
-        \   'readfile',
-        \   g:uctags_max_lines_header_search
-        \     ? [l:file, '', g:uctags_max_lines_header_search]
-        \     : [l:file])(),
+        \ UCTags#Utils#Readfile(l:file, g:uctags_max_lines_header_search),
         \ "v:val =~# '\\s*" . l:pat . "\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
+  "let l:list = uniq(sort(filter(
+  "      \ function(
+  "      \   'readfile',
+  "      \   g:uctags_max_lines_header_search
+  "      \     ? [l:file, '', g:uctags_max_lines_header_search]
+  "      \     : [l:file])(),
+  "      \ "v:val =~# '\\s*" . l:pat . "\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
   echohl uctagsInfo | echon "\rParsing files                    " | echohl None
   for l:file in l:list
     if a:0 && index(a:2, l:file) >= 0 | continue | endif
@@ -240,12 +243,16 @@ function! UCTags#Highlight#ReadTags(file, ...)
   "      \ "\n")
 
   let l:list = uniq(sort(filter(
-        \ function(
-        \   'readfile',
-        \   g:uctags_max_lines_header_search
-        \     ? [l:file, '', g:uctags_max_lines_header_search]
-        \     : [l:file])(),
+        \ UCTags#Utils#Readfile(l:file, g:uctags_max_lines_header_search),
         \ "v:val =~# '\\s*" . l:pat . "\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
+""  let l:list = uniq(sort(filter(
+""        \ function(
+""        \   'readfile',
+""        \   g:uctags_max_lines_header_search
+""        \     ? [l:file, '', g:uctags_max_lines_header_search]
+""        \     : [l:file])(),
+""        \ "v:val =~# '\\s*" . l:pat . "\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
+
 ""  let l:list = uniq(sort(filter(readfile(l:file),
 ""        \ "v:val =~# '\\s*" . l:pat . "\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
   "let l:list = uniq(sort(filter(readfile(l:file),
@@ -350,7 +357,8 @@ function! UCTags#Highlight#UpdateSyn(tags)
       " The reason why we are using silent! is bcause if l:file doesn';t
       "   exists, an empty list is returned which is okay.
       echohl uctagsInfo | echon "\rReading file                 " | echohl None
-      silent! let l:lines = readfile(l:file)
+      "silent! let l:lines = readfile(l:file)
+      let l:lines = UCTags#Utils#Readfile(l:file)
     endif
 
     let l:kind = tolower(l:v[3][5:])

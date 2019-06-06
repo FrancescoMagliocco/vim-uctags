@@ -1,5 +1,5 @@
 " File:         Parse.vim
-" Last Change:  06/05/2019
+" Last Change:  06/06/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -34,7 +34,7 @@ function! s:GetTags()
 
   echohl uctagsInfo | echon '  Reading tag file' | echohl None
   return map(
-        \ filter(readfile(g:uctags_tags_file), "v:val !~# '^!_TAG'"),
+        \ filter(UCTags#Utils#Readfile(g:uctags_tags_file), "v:val !~# '^!_TAG'"),
         \ "split(v:val, '\t')")
 endfunction
 
