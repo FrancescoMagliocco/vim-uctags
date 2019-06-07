@@ -1,5 +1,5 @@
 " File:         uctags_perl.vim
-" Last Change:  06/06/2019
+" Last Change:  06/07/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -15,8 +15,8 @@ if has('perl')
       use List::Util qw(first none any);
       use Data::Munge qw(list2re);
       use warnings;
-            use strict;
-            our $curbuf;
+      use strict;
+      our $curbuf;
       my %trans = (
           '\%\(' => '(?:',
           '\('   => '(',
@@ -41,17 +41,17 @@ if has('perl')
         my $file = VIM::Eval("expand('%')");
 
         # syn file for the current Vim buffer
-        open BUFSYN, "<", "$file.syn"
+        open my $buf_syn, "<", "$file.syn"
           or die "Couldn't open '$file' $! " . (caller(0))[3];
-        my @buf = <BUFSYN>;
-        
+        my @buf = <$buf_syn>;
+
         #my $so = VIM::Eval('a:1');
-        open INSYN, "<", "$arg"
+        open my $in_syn, "<", "$arg"
           or die "Couldn't open '$arg' $! " . (caller(0))[3];
         #open(my $in_syn, "<", VIM::Eval('a:1'));
         #        my $curbuf;
         my @lines =  $curbuf->Get(1 .. VIM::Eval('line("$")'));
-        while (my $line = <INSYN>) {
+        while (my $line = <$in_syn>) {
           my $str = +(split(' ', $line))[-1];
           $str = substr($str, 1, -1);
           my $re = list2re keys %trans;
@@ -61,14 +61,14 @@ if has('perl')
             push @buf, $line;
         }
 
-        close BUFSYN;
-        open OUTSYN, ">", "$file.syn"
+        close $buf_syn;
+        open my $out_syn, ">", "$file.syn"
           or die "Couldn't write '$file' $! " . (caller(0))[3];
         foreach (@buf) {
-          print OUTSYN $_;
+          print $out_syn $_;
           }
-        close(OUTSYN);
-        close INSYN;
+        close($out_syn);
+        close $in_syn;
         }
 
       sub GetTags {
@@ -134,7 +134,7 @@ if has('perl')
         my @a = @{$lines[-1]};
         s/'/''/g for @a;
         my $ret =  '[' . join(', ', map { "'$_'" } @a) . ']';
-        
+ 
         VIM::DoCommand("return $ret");
       }
 
