@@ -1,5 +1,5 @@
 " File:         Highlight.vim
-" Last Change:  06/06/2019
+" Last Change:  06/07/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -95,9 +95,11 @@ function! s:UpdateSynFor(file, ...)
   if !filereadable(l:file) | return | endif
   let l:pat = s:pat_lang[&ft]
   echohl uctagsInfo | echon "\rReadfile function                " | echohl None
-  let l:list = uniq(sort(filter(
-        \ UCTags#Utils#Readfile(l:file, g:uctags_max_lines_header_search),
-        \ "v:val =~# '\\s*" . l:pat . "\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
+"  let l:filter = perl FilterVim(Readfile(scalar VIM::Eval('l:file'), '\s' . scalar VIM::Eval('l:pat') . '\s+{1}.*"{1}'))
+  let l:list = uniq(sort(UCTags#Utils#FilterFile(l:file, '\\s*' . l:pat . '\\s\\+\"\\{1\\}.*\"\\{1\\}')))
+  "let l:list = uniq(sort(filter(
+  "      \ UCTags#Utils#Readfile(l:file, g:uctags_max_lines_header_search),
+  "      \ "v:val =~# '\\s*" . l:pat . "\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
   "let l:list = uniq(sort(filter(
   "      \ function(
   "      \   'readfile',
