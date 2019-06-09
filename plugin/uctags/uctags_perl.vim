@@ -24,8 +24,8 @@ if has('perl')
           '\|'   => '|',
           #          '\.'   => '.',
           # Do these need to be escaped?
-          '\<'   => '\\b',
-          '\>'   => '\\b',
+          '\<'   => '\b',
+          '\>'   => '\b',
           '\ze'  => '',
           '\zs'  => '',
           '\\\\s' => '\s',
@@ -38,18 +38,18 @@ if has('perl')
           '\\\\}' => '}',
           '\"'    => '"',
 
-          '('    => '\\(',
-          ')'    => '\\)',
-          '|'    => '\\|',
+          '('    => '\(',
+          ')'    => '\)',
+          '|'    => '\|',
           #'.'    => '\\.',
-          '{'     => '\\{',
-          '}'     => '\\}',
-          '+'     => '\\+'
+          '{'     => '\{',
+          '}'     => '\}',
+          '+'     => '\+'
       );
 
       sub UpdateSyn {
         my ($arg) = @_;
-        die "Need an argument for " . (caller(0))[3] if not $arg;
+        die "Need an argument for " . (caller(0))[3] unless $arg;
         my $file = VIM::Eval("expand('%')");
 
         # syn file for the current Vim buffer
@@ -57,11 +57,8 @@ if has('perl')
           or die "Couldn't open '$file' $! " . (caller(0))[3];
         my @buf = <$buf_syn>;
 
-        #my $so = VIM::Eval('a:1');
         open my $in_syn, "<", "$arg"
           or die "Couldn't open '$arg' $! " . (caller(0))[3];
-        #open(my $in_syn, "<", VIM::Eval('a:1'));
-        #        my $curbuf;
         my @lines =  $curbuf->Get(1 .. VIM::Eval('line("$")'));
         while (my $line = <$in_syn>) {
           my $str = +(split(' ', $line))[-1];
@@ -76,12 +73,15 @@ if has('perl')
         close $buf_syn;
         open my $out_syn, ">", "$file.syn"
           or die "Couldn't write '$file' $! " . (caller(0))[3];
+        
+        # We might be able to do print $out_syn for @buf;
         foreach (@buf) {
           print $out_syn $_;
-          }
+        }
+
         close($out_syn);
         close $in_syn;
-        }
+      }
 
       sub GetTags {
         my $tag_file = VIM::Eval('g:uctags_tags_file');
@@ -109,11 +109,9 @@ if has('perl')
           my @cols = split /\t/, $line;
           s/'/''/g for @cols;
           push @lines, '[' . join(', ', map { "'$_'" } @cols) . ']';
-          #push @lines, '[' . join(', ', map { "'$_'" } (s/'/''/gr for split(/ t/, $line)));
         }
 
-        my $x = '[' . join(', ', @lines) . ']';
-        VIM::DoCommand("return $x");
+        VIM::DoCommand('return [' . join(', ', @lines) . ']');
       }
 
       sub GetLang {
@@ -126,15 +124,14 @@ if has('perl')
         my ($lang) = @_;
         die("Need an argument for " . (caller(0))[3]) if not $lang;
         my $pat = lc($lang) eq 'c' ? '(?:\bc|c\+\+)(?!\S)' : "\\b$lang(?!\\S)";
-        #my @langs = grep { $_->[5] =~ /language:$pat/gi } GetTags;
         my @lines;
         foreach (grep { $_->[5] =~ /language:$pat/gi } GetTags) {
           my @cols = @$_;
           s/'/''/g for @cols;
           push @lines, '[' . join(', ', map { "'$_'" } @cols) . ']';
         }
-        my $x = '[' . join(', ', @lines) . ']';
-        VIM::DoCommand("return $x");
+
+        VIM::DoCommand('return [' . join(', ', @lines) . ']');
       }
 
       # TODO New Name
@@ -145,9 +142,8 @@ if has('perl')
         my @lines = grep { @$_[0] eq $str } @l;
         my @a = @{$lines[-1]};
         s/'/''/g for @a;
-        my $ret =  '[' . join(', ', map { "'$_'" } @a) . ']';
  
-        VIM::DoCommand("return $ret");
+        VIM::DoCommand('return [' . join(', ', map { "'$_'" } @a) . ']');
       }
 
       sub Readfile {
@@ -155,7 +151,6 @@ if has('perl')
         open my $in_file, "<", "$file"
           or die "Couldn't open '$file' $! " . (caller(0))[3];
         return <$in_file>;
-
       }
 
       sub ReadfileVim {
@@ -170,9 +165,8 @@ if has('perl')
           push @lines, $line =~ s/'/''/gr;
         }
 
-        #my $ret =  '[' . join(', ', map { "'$_'" } @lines) . ']';
         VIM::DoCommand(
-          "return " . '[' . join(', ', map { "'$_'" } @lines) . ']');
+          'return [' . join(', ', map { "'$_'" } @lines) . ']');
       }
 
       sub FilterVim {
@@ -183,7 +177,7 @@ if has('perl')
         chomp for @filter;
         s/'/''/g for @filter;
         VIM::DoCommand(
-          "return " . '[' . join(', ', map { "'$_'" } @filter) . ']');
+          'return [' . join(', ', map { "'$_'" } @filter) . ']');
 
       }
 EOF
