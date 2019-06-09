@@ -1,5 +1,5 @@
 " File:         Utils.vim
-" Last Change:  06/07/2019
+" Last Change:  06/08/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -53,7 +53,6 @@ endfunction
 
 " XXX Document this because it is confusing
 function! UCTags#Utils#Readfile(file, ...)
-  echomsg a:0
   if !g:uctags_use_perl || !has('perl') || !filereadable(a:file)
     execute 'silent! return readfile(a:file' . (a:0 && a:1 ? ", '', a:1)" : ')')
   endif
