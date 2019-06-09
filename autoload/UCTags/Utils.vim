@@ -1,5 +1,5 @@
 " File:         Utils.vim
-" Last Change:  06/06/2019
+" Last Change:  06/07/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -28,7 +28,32 @@ function! UCTags#Utils#GetLang(lang)
   return a:lang
 endfunction
 
+" XXX Document this because it is confusing
+" lhs includes the whole lhs:  v:val ==#, =~ etc, only for Vim
+function! UCTags#Utils#FilterFile(file, lhs, rhs, ...)
+  if !filereadable(a:file) | return [] | endif
+  if !g:uctags_use_perl || !has('perl')
+    return UCTags#Utils#Filter(function('UCTags#Utils#Readfile', [a:file] + a:000)(), a:lhs, a:rhs)
+
+  endif
+
+  " FIXME Doens't support range for readfile on Perl side yet
+  perl FilterVim(scalar VIM::Eval('a:arg2'), Readfile(scalar VIM::Eval('a:file')))
+endfunction
+
+" XXX Document this because it is confusing
+function! UCTags#Utils#Filter(arg1, lhs, rhs)
+  if !g:uctags_use_perl || !has('perl')
+    return filter(a:arg1, a:lhs . "'" . a:rhs . "'")
+
+  endif
+perl FilterVim(scalar VIM::Eval('a:arg3'), VIM::Eval('a:arg1')))
+
+endfunction
+
+" XXX Document this because it is confusing
 function! UCTags#Utils#Readfile(file, ...)
+  echomsg a:0
   if !g:uctags_use_perl || !has('perl') || !filereadable(a:file)
     execute 'silent! return readfile(a:file' . (a:0 && a:1 ? ", '', a:1)" : ')')
   endif

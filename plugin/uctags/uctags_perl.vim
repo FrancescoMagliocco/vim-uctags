@@ -1,5 +1,5 @@
 " File:         uctags_perl.vim
-" Last Change:  06/07/2019
+" Last Change:  06/08/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -22,17 +22,29 @@ if has('perl')
           '\('   => '(',
           '\)'   => ')',
           '\|'   => '|',
-          '\.'   => '.',
+          #          '\.'   => '.',
           # Do these need to be escaped?
           '\<'   => '\\b',
           '\>'   => '\\b',
           '\ze'  => '',
           '\zs'  => '',
+          '\\\\s' => '\s',
+          '\\\\S' => '\S',
+          '\\\\+' => '+',
+          '\+',   => '+',
+          '\{',   => '{',
+          '\}',   => '}',
+          '\\\\{' => '{',
+          '\\\\}' => '}',
+          '\"'    => '"',
 
           '('    => '\\(',
           ')'    => '\\)',
           '|'    => '\\|',
-          '.'    => '\\.',
+          #'.'    => '\\.',
+          '{'     => '\\{',
+          '}'     => '\\}',
+          '+'     => '\\+'
       );
 
       sub UpdateSyn {
@@ -138,6 +150,14 @@ if has('perl')
         VIM::DoCommand("return $ret");
       }
 
+      sub Readfile {
+        my ($file) = @_;
+        open my $in_file, "<", "$file"
+          or die "Couldn't open '$file' $! " . (caller(0))[3];
+        return <$in_file>;
+
+      }
+
       sub ReadfileVim {
         my ($file, $arg2) = @_;
         open my $in_file, "<", "$file"
@@ -153,6 +173,18 @@ if has('perl')
         #my $ret =  '[' . join(', ', map { "'$_'" } @lines) . ']';
         VIM::DoCommand(
           "return " . '[' . join(', ', map { "'$_'" } @lines) . ']');
+      }
+
+      sub FilterVim {
+        my ($arg1, @arg2) = @_;
+        my $re = list2re keys %trans;
+        $arg1 =~ s/($re)/$trans{$1}/g;
+        my @filter = grep { m/$arg1/g } @arg2;
+        chomp for @filter;
+        s/'/''/g for @filter;
+        VIM::DoCommand(
+          "return " . '[' . join(', ', map { "'$_'" } @filter) . ']');
+
       }
 EOF
   endfunction
