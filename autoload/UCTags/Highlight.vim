@@ -248,7 +248,7 @@ endfunction
 
 " Iterates through each tag in a:tags.  Filters out all tags that {kind} isn't
 "   present in g:uctags_kind_to_hlg
-function! UCTags#Highlight#UpdateSyn(tags)
+function! UCTags#Highlight#CreateSynFiles(tags)
   let l:skip =
         \ 'has_key(g:uctags_skip_kind_for, tolower(v:val[3][5:]))'
         \ . '? index(g:uctags_skip_kind_for[tolower(v:val[3][5:])],'

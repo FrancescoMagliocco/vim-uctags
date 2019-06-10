@@ -1,6 +1,6 @@
 " A Universal-Ctags highlighter
 " File:         vim_uctags.vim
-" Last Change:  06/05/2019
+" Last Change:  06/10/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -43,5 +43,5 @@ augroup END
 command! -bar UpdateTags silent call UCTags#Generate#GenTags() | redraw!
 command! ReadTags call UCTags#Highlight#ReadTags(expand('%'))
 command! -bar DeleteAllSyn silent execute '!find . -name *.syn -delete' | redraw!
-command! UpdateSyn call UCTags#Highlight#UpdateSyn(UCTags#Parse#GetLang(&ft))
+command! CreateSynFiles call UCTags#Highlight#CreateSynFiles(UCTags#Parse#GetLang(&ft))
 command! UpdateSynFile call UCTags#Highlight#UpdateSynFile(expand('%'))
