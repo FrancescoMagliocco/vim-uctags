@@ -38,7 +38,6 @@ endfunction
 
 function! UCTags#Parse#GetLang(lang)
   let l:lang = UCTags#Utils#GetLang(a:lang)
-  echohl uctagsInfo | echon "\rGetting" l:lang 'tags            ' | echohl None
   if !g:uctags_use_perl || !has('perl')
     let l:pat = l:lang ==? 'c' ? '\\(c\\|c++\\)\\>' : l:lang
     return filter(
