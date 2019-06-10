@@ -85,6 +85,7 @@ if has('perl')
         while (my $line = <$tags>) {
           next if $line =~ /^!_TAG/;
           chomp $line;
+          $line =~ s/\R//g;
           push @lines, [split(/\t/, $line)];
         }
 
@@ -99,6 +100,7 @@ if has('perl')
         while (my $line = <$tags>) {
           next if $line =~ /^!_TAG/;
           chomp $line;
+          $line =~ s/\R//g;
           my @cols = split /\t/, $line;
           s/'/''/g for @cols;
           push @lines, '[' . join(', ', map { "'$_'" } @cols) . ']';
@@ -155,6 +157,7 @@ if has('perl')
         while (defined(my $line = <$in_file>)
             and not ($arg2 and ++$count  >= $arg2)) {
           chomp $line;
+          $line =~ s/\R//g;
           push @lines, $line =~ s/'/''/gr;
         }
 
@@ -168,6 +171,7 @@ if has('perl')
         $arg1 =~ s/($re)/$trans{$1}/g;
         my @filter = grep { m/$arg1/g } @arg2;
         chomp for @filter;
+        s/\R//g for @filter;
         s/'/''/g for @filter;
         VIM::DoCommand(
           'return [' . join(', ', map { "'$_'" } @filter) . ']');
