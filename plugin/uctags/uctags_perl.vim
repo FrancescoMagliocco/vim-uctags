@@ -74,10 +74,7 @@ if has('perl')
         open my $out_syn, ">", "$file.syn"
           or die "Couldn't write '$file' $! " . (caller(0))[3];
         
-        # We might be able to do print $out_syn for @buf;
-        foreach (@buf) {
-          print $out_syn $_;
-        }
+        print $out_syn $_ for @buf;
 
         # These may not need to be here.
         close($out_syn);
