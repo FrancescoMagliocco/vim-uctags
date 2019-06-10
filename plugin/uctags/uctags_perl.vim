@@ -1,5 +1,5 @@
 " File:         uctags_perl.vim
-" Last Change:  06/09/2019
+" Last Change:  06/10/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -73,7 +73,7 @@ if has('perl')
         close $buf_syn;
         open my $out_syn, ">", "$file.syn"
           or die "Couldn't write '$file' $! " . (caller(0))[3];
-        
+
         print $out_syn $_ for @buf;
 
         # These may not need to be here.
@@ -150,7 +150,7 @@ if has('perl')
         my @lines = grep { @$_[0] eq $str } @l;
         my @a = @{$lines[-1]};
         s/'/''/g for @a;
- 
+
         VIM::DoCommand('return [' . join(', ', map { "'$_'" } @a) . ']');
       }
 

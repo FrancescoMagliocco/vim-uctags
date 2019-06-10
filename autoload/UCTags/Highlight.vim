@@ -1,5 +1,5 @@
 " File:         Highlight.vim
-" Last Change:  06/09/2019
+" Last Change:  06/10/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -64,9 +64,9 @@ function! s:UpdateSynFor(file, ...)
   endif
 
   let l:sourced_syn = a:0 ? a:1 : 0
-  
+
   " Remove quotes
-  let l:file = substitute(a:file, "\\(\"\\|\'\\)", '', 'g') 
+  let l:file = substitute(a:file, "\\(\"\\|\'\\)", '', 'g')
   let l:ofile = l:file
 
   let l:syn_file = l:file . '.syn'
@@ -142,9 +142,9 @@ function! UCTags#Highlight#ReadTags(file, ...)
   endif
 
   let l:sourced_syn = a:0 ? a:1 : 0
-  
+
   " Remove quotes
-  let l:file = substitute(a:file, "\\(\"\\|\'\\)", '', 'g') 
+  let l:file = substitute(a:file, "\\(\"\\|\'\\)", '', 'g')
   let l:ofile = l:file
 
   if g:uctags_enable_go
@@ -158,7 +158,7 @@ function! UCTags#Highlight#ReadTags(file, ...)
 
   " syn file for l:file
   let l:syn_file = l:file . '.syn'
-  " If the syn file for a:file is readable, we source it.  
+  " If the syn file for a:file is readable, we source it.
   " If the syn file for a:file is not readable, ods are the header that was
   "   passed to a:file is relative to that of the file it was included in, and
   "   the current directory we are in, is not relative to the header.
@@ -229,7 +229,7 @@ function! UCTags#Highlight#ReadTags(file, ...)
   "   twice intentially.  We don't want to source that same syn file for a
   "   header twice.
   "   import\s\+(\n\(\s\(\(\w\+\s\)\?\"\w\+\(\(\/\|\.\)\w\+\)\?\"\)\n\)*)
-  "echo split(matchstr(join(readfile(l:file), "\n"), 
+  "echo split(matchstr(join(readfile(l:file), "\n"),
   "      \ 'import\s\+(\n\(\s\(\(\w\+\s\)\?\"\w\+\(\(\/\|\.\)\w\+\)\?\"\)\n\)*)'),
   "      \ "\n")
 
@@ -242,7 +242,7 @@ function! UCTags#Highlight#ReadTags(file, ...)
     " Since this funcion can be recursive, we only attempt to read tags for
     "   includes on files that aren't already in queue to be read, which is why
     "   we send the current list as an optinal so we don't read something
-    "   twice.     
+    "   twice.
     if a:0 && index(a:2, l:file) >= 0 | continue | endif
     call UCTags#Highlight#ReadTags(substitute(
           \   l:file, '^.*' . l:pat . '\s\+', '', 'g'),
@@ -319,7 +319,7 @@ function! UCTags#Highlight#UpdateSyn(tags)
   for l:v in filter(
         \ filter(a:tags, 'has_key(g:uctags_kind_to_hlg, tolower(v:val[3][5:]))'),
         \ l:skip)
-    
+
     " TODO Rename
     let l:tfile = l:v[1]
     if empty(l:file)
@@ -351,7 +351,7 @@ function! UCTags#Highlight#UpdateSyn(tags)
       echomsg l:group
       continue
     endif
-    
+
     let l:has_key = has_key(g:uctags_match_map, l:lang)
           \ && has_key(g:uctags_match_map[l:lang], l:kind)
 
