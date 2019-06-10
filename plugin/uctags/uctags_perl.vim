@@ -1,6 +1,7 @@
 " File:         uctags_perl.vim
 " Last Change:  06/10/2019
 " Maintainer:   FrancescoMagliocco
+" vim: ft=perl
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
       \ || !exists('g:loaded_uctags')
@@ -49,18 +50,12 @@ if has('perl')
         die "Need an argument for " . (caller(0))[3] unless $arg;
         my $file = VIM::Eval("expand('%')");
 
-        # syn file for the current Vim buffer
-        #open my $buf_syn, "<", "$file.syn"
-        #  or die "Couldn't open '$file' $! " . (caller(0))[3];
         my @buf = Readfile("$file.syn");
-        #my @buf = <$buf_syn>;
 
-        #open my $in_syn, "<", "$arg"
-        #  or die "Couldn't open '$arg' $! " . (caller(0))[3];
-        my @in_syn = Readfile("$arg");
+        open my $in_syn, "<", "$arg"
+          or die "Couldn't open '$arg' $! " . (caller(0))[3];
         my @lines =  $curbuf->Get(1 .. VIM::Eval('line("$")'));
-        #while (my $line = <$in_syn>) {
-        foreach my $line (@in_syn) {
+        while (my $line = <$in_syn>) {
           my $str = +(split(' ', $line))[-1];
           $str = substr($str, 1, -1);
           my $re = list2re keys %trans;
@@ -70,16 +65,7 @@ if has('perl')
             push @buf, $line;
         }
 
-        #close $buf_syn;
         Writefile("$file.syn", @buf);
-        #        open my $out_syn, ">", "$file.syn"
-        #  or die "Couldn't write '$file' $! " . (caller(0))[3];
-
-        #print $out_syn $_ for @buf;
-
-        # These may not need to be here.
-        #close($out_syn);
-        # close $in_syn;
       }
 
       sub Writefile {
@@ -92,9 +78,7 @@ if has('perl')
       sub GetTags {
         my $tag_file = VIM::Eval('g:uctags_tags_file');
 
-        # Try implementing this for other places
-        #my $tags = Readfile("$tag_file");
-                open my $tags, "<", $tag_file
+        open my $tags, "<", $tag_file
           or die "Couldn't open '$tag_file' $! " . (caller(0))[3];
 
         my @lines = ();
