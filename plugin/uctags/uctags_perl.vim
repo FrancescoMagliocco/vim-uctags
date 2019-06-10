@@ -1,5 +1,5 @@
 " File:         uctags_perl.vim
-" Last Change:  06/08/2019
+" Last Change:  06/09/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -79,13 +79,24 @@ if has('perl')
           print $out_syn $_;
         }
 
+        # These may not need to be here.
         close($out_syn);
         close $in_syn;
       }
 
+      sub Writefile {
+        my($file, @lines) = @_;
+        open my $fh, ">", $file;
+        print $fh $_ for @lines;
+        close $fh;
+      }
+
       sub GetTags {
         my $tag_file = VIM::Eval('g:uctags_tags_file');
-        open my $tags, "<", $tag_file
+
+        # Try implementing this for other places
+        #my $tags = Readfile("$tag_file");
+                open my $tags, "<", $tag_file
           or die "Couldn't open '$tag_file' $! " . (caller(0))[3];
 
         my @lines = ();

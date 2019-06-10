@@ -17,6 +17,14 @@ let s:lang_map =
       \   ['javascript', 'jscript', 'js']
       \ ]
 
+function! UCTags#Utils#Writefile(file, lines)
+  if !g:uctags_use_perl || !has('perl')
+    call writefile(a:file, a:lines)
+  else
+    perl Writefile(scalar VIM::Eval('a:file'), scalar VIM::Eval('a:lines'))
+  endif
+endfunction
+
 function! UCTags#Utils#GetLang(lang)
   for l:v in s:lang_map
     if index(l:v, a:lang) >= 0
