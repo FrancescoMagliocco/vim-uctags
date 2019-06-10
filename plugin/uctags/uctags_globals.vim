@@ -1,5 +1,5 @@
 " File:         uctags_globals.vim
-" Last Change:  06/05/2019
+" Last Change:  06/10/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -194,7 +194,7 @@ let g:uctags_args           = get(g:, 'uctags_args', {
       \   '-f'                      : g:uctags_tags_file,
       \   '--extras='               :
       \     '*-{subword}{qualified}{fileScope}{anonymous}',
-      \   '--fields='               : '*-{roles}{scope}{file}',
+      \   '--fields='               : '*-{roles}{file}',
       \   '--kinds-all='            : '*',
       \   '--kinds-c++='            : '-{header}',
       \   '--kinds-c='              : '-{header}',
