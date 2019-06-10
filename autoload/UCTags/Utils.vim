@@ -45,10 +45,9 @@ endfunction
 function! UCTags#Utils#Filter(arg1, lhs, rhs)
   if !g:uctags_use_perl || !has('perl')
     return filter(a:arg1, a:lhs . "'" . a:rhs . "'")
-
   endif
-perl FilterVim(scalar VIM::Eval('a:rhs'), VIM::Eval('a:arg1')))
 
+  perl FilterVim(scalar VIM::Eval('a:rhs'), VIM::Eval('a:arg1')))
 endfunction
 
 " XXX Document this because it is confusing
