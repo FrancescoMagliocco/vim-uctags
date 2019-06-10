@@ -21,8 +21,7 @@ function! UCTags#Utils#Writefile(lines, file)
   if !g:uctags_use_perl || !has('perl')
     call writefile(a:lines, a:file)
   else
-    " XXX Not sure if the second argument should be a scalar or not..
-    "   a:lines is a list
+    " scalar context needs to be specified or success will be included
     perl Writefile(scalar VIM::Eval('a:file'), scalar VIM::Eval('a:lines'))
   endif
 endfunction
@@ -38,17 +37,30 @@ function! UCTags#Utils#GetLang(lang)
   return a:lang
 endfunction
 
-" XXX Document this because it is confusing
-" lhs includes the whole lhs:  v:val ==#, =~ etc, only for Vim
+" Just like UCTags#UtilsFilter(), but expr1 is instead a file.
+" lhs is the 'left hand side' of expr2 for filter including the comparison
+"   operator.
+" rhs is the 'right hand side' of expr2 after the comparison operator.
+"
+" The reason why we have these separate is because when using Perl, v:val has
+"   no meaning, but if using Vim, it does.
+" If an optional argument is given, it will be the amount of lines to read from
+"   a:file
+"
+" Example:
+"   UCTags#Utils#FilterFile(expand('%'), 'v:val =~#', '^\d', 69)
+"   This would be the equivilent to
+"     filter(readfile(expand('%'), '', 69), "v:val =~# '^\d'")
 function! UCTags#Utils#FilterFile(file, lhs, rhs, ...)
   if !filereadable(a:file) | return [] | endif
   if !g:uctags_use_perl || !has('perl')
-    return UCTags#Utils#Filter(function('UCTags#Utils#Readfile', [a:file] + a:000)(), a:lhs, a:rhs)
-
+    return UCTags#Utils#Filter(
+          \ function('UCTags#Utils#Readfile', [a:file] + a:000)(), a:lhs, a:rhs)
   endif
 
   " FIXME Doens't support range for readfile on Perl side yet
-  perl FilterVim(scalar VIM::Eval('a:rhs'), Readfile(scalar VIM::Eval('a:file')))
+  perl FilterVim(
+        \ scalar VIM::Eval('a:rhs'), Readfile(scalar VIM::Eval('a:file')))
 endfunction
 
 " XXX Document this because it is confusing
