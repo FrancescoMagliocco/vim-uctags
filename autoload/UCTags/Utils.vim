@@ -17,10 +17,12 @@ let s:lang_map =
       \   ['javascript', 'jscript', 'js']
       \ ]
 
-function! UCTags#Utils#Writefile(file, lines)
+function! UCTags#Utils#Writefile(lines, file)
   if !g:uctags_use_perl || !has('perl')
-    call writefile(a:file, a:lines)
+    call writefile(a:lines, a:file)
   else
+    " XXX Not sure if the second argument should be a scalar or not..
+    "   a:lines is a list
     perl Writefile(scalar VIM::Eval('a:file'), scalar VIM::Eval('a:lines'))
   endif
 endfunction
