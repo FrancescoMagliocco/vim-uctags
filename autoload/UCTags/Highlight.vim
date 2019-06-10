@@ -12,7 +12,13 @@ let g:loaded_UCTags_Highlight = 1
 
 let g:uctags_enable_go = get(g:, 'uctags_enable_go', 0)
 let s:inc_lan = ['cpp', 'c', 'asm']
-let s:pat_lang = { 'asm': '%include', 'cpp': '#include', 'c': '#include', 'go': 'import'}
+let s:pat_lang =
+      \ {
+      \   'asm' : ['', '%include', ''],
+      \   'cpp' : ['\s*', '#include', '\s\+"\{1\}.*"\{1\}'],
+      \   'c'   : ['\s*', '#include', '\s\+"\{1\}.*"\{1\}'],
+      \   'go'  : ['', 'import', ''],
+      \ }
 
 function! s:UpdateSyn(file)
   if !g:uctags_use_perl || !has('perl')
@@ -91,11 +97,12 @@ function! s:UpdateSynFor(file, ...)
 
   if !filereadable(l:file) | return | endif
   let l:pat = s:pat_lang[&ft]
-  let l:list = uniq(sort(UCTags#Utils#FilterFile(l:file, 'v:val =~#', '\s*' . l:pat . '\s\+"\{1\}.*"\{1\}')))
+  let l:list = uniq(sort(UCTags#Utils#FilterFile(l:file, 'v:val =~#', join(l:pat, ''))))
+  "let l:list = uniq(sort(UCTags#Utils#FilterFile(l:file, 'v:val =~#', '\s*' . l:pat . '\s\+"\{1\}.*"\{1\}')))
   for l:file in l:list
     if a:0 && index(a:2, l:file) >= 0 | continue | endif
     call s:UpdateSynFor(substitute(
-          \   l:file, '^.*' . l:pat . '\s\+', '', 'g'),
+          \   l:file, '^.*' . l:pat[1] . '\s\+', '', 'g'),
           \ l:sourced_syn, extend(a:0 ? a:2 : [], l:list), l:ofile)
   endfor
 
