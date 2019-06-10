@@ -1,5 +1,5 @@
 " File:         Utils.vim
-" Last Change:  06/09/2019
+" Last Change:  06/10/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -13,7 +13,7 @@ let s:lang_map =
       \ [
       \   ['asm', 'nasm', 'fasm', 'masm'],
       \   ['c++', 'cplusplus', 'cpp', 'cc'],
-      \   ['csharp', 'c#'],
+      \   ['c#', 'csharp', 'cs'],
       \   ['javascript', 'jscript', 'js']
       \ ]
 
