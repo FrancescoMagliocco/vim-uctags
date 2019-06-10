@@ -66,12 +66,13 @@ function! s:UpdateSynFor(file, ...)
   let l:ofile = l:file
 
   let l:syn_file = l:file . '.syn'
-  if filereadable(l:syn_file)
+  if index(s:inc_lan, tolower(&ft)) < 0
+    " Current language doesn't support include directives.
+    return l:syn_file
+  elseif filereadable(l:syn_file)
       call s:UpdateSyn(l:syn_file)
     "execute 'source' l:syn_file
     let l:sourced_syn += 1
-  elseif index(s:inc_lan, tolower(&ft)) < 0
-    return
   else
     let l:tfile = escape(l:file, '^.$\*')
     let l:lines = s:UpdateSynFilter(l:tfile, l:file)
