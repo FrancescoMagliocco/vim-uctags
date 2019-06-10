@@ -19,7 +19,6 @@ function! s:UpdateSyn(file)
 
     silent! let l:lines =
           \ filter(readfile(expand('%') . '.syn'), "v:val !~# '^\\s*\\\"'")
-    echohl uctagsInfo | echon "\rReading files" | echohl None
     for l:t in readfile(a:file)
       if empty(filter(getline(2, line('$')),
             \   "v:val =~# escape(split(l:t, ' ')[-1], '\')[1:-2]"))
@@ -32,7 +31,6 @@ function! s:UpdateSyn(file)
     call writefile(l:lines, expand('%') . '.syn')
   else
 
-    echohl uctagsInfo | echon "\rUsing Perl UpdateSyn()         " | echohl None
     perl UpdateSyn(scalar VIM::Eval('a:file'))
   endif
 endfunction
@@ -43,13 +41,11 @@ function! s:UpdateSynFilter(...)
     echoer 'Need 2 arguments1'
   endif
 
-  echohl uctagsInfo | echon "\rAdd message here                 " | echohl None
   if !g:uctags_use_perl || !has('perl')
     return filter(filter(UCTags#Parse#GetTags(),
           \ 'v:val[1] =~# a:1'), "v:val[0] ==# split(a:2, '/')[-1]")[-1]
   endif
 
-  echohl uctagsInfo | echon "\rUsing Perl UpdateSynFilter()     " | echohl None
   perl UpdateSynFilter(scalar VIM::Eval('a:1'), scalar VIM::Eval('a:2'))
 endfunction
 
@@ -94,9 +90,7 @@ function! s:UpdateSynFor(file, ...)
 
   if !filereadable(l:file) | return | endif
   let l:pat = s:pat_lang[&ft]
-  echohl uctagsInfo | echon "\rReadfile function                " | echohl None
   let l:list = uniq(sort(UCTags#Utils#FilterFile(l:file, 'v:val =~#', '\s*' . l:pat . '\s\+"\{1\}.*"\{1\}')))
-  echohl uctagsInfo | echon "\rParsing files                    " | echohl None
   for l:file in l:list
     if a:0 && index(a:2, l:file) >= 0 | continue | endif
     call s:UpdateSynFor(substitute(
@@ -328,7 +322,6 @@ function! UCTags#Highlight#UpdateSyn(tags)
 
     if l:file !=# l:tfile
       if !empty(l:lines)
-        echohl uctagsInfo | echon "\rWriting file               " | echohl None
         call UCTags#Utils#Writefile(uniq(sort(l:lines)), l:file)
         "call writefile(uniq(sort(l:lines)), l:file)
       endif
@@ -336,7 +329,6 @@ function! UCTags#Highlight#UpdateSyn(tags)
       let l:file = l:tfile . '.syn'
       " The reason why we are using silent! is bcause if l:file doesn';t
       "   exists, an empty list is returned which is okay.
-      echohl uctagsInfo | echon "\rReading file                 " | echohl None
       "silent! let l:lines = readfile(l:file)
       let l:lines = UCTags#Utils#Readfile(l:file)
     endif
@@ -373,7 +365,6 @@ function! UCTags#Highlight#UpdateSyn(tags)
   endfor
 
   if !empty(l:lines)
-    echohl uctagsInfo | echon "\rWriting file                   " | echohl None
     call UCTags#Utils#Writefile(uniq(sort(l:lines)), l:file)
     "call writefile(uniq(sort(l:lines)), l:file)
   endif

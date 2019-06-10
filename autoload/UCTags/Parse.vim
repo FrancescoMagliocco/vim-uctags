@@ -1,5 +1,5 @@
 " File:         Parse.vim
-" Last Change:  06/06/2019
+" Last Change:  06/10/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -18,7 +18,6 @@ function! UCTags#Parse#GetTags()
     finish
   endif
 
-  echohl uctagsInfo | echon '  Using Perl GetTagsVim()' | echohl None
   perl GetTagsVim
 endfunction
 
@@ -32,7 +31,6 @@ function! s:GetTags()
     echohl warningMsg | echomsg 'Not using Perl!' | echohl None
   endif
 
-  echohl uctagsInfo | echon '  Reading tag file' | echohl None
   return map(
         \ filter(UCTags#Utils#Readfile(g:uctags_tags_file), "v:val !~# '^!_TAG'"),
         \ "split(v:val, '\t')")
@@ -50,6 +48,5 @@ function! UCTags#Parse#GetLang(lang)
           \   : l:lang . "'")
   endif
 
-  echohl uctagsInfo | echon '  Using Perl GetLangVim()' | echohl None
   perl GetLangVim(scalar VIM::Eval('l:lang'))
 endfunction
