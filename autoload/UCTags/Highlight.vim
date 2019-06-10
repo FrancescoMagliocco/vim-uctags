@@ -95,18 +95,7 @@ function! s:UpdateSynFor(file, ...)
   if !filereadable(l:file) | return | endif
   let l:pat = s:pat_lang[&ft]
   echohl uctagsInfo | echon "\rReadfile function                " | echohl None
-"  let l:filter = perl FilterVim(Readfile(scalar VIM::Eval('l:file'), '\s' . scalar VIM::Eval('l:pat') . '\s+{1}.*"{1}'))
   let l:list = uniq(sort(UCTags#Utils#FilterFile(l:file, 'v:val =~#', '\s*' . l:pat . '\s\+"\{1\}.*"\{1\}')))
-  "let l:list = uniq(sort(filter(
-  "      \ UCTags#Utils#Readfile(l:file, g:uctags_max_lines_header_search),
-  "      \ "v:val =~# '\\s*" . l:pat . "\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
-  "let l:list = uniq(sort(filter(
-  "      \ function(
-  "      \   'readfile',
-  "      \   g:uctags_max_lines_header_search
-  "      \     ? [l:file, '', g:uctags_max_lines_header_search]
-  "      \     : [l:file])(),
-  "      \ "v:val =~# '\\s*" . l:pat . "\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
   echohl uctagsInfo | echon "\rParsing files                    " | echohl None
   for l:file in l:list
     if a:0 && index(a:2, l:file) >= 0 | continue | endif
@@ -247,18 +236,6 @@ function! UCTags#Highlight#ReadTags(file, ...)
   let l:list = uniq(sort(filter(
         \ UCTags#Utils#Readfile(l:file, g:uctags_max_lines_header_search),
         \ "v:val =~# '\\s*" . l:pat . "\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
-""  let l:list = uniq(sort(filter(
-""        \ function(
-""        \   'readfile',
-""        \   g:uctags_max_lines_header_search
-""        \     ? [l:file, '', g:uctags_max_lines_header_search]
-""        \     : [l:file])(),
-""        \ "v:val =~# '\\s*" . l:pat . "\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
-
-""  let l:list = uniq(sort(filter(readfile(l:file),
-""        \ "v:val =~# '\\s*" . l:pat . "\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
-  "let l:list = uniq(sort(filter(readfile(l:file),
-  "      \ "v:val =~# '\\s*#include\\s\\+\"\\{1\\}.*\"\\{1\\}'")))
   " We could probably take out any duplicates that  may be in a:1 and l:list
   "   when extended together, but that would just make the iteration longer
   for l:file in l:list
@@ -352,7 +329,8 @@ function! UCTags#Highlight#UpdateSyn(tags)
     if l:file !=# l:tfile
       if !empty(l:lines)
         echohl uctagsInfo | echon "\rWriting file               " | echohl None
-        call writefile(uniq(sort(l:lines)), l:file)
+        call UCTags#Utils#Writefile(uniq(sort(l:lines)), l:file)
+        "call writefile(uniq(sort(l:lines)), l:file)
       endif
 
       let l:file = l:tfile . '.syn'
@@ -396,7 +374,8 @@ function! UCTags#Highlight#UpdateSyn(tags)
 
   if !empty(l:lines)
     echohl uctagsInfo | echon "\rWriting file                   " | echohl None
-    call writefile(uniq(sort(l:lines)), l:file)
+    call UCTags#Utils#Writefile(uniq(sort(l:lines)), l:file)
+    "call writefile(uniq(sort(l:lines)), l:file)
   endif
 
 endfunction
