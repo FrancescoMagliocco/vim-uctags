@@ -1,5 +1,5 @@
 " File:         Highlight.vim
-" Last Change:  06/10/2019
+" Last Change:  06/11/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -11,13 +11,27 @@ endif
 let g:loaded_UCTags_Highlight = 1
 
 let g:uctags_enable_go = get(g:, 'uctags_enable_go', 0)
-let s:inc_lan = ['cpp', 'c', 'asm']
+" TODO Rename
+let s:inc_lan = ['cpp', 'c', 'asm', 'cs']
+" TODO Rename
 let s:pat_lang =
       \ {
       \   'asm' : ['', '%include', ''],
       \   'cpp' : ['\s*', '#include', '\s\+"\{1\}.*"\{1\}'],
       \   'c'   : ['\s*', '#include', '\s\+"\{1\}.*"\{1\}'],
       \   'go'  : ['', 'import', ''],
+      \   'cs'  : ['', 'using', '\s\+.*;']
+      \ }
+
+" TODO Rename
+let s:search =
+      \ {
+      \   'cpp' : 'let l:ret = filter(filter(UCTags#Parse#GetTags(), '
+      \     . "'v:val[1] =~# a:1'), \"v:val[0] ==# split(a:2, '/')[-1]\")",
+      \   'c'   : 'let l:ret = filter(filter(UCTags#Parse#GetTags(), '
+      \     . "'v:val[1] =~# a:1'), \"v:val[0] ==# split(a:2, '/')[-1]\")",
+      \   'cs'  : 'let l:ret = filter(filter(UCTags#Parse#GetTags(), '
+      \     . "'len(v:val) > 6'), \"v:val[6] ==# 'scope:namespace:\" . a:2[:-2] . \"'\")"
       \ }
 
 function! s:UpdateSyn(file)
@@ -46,13 +60,16 @@ function! s:UpdateSynFilter(...)
   if a:0 < 2
     echoer 'Need 2 arguments1'
   endif
-
   if !g:uctags_use_perl || !has('perl')
-    return filter(filter(UCTags#Parse#GetTags(),
-          \ 'v:val[1] =~# a:1'), "v:val[0] ==# split(a:2, '/')[-1]")[-1]
+    let l:ret = []
+    execute s:search[&ft]
+    return empty(l:ret) ? l:ret : l:ret[-1]
   endif
-
-  perl UpdateSynFilter(scalar VIM::Eval('a:1'), scalar VIM::Eval('a:2'))
+  
+  perl UpdateSynFilter(scalar VIM::Eval('a:1'), scalar VIM::Eval('a:2'), scalar VIM::Eval('&ft'))
+  " If @lines in Perl is empty, Perl returns (Not using VIM::DoCommand()),
+  "   then an empty list is returned to the caller.
+  return []
 endfunction
 
 function! s:UpdateSynFor(file, ...)

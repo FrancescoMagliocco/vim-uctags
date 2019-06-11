@@ -1,5 +1,5 @@
 " File:         uctags_perl.vim
-" Last Change:  06/10/2019
+" Last Change:  06/11/2019
 " Maintainer:   FrancescoMagliocco
 " vim: ft=perl
 
@@ -131,10 +131,13 @@ if has('perl')
 
       # TODO New Name
       sub UpdateSynFilter {
-        my ($tfile, $file) = @_;
-        my @l = grep { $_->[1] =~ /$tfile/ } GetTags;
-        my $str = +(split('/', $file))[-1];
-        my @lines = grep { @$_[0] eq $str } @l;
+        my ($tfile, $file, $lang) = @_;
+
+        my $is_cs = $lang eq 'cs';
+        my $str = $is_cs ? 'scope:namespace:' . substr $file, 0, -1 : (split('/', $file))[-1];
+        my $idx = $is_cs ? 6 : 0;
+        my @lines = grep { ($is_cs ? scalar @$_ > 6 : $_->[1] =~ /$tfile/) and $_->[$idx] eq $str } GetTags;
+        return unless @lines;
         my @a = @{$lines[-1]};
         s/'/''/g for @a;
 
