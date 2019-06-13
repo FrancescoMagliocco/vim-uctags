@@ -1,5 +1,5 @@
 " File:         Utils.vim
-" Last Change:  06/10/2019
+" Last Change:  06/12/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -287,6 +287,6 @@ function! UCTags#Utils#HiLink(lang)
 
     execute 'hi! link '
           \ . get(g:uctags_lang_map, l:lang, l:lang)
-          \ . get(g:uctags_hl_group_map, l:v, l:v) g:uctags_kind_to_hlg[l:v]
+          \ . get(g:uctags_hl_group_map, l:v, l:v) get(g:uctags_kind_to_hlg, l:v, 'errorMsg')
   endfor
 endfunction

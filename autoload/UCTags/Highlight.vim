@@ -1,5 +1,5 @@
 " File:         Highlight.vim
-" Last Change:  06/11/2019
+" Last Change:  06/12/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -271,13 +271,15 @@ function! UCTags#Highlight#ReadTags(file, ...)
 
 endfunction
 
+let s:uctags_default_match  =  { 'start'     : '/\<',  'end' : '\>/' }
 " Iterates through each tag in a:tags.  Filters out all tags that {kind} isn't
 "   present in g:uctags_kind_to_hlg
 function! UCTags#Highlight#CreateSynFiles(tags)
+  " COMBAK Revise
   let l:skip =
         \ 'has_key(g:uctags_skip_kind_for, tolower(v:val[3][5:]))'
         \ . '? index(g:uctags_skip_kind_for[tolower(v:val[3][5:])],'
-        \     . 'tolower(v:val[5][9:])) < 0'
+        \     . "tolower(v:val[5][9:])) < 0 && index(g:uctags_skip_kind_for[tolower(v:val[3][5:])], 'all') < 0"
         \ . ': 1'
   let l:file = ''
   let l:lines = []
@@ -335,8 +337,8 @@ function! UCTags#Highlight#CreateSynFiles(tags)
   "   key.
   " The built match is added to a list of matches.
   " The built link is executed.
-  for l:v in filter(
-        \ filter(a:tags, 'has_key(g:uctags_kind_to_hlg, tolower(v:val[3][5:]))'),
+        "\ filter(a:tags, 'has_key(g:uctags_kind_to_hlg, tolower(v:val[3][5:]))'),
+  for l:v in filter(a:tags,
         \ l:skip)
 
     " TODO Rename
@@ -372,12 +374,17 @@ function! UCTags#Highlight#CreateSynFiles(tags)
     let l:has_key = has_key(g:uctags_match_map, l:lang)
           \ && has_key(g:uctags_match_map[l:lang], l:kind)
 
+    " COMBAK Revise from here
     if !l:has_key && !has_key(g:uctags_match_map, l:kind)
-      continue
+      echohl warningMsg | echomsg "Don't have key for" l:kind
+      echomsg 'Using' s:uctags_default_match | echohl None
+      let l:match = s:uctags_default_match
+      "continue
+    else
+      let l:match = get(
+            \ l:has_key ? g:uctags_match_map[l:lang] : g:uctags_match_map, l:kind)
     endif
-
-    let l:match = get(
-          \ l:has_key ? g:uctags_match_map[l:lang] : g:uctags_match_map, l:kind)
+    " COMBAK To here
 
     let l:syn = 'syntax match ' . l:group . ' '
           \ . l:match.start
