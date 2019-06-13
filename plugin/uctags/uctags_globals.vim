@@ -1,5 +1,5 @@
 " File:         uctags_globals.vim
-" Last Change:  06/10/2019
+" Last Change:  06/12/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -34,6 +34,7 @@ let g:uctags_max_syn = get(g:, 'uctags_max_syn', 0)
 let g:uctags_skip_kind_for  = get(g:, 'uctags_skip_hl_for', {
       \   'chapter'       : ['markdown'],
       \   'externvar'     : ['c', 'c++'],
+      \   'file'          : ['all'],
       \   'function'      : ['vim'],
       \   'header'        : ['c', 'c++'],
       \   'heredoc'       : ['sh'],
@@ -76,10 +77,10 @@ let g:uctags_kind_to_hlg      = get(g:, 'uctags_kind_to_hlg', {
       \   'const'           : 'constant',
       \   'command'         : 'command',
       \   'define'          : 'cTagsDefinedName',
-      \   'enum'            : 'class',
-      \   'enumerator'      : 'cTagsDefinedName',
+      \   'enum'            : 'enumName',
+      \   'enumerator'      : 'enumValue',
       \   'externvar'       : 'variable',
-      \   'field'           : 'method',
+      \   'field'           : 'field',
       \   'func'            : 'functionName',
       \   'function'        : 'functionName',
       \   'id'              : 'identifier',
@@ -98,7 +99,7 @@ let g:uctags_kind_to_hlg      = get(g:, 'uctags_kind_to_hlg', {
       \   'package'         : 'namespace',
       \   'packagename'     : 'namespace',
       \   'project'         : 'title',
-      \   'property'        : 'errorMsg',
+      \   'property'        : 'property',
       \   'prototype'       : 'functionName',
       \   'rpc'             : 'functionName',
       \   'section'         : 'identifier',
@@ -129,6 +130,7 @@ let g:uctags_kind_to_hlg      = get(g:, 'uctags_kind_to_hlg', {
 "   that is highlighted by makeIndent
 let g:uctags_match_map      = get(g:, 'uctags_match_map', {
       \   'c++'     : { 'member'  : { 'start' : '/\%\(\.\|->\)\<\zs', 'end' : '\>/' }},
+      \   'c#'      : { 'method'  : { 'start' : '/\<', 'end' : '\ze\s*\%\((\|<\)/'  }},
       \   'go'      : { 'member'  : { 'start' : '/\<', 'end' : '\>/' }},
       \   'javascript'  : { 'method' : { 'start' : '/\<', 'end' : '\%\(\>\|\ze(\)/'}},
       \   'python'  : { 'class'   : { 'start' : '/\<', 'end' : '\ze(/' }},
