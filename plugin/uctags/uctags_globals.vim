@@ -1,5 +1,5 @@
 " File:         uctags_globals.vim
-" Last Change:  06/12/2019
+" Last Change:  06/13/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -15,6 +15,9 @@ let g:uctags_max_info         = get(g:, 'uctags_max_info', 0)
 
 let g:uctags_extra_args       = get(g:, 'uctags_extra_args', {})
 let g:uctags_syntax_c_enabled = get(g:, 'uctags_syntax_c_enabled', 1)
+let g:uctags_use_keyword      = get(g:, 'uctags_use_keyword', 1)
+let g:uctags_skip_non_keyword = get(g:, 'uctags_skip_non_keyword', 0)
+let g:uctags_use_only_match   = get(g:, 'uctags_use_only_match', 0)
 
 " TODO Change name
 let g:uctags_max_lines_header_search = get(g:, 'uctags_max_lines_header_search', 0)
@@ -128,58 +131,60 @@ let g:uctags_kind_to_hlg      = get(g:, 'uctags_kind_to_hlg', {
 "
 " macro for make is already highlightedd by makeIndent, but there is too much
 "   that is highlighted by makeIndent
+let g:uctags_default_match  =  { 'start' : '/\<',  'end' : '\>/' }
 let g:uctags_match_map      = get(g:, 'uctags_match_map', {
       \   'c++'     : { 'member'  : { 'start' : '/\%\(\.\|->\)\<\zs', 'end' : '\>/' }},
       \   'c#'      : { 'method'  : { 'start' : '/\<', 'end' : '\ze\s*\%\((\|<\)/'  }},
-      \   'go'      : { 'member'  : { 'start' : '/\<', 'end' : '\>/' }},
+      \   'go'      : { 'member'  : g:uctags_default_match },
       \   'javascript'  : { 'method' : { 'start' : '/\<', 'end' : '\%\(\>\|\ze(\)/'}},
       \   'python'  : { 'class'   : { 'start' : '/\<', 'end' : '\ze(/' }},
-      \   'vim'     : { 'command' : { 'start' : '/\<', 'end' : '\>/' }},
-      \   'alias'           : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'annotation'      : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'anonmember'      : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'class'           : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'const'           : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'enum'            : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'enumerator'      : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'externvar'       : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'define'          : { 'start'     : '/\<',  'end' : '\>/' },
       \   'field'           : { 'start'     : '/\<',  'end' : '\ze(/' },
       \   'func'            : { 'start'     : '/\<',  'end' : '\ze(/' },
       \   'function'        : { 'start'     : '/\<',  'end' : '\s*\ze(/' },
-      \   'id'              : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'implementation'  : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'interface'       : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'label'           : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'local'           : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'macro'           : { 'start'     : '/\<',  'end' : '\>/' },
       \   'member'          : { 'start'     : '/\<',  'end' : '\ze\s*(/' },
-      \   'message'         : { 'start'     : '/\<',  'end' : '\>/' },
       \   'method'          : { 'start'     : '/\<',  'end' : '\ze(/' },
-      \   'module'          : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'name'            : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'namespace'       : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'option'          : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'package'         : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'packagename'     : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'project'         : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'property'        : { 'start'     : '/\<',  'end' : '\>/' },
       \   'prototype'       : { 'start'     : '/\<',  'end' : '\ze(/' },
       \   'rpc'             : { 'start'     : '/\<',  'end' : '\ze(/' },
-      \   'section'         : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'selector'        : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'service'         : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'struct'          : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'symbol'          : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'table'           : { 'start'     : '/\<',  'end' : '\>/' },
       \   'target'          : { 'start'     : '+',    'end' : '+' },
-      \   'type'            : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'typedef'         : { 'start'     : '/\<',  'end' : '\>/' },
-      \   'union'           : { 'start'     : '/\<',  'end' : '\>/' },
       \   'using'           : { 'start'     : '/',    'end' : '\>/' },
       \   'var'             : { 'start'     : '/',    'end' : '\>/' },
-      \   'variable'        : { 'start'     : '/\<',  'end' : '\>/' },
       \ })
+      "\   'go'      : { 'member'  : { 'start' : '/\<', 'end' : '\>/' }},
+      "\   'vim'     : { 'command' : { 'start' : '/\<', 'end' : '\>/' }},
+      "\   'alias'           : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'annotation'      : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'anonmember'      : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'class'           : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'const'           : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'enum'            : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'enumerator'      : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'externvar'       : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'define'          : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'id'              : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'implementation'  : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'interface'       : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'label'           : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'local'           : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'macro'           : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'message'         : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'module'          : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'name'            : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'namespace'       : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'option'          : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'package'         : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'packagename'     : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'project'         : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'property'        : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'section'         : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'selector'        : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'service'         : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'struct'          : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'symbol'          : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'table'           : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'type'            : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'typedef'         : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'union'           : { 'start'     : '/\<',  'end' : '\>/' },
+      "\   'variable'        : { 'start'     : '/\<',  'end' : '\>/' },
 
 function! s:ParseArgs(args)
   return extend(extend(a:args, g:uctags_max_info
