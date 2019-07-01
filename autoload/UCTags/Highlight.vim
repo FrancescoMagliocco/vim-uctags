@@ -1,5 +1,5 @@
 " File:         Highlight.vim
-" Last Change:  06/12/2019
+" Last Change:  07/01/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -66,7 +66,10 @@ function! s:UpdateSynFilter(...)
     return empty(l:ret) ? l:ret : l:ret[-1]
   endif
   
-  perl UpdateSynFilter(scalar VIM::Eval('a:1'), scalar VIM::Eval('a:2'), scalar VIM::Eval('&ft'))
+  perl UpdateSynFilter(
+        \ scalar VIM::Eval('a:1'),
+        \ scalar VIM::Eval('a:2'),
+        \ scalar VIM::Eval('&ft'))
   " If @lines in Perl is empty, Perl returns (Not using VIM::DoCommand()),
   "   then an empty list is returned to the caller.
   return []
@@ -114,7 +117,8 @@ function! s:UpdateSynFor(file, ...)
 
   if !filereadable(l:file) | return | endif
   let l:pat = s:pat_lang[&ft]
-  let l:list = uniq(sort(UCTags#Utils#FilterFile(l:file, 'v:val =~#', join(l:pat, ''))))
+  let l:list = uniq(sort(
+        \ UCTags#Utils#FilterFile(l:file, 'v:val =~#', join(l:pat, ''))))
   "let l:list = uniq(sort(UCTags#Utils#FilterFile(l:file, 'v:val =~#', '\s*' . l:pat . '\s\+"\{1\}.*"\{1\}')))
   for l:file in l:list
     if a:0 && index(a:2, l:file) >= 0 | continue | endif
@@ -271,7 +275,6 @@ function! UCTags#Highlight#ReadTags(file, ...)
 
 endfunction
 
-let s:uctags_default_match  =  { 'start'     : '/\<',  'end' : '\>/' }
 " Iterates through each tag in a:tags.  Filters out all tags that {kind} isn't
 "   present in g:uctags_kind_to_hlg
 function! UCTags#Highlight#CreateSynFiles(tags)
@@ -338,8 +341,21 @@ function! UCTags#Highlight#CreateSynFiles(tags)
   " The built match is added to a list of matches.
   " The built link is executed.
         "\ filter(a:tags, 'has_key(g:uctags_kind_to_hlg, tolower(v:val[3][5:]))'),
-  for l:v in filter(a:tags,
-        \ l:skip)
+  let l:tags = filter(a:tags, l:skip)
+  " Use keyword for kinds that have only keyword characters, and use match for
+  "   kinds that contain keyword and non keyword characters.
+  let l:use_keyword = g:uctags_use_keyword && !g:uctags_use_only_match
+
+  " Use keyword for kinds that have only keyword characters, and skip kinds
+  "   that have non keyword characters.
+  let l:use_only_keyword = l:use_keyword && g:uctags_skip_non_keyword
+  " if l:use_only_keyword, kinds that contain non keyword characters are
+  "   skipped; otherwise all kinds are passed.
+  for l:v in l:use_only_keyword
+        \ ? filter(l:tags, "!(l:use_only_keyword && v:val[0] !~? '^\k\+$')")
+        \ : l:tags
+  "for l:v in filter(filter(a:tags,
+  "      \ l:skip), "(l:use_keyword && v:val[0] !~? '^\k\+$')")
 
     " TODO Rename
     let l:tfile = l:v[1]
@@ -364,41 +380,56 @@ function! UCTags#Highlight#CreateSynFiles(tags)
     let l:lang  = tolower(l:v[5][9:])
     let l:group = get(g:uctags_lang_map, l:lang, l:lang)
           \ . get(g:uctags_hl_group_map, l:kind, l:kind)
-    if a:0
-      echomsg l:lang
-      echomsg l:kind
-      echomsg l:group
-      continue
-    endif
 
-    let l:has_key = has_key(g:uctags_match_map, l:lang)
-          \ && has_key(g:uctags_match_map[l:lang], l:kind)
+    " Don't forget the space
+    let l:command = 'keyword '
+    let l:tag = l:v[0]
+    if !l:use_only_keyword
+      let l:has_key = has_key(g:uctags_match_map, l:lang)
+            \ && has_key(g:uctags_match_map[l:lang], l:kind)
+
+      let l:match = !l:has_key && !has_key(g:uctags_match_map, l:kind)
+            \ ? g:uctags_default_match
+            \ : get(l:has_key
+            \   ? g:uctags_match_map[l:lang]
+            \   : g:uctags_match_map, l:kind)
+
+      let l:is_keyword = l:tag =~? '^\k\+$'
+      " Use keyword if l:use_keyword and l:is_keyword only if
+      "   g:uctags_use_keyword_over_match or l:match equals
+      "   g:uctags_default_match
+      let l:use_keyword = l:use_keyword && l:is_keyword
+            \ && (g:uctags_use_keyword_over_match
+            \   || l:match == g:uctags_default_match)
+      " Don't forget the space
+      let l:command = l:use_keyword ? l:command : 'match '
+      let l:tag = l:use_keyword
+            \ ? l:tag
+            \ : l:match.start . escape(l:tag, '$.*~\^[]/') . l:match.end
+    endif
 
     " COMBAK Revise from here
-    if !l:has_key && !has_key(g:uctags_match_map, l:kind)
-      echohl warningMsg | echomsg "Don't have key for" l:kind
-      echomsg 'Using' s:uctags_default_match | echohl None
-      let l:match = s:uctags_default_match
+    "if !l:has_key && !has_key(g:uctags_match_map, l:kind)
+    "  let l:match = g:uctags_default_match
       "continue
-    else
-      let l:match = get(
-            \ l:has_key ? g:uctags_match_map[l:lang] : g:uctags_match_map, l:kind)
-    endif
+    "else
+    "  let l:match = get(
+    "        \ l:has_key ? g:uctags_match_map[l:lang] : g:uctags_match_map, l:kind)
+    "endif
     " COMBAK To here
 
-    let l:syn = 'syntax match ' . l:group . ' '
-          \ . l:match.start
-          \ . escape(l:v[0], '$.*~\^[]/')
-          \ . l:match.end
-""    let l:link = 'hi link' . ' ' . l:group . ' ' . g:uctags_kind_to_hlg[l:kind]
-      " We can't use extend (Not until I check the results and out come)
+    " if l:use_keyword and l:tag contains only keyword characters, use `syn
+    "   keyword`, otherwise use `syn match`
+    " If l:use_only_keyword or l:use_keyword, use `syn keyword`
+    let l:syn =  'syn ' . l:command . l:group . ' ' . l:tag
+    "let l:syn = 'syntax match ' . l:group . ' '
+    "      \ . l:match.start
+    "      \ . escape(l:v[0], '$.*~\^[]/')
+    "      \ . l:match.end
       call add(l:lines, l:syn)
-""    execute 'hi link' l:group g:uctags_kind_to_hlg[l:kind]
   endfor
 
   if !empty(l:lines)
     call UCTags#Utils#Writefile(uniq(sort(l:lines)), l:file)
-    "call writefile(uniq(sort(l:lines)), l:file)
   endif
-
 endfunction
