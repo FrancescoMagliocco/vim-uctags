@@ -237,7 +237,7 @@ let s:hlg_map               =
       \   'enumerator'      : 'Enumerator',
       \   'externvar'       : 'ExternVar',
       \   'define'          : 'Define',
-      \   'field'           : 'field',
+      \   'field'           : 'Field',
       \   'func'            : 'Func',
       \   'function'        : 'Func',
       \   'id'              : 'Id',
