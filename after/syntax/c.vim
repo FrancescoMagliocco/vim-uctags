@@ -1,3 +1,7 @@
+" File:         c.vim
+" Last Change:  05/27/2019
+" Maintainer:   FrancescoMagliocco
+
 function! s:test()
 if len(filter(getline(1, line('$')), "v:val =~# '^\\s*#include\\s\\+<stdio.h>'"))
   syn keyword cBuiltInConstant stdin stdout stderr
@@ -29,3 +33,6 @@ augroup asdf
   autocmd!
   autocmd BufWrite *.c call s:test()
 augroup END
+
+call UCTags#Utils#HiLink('c')
+execute 'runtime! syntax/cpp.vim'
