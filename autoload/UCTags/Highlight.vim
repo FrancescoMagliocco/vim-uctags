@@ -65,8 +65,7 @@ function! s:UpdateSynFilter(...)
     let l:ret = [[]]
     " Updates l:ret
     execute s:search[&ft]
-    return l:ret
-    "return empty(l:ret) ? l:ret : l:ret[-1]
+    return empty(l:ret) ? [[]] : l:ret
   endif
   
   perl UpdateSynFilter(
