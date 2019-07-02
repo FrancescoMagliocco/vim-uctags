@@ -1,5 +1,5 @@
 " File:         uctags_globals.vim
-" Last Change:  06/13/2019
+" Last Change:  07/01/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -18,6 +18,7 @@ let g:uctags_syntax_c_enabled = get(g:, 'uctags_syntax_c_enabled', 1)
 let g:uctags_use_keyword      = get(g:, 'uctags_use_keyword', 1)
 let g:uctags_skip_non_keyword = get(g:, 'uctags_skip_non_keyword', 0)
 let g:uctags_use_only_match   = get(g:, 'uctags_use_only_match', 0)
+let g:uctags_use_keyword_over_match = get(g:, 'uctags_use_keyword_over_match', 0)
 
 " TODO Change name
 let g:uctags_max_lines_header_search = get(g:, 'uctags_max_lines_header_search', 0)
@@ -219,13 +220,14 @@ let g:uctags_args           = s:ParseArgs(g:uctags_args)
 
 let s:lang_map              =
       \ {
-      \   'c#'  : 'cSharp',
+      \   'c#'  : 'cs',
       \   'c++' : 'cpp'
       \ }
 
 " highlight group map
 let s:hlg_map               =
       \ {
+      \   'c#'              : { 'class' : 'ClassType' },
       \   'alias'           : 'Alias',
       \   'annotation'      : 'Annotation',
       \   'anonmember'      : 'AnonMember',
@@ -273,6 +275,12 @@ let s:hlg_map               =
       \   'variable'        : 'Var',
       \ }
 
+function! GetGroup(lang, kind)
+  let l:hlg = get(s:hlg_map, a:lang, s:hlg_map)
+  let l:hlg = has_key(l:hlg, a:kind) ? l:hlg[a:kind] : get(s:hlg_map, a:kind, a:kind)
+  return get(g:uctags_lang_map, a:lang, a:lang) . l:hlg
+endfunction
+
 " universal ctags highlight group map
 " FIXME The name for this isn't exactly relevant..
 " TODO Come up with more elaborate name.
@@ -284,7 +292,7 @@ let g:uctags_hl_group_map   = get(g:, 'uctags_hl_group_map', {})
 let g:uctags_lang_map       = get(g:, 'uctags_lang_map', {})
 
 function! s:ParseMap(expr1, expr2)
-  return map(extend(copy(a:expr1), a:expr2), "substitute(v:val, '\W', '', 'g')")
+  return map(extend(filter(copy(a:expr1), 'type(v:val) == v:t_string'), a:expr2), "substitute(v:val, '\W', '', 'g')")
 endfunction
 
 let g:uctags_hl_group_map   = s:ParseMap(s:hlg_map, g:uctags_hl_group_map)

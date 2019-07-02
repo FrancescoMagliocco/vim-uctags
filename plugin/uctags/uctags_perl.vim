@@ -1,5 +1,5 @@
 " File:         uctags_perl.vim
-" Last Change:  06/11/2019
+" Last Change:  07/01/2019
 " Maintainer:   FrancescoMagliocco
 " vim: ft=perl
 
@@ -137,11 +137,15 @@ if has('perl')
         my $str = $is_cs ? 'scope:namespace:' . substr $file, 0, -1 : (split('/', $file))[-1];
         my $idx = $is_cs ? 6 : 0;
         my @lines = grep { ($is_cs ? scalar @$_ > 6 : $_->[1] =~ /$tfile/) and $_->[$idx] eq $str } GetTags;
+        my @ret;
         return unless @lines;
-        my @a = @{$lines[-1]};
-        s/'/''/g for @a;
+        for my $line (@lines) {
+          s/'/''/g for @$line;
+          push @ret, '[' . join(', ', map { "'$_'" } @$line) . ']';
 
-        VIM::DoCommand('return [' . join(', ', map { "'$_'" } @a) . ']');
+        }
+
+        VIM::DoCommand('return [' . join(', ', @ret) . ']');
       }
 
       sub Readfile {

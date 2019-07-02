@@ -45,12 +45,12 @@ function! s:UpdateSyn(file)
             \ || index(l:lines, l:t) >=0
         continue
       endif
+
         call add(l:lines, l:t)
     endfor
 
     call writefile(l:lines, expand('%') . '.syn')
   else
-
     perl UpdateSyn(scalar VIM::Eval('a:file'))
   endif
 endfunction
@@ -60,10 +60,13 @@ function! s:UpdateSynFilter(...)
   if a:0 < 2
     echoer 'Need 2 arguments1'
   endif
+
   if !g:uctags_use_perl || !has('perl')
-    let l:ret = []
+    let l:ret = [[]]
+    " Updates l:ret
     execute s:search[&ft]
-    return empty(l:ret) ? l:ret : l:ret[-1]
+    return l:ret
+    "return empty(l:ret) ? l:ret : l:ret[-1]
   endif
   
   perl UpdateSynFilter(
@@ -72,7 +75,7 @@ function! s:UpdateSynFilter(...)
         \ scalar VIM::Eval('&ft'))
   " If @lines in Perl is empty, Perl returns (Not using VIM::DoCommand()),
   "   then an empty list is returned to the caller.
-  return []
+  return [[]]
 endfunction
 
 function! s:UpdateSynFor(file, ...)
@@ -85,6 +88,7 @@ function! s:UpdateSynFor(file, ...)
     return
   endif
 
+  let l:is_cs = &ft ==? 'cs'
   let l:sourced_syn = a:0 ? a:1 : 0
 
   " Remove quotes
@@ -97,38 +101,37 @@ function! s:UpdateSynFor(file, ...)
     return l:syn_file
   elseif filereadable(l:syn_file)
       call s:UpdateSyn(l:syn_file)
-    "execute 'source' l:syn_file
     let l:sourced_syn += 1
   else
     let l:tfile = escape(l:file, '^.$\*')
     let l:lines = s:UpdateSynFilter(l:tfile, l:file)
-    "let l:lines = filter(filter(UCTags#Parse#GetTags(),
-    "      \ 'v:val[1] =~# l:tfile'), "v:val[0] ==# split(l:file, '/')[-1]")[-1]
+    if empty(l:lines[0]) | return | endif
 
-    if empty(l:lines) | return | endif
-    let l:file = l:lines[1]
-    let l:syn_file = l:file . '.syn'
-    if filereadable(l:syn_file)
-      call s:UpdateSyn(l:syn_file)
-      "execute 'source' l:syn_file
-      let l:sourced_syn += 1
-    endif
+    for l:f in l:is_cs ? l:lines : l:lines[-1:1]
+      let l:file = l:f[1]
+      let l:syn_file = l:file . '.syn'
+      if filereadable(l:syn_file)
+        call s:UpdateSyn(l:syn_file)
+        let l:sourced_syn += 1
+      endif
+    endfor
   endif
 
-  if !filereadable(l:file) | return | endif
-  let l:pat = s:pat_lang[&ft]
-  let l:list = uniq(sort(
-        \ UCTags#Utils#FilterFile(l:file, 'v:val =~#', join(l:pat, ''))))
-  "let l:list = uniq(sort(UCTags#Utils#FilterFile(l:file, 'v:val =~#', '\s*' . l:pat . '\s\+"\{1\}.*"\{1\}')))
-  for l:file in l:list
-    if a:0 && index(a:2, l:file) >= 0 | continue | endif
-    call s:UpdateSynFor(substitute(
-          \   l:file, '^.*' . l:pat[1] . '\s\+', '', 'g'),
-          \ l:sourced_syn, extend(a:0 ? a:2 : [], l:list), l:ofile)
+  for l:f in exists('l:lines') && l:is_cs ? l:lines : [[0, l:file]]
+    let l:file = l:f[1]
+    if !filereadable(l:file) | return | endif
+    let l:pat = s:pat_lang[&ft]
+    let l:list = uniq(sort(
+          \ UCTags#Utils#FilterFile(l:file, 'v:val =~#', join(l:pat, ''))))
+    for l:file in l:list
+      if a:0 && index(a:2, l:file) >= 0 | continue | endif
+      call s:UpdateSynFor(substitute(
+            \   l:file, '^.*' . l:pat[1] . '\s\+', '', 'g'),
+            \ l:sourced_syn, extend(a:0 ? a:2 : [], l:list), l:ofile)
+    endfor
   endfor
 
   return l:syn_file
-
 endfunction
 
 function! UCTags#Highlight#UpdateSynFile(file)
@@ -354,8 +357,6 @@ function! UCTags#Highlight#CreateSynFiles(tags)
   for l:v in l:use_only_keyword
         \ ? filter(l:tags, "!(l:use_only_keyword && v:val[0] !~? '^\k\+$')")
         \ : l:tags
-  "for l:v in filter(filter(a:tags,
-  "      \ l:skip), "(l:use_keyword && v:val[0] !~? '^\k\+$')")
 
     " TODO Rename
     let l:tfile = l:v[1]
@@ -376,10 +377,9 @@ function! UCTags#Highlight#CreateSynFiles(tags)
       let l:lines = UCTags#Utils#Readfile(l:file)
     endif
 
-    let l:kind = tolower(l:v[3][5:])
+    let l:kind  = tolower(l:v[3][5:])
     let l:lang  = tolower(l:v[5][9:])
-    let l:group = get(g:uctags_lang_map, l:lang, l:lang)
-          \ . get(g:uctags_hl_group_map, l:kind, l:kind)
+    let l:group = GetGroup(l:lang, l:kind)
 
     " Don't forget the space
     let l:command = 'keyword '

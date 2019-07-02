@@ -1,5 +1,5 @@
 " File:         Utils.vim
-" Last Change:  06/12/2019
+" Last Change:  07/01/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -275,9 +275,6 @@ function! UCTags#Utils#HiLink(lang)
   let l:lang = UCTags#Utils#GetLang(a:lang)
   for l:v in s:kinds[l:lang]
 
-    let l:group = get(g:uctags_lang_map, l:lang, l:lang)
-          \ . get(g:uctags_hl_group_map, l:v, l:v)
-
     let l:has_key = has_key(g:uctags_match_map, l:lang)
           \ && has_key(g:uctags_match_map[l:lang], l:v)
 
@@ -285,8 +282,6 @@ function! UCTags#Utils#HiLink(lang)
       continue
     endif
 
-    execute 'hi! link '
-          \ . get(g:uctags_lang_map, l:lang, l:lang)
-          \ . get(g:uctags_hl_group_map, l:v, l:v) get(g:uctags_kind_to_hlg, l:v, 'errorMsg')
+    execute 'hi! link' GetGroup(l:lang, l:v) get(g:uctags_kind_to_hlg, l:v, 'errorMsg')
   endfor
 endfunction
