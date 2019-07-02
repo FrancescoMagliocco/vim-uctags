@@ -1,5 +1,5 @@
 " File:         Parse.vim
-" Last Change:  07/01/2019
+" Last Change:  07/02/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -39,7 +39,6 @@ endfunction
 function! UCTags#Parse#GetLang(lang)
   let l:lang = UCTags#Utils#GetLang(a:lang)
   if !g:uctags_use_perl || !has('perl')
-    let l:pat = l:lang ==? 'c' ? '\\(c\\|c++\\)\\>' : l:lang
     return filter(
           \ UCTags#Parse#GetTags(),
           \ "v:val[5] ==? 'language:" . (l:lang ==? 'c'
