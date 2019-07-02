@@ -1,5 +1,5 @@
 " File:         cs.vim
-" Last Change:  06/12/2019
+" Last Change:  07/01/2019
 " Maintainer:   FrancescoMagliocco
 
 function! s:test()
@@ -699,8 +699,9 @@ function! s:test()
 
   endif
 endfunction
-hi def link csBuiltInClass      class
+hi def link csBuiltInClasses    class
 hi def link csBuiltInEnums      enumName
+hi def link csBuiltInEvents     event
 hi def link csBuiltInFields     field
 " FIXME Change this; needs a group created for it
 hi def link csBuiltInInterfaces constant
