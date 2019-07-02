@@ -1,5 +1,5 @@
 " File:         uctags_perl.vim
-" Last Change:  07/01/2019
+" Last Change:  07/02/2019
 " Maintainer:   FrancescoMagliocco
 " vim: ft=perl
 
@@ -60,6 +60,7 @@ if has('perl')
           $str = substr($str, 1, -1);
           my $re = list2re keys %trans;
           $str =~ s/($re)/$trans{$1}/g;
+          $str =~ s/\( (\S+) \) \\ @!/(?!$1)/gxx if any { m/\\ @!/gxx } $str;
             next if none { m/$str/g } @lines;
             next if any {$_ eq $line} @buf;
             push @buf, $line;
