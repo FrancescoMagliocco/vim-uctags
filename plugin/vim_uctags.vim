@@ -1,6 +1,6 @@
 " A Universal-Ctags highlighter
 " File:         vim_uctags.vim
-" Last Change:  06/10/2019
+" Last Change:  07/02/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -23,6 +23,8 @@ if exists('g:uctags_enabled') && !g:uctags_enabled
 endif
 
 hi uctagsInfo guifg=#F8F800 guibg=NONE    cterm=none
+hi def link uctagsWarn warningMsg
+hi def link uctagsErr  errorMsg
 
 " XXX Using uctags as prefixes for everything, and even the plugin,
 "   kind of bothers me in a way such that what if universal-ctags actually
