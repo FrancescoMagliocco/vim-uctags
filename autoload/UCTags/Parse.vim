@@ -13,13 +13,13 @@ let g:loaded_UCTags_Parse = 1
 function! UCTags#Parse#GetTags()
   if !g:uctags_use_perl || !has('perl') | return s:GetTags() | endif
 
-  call UCtags#Utils#HaveTagFile()
+  call UCTags#Utils#HaveTagFile()
 
   perl GetTagsVim
 endfunction
 
 function! s:GetTags()
-  call UCtags#Utils#HaveTagFile()
+  call UCTags#Utils#HaveTagFile()
 
   if g:uctags_verbose
     echohl warningMsg | echomsg 'Not using Perl!' | echohl None
