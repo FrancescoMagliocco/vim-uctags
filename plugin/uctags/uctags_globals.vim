@@ -1,5 +1,5 @@
 " File:         uctags_globals.vim
-" Last Change:  07/01/2019
+" Last Change:  07/02/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -45,6 +45,7 @@ let g:uctags_skip_kind_for  = get(g:, 'uctags_skip_hl_for', {
       \   'hunk'          : ['diff'],
       \   'key'           : ['javaproperties'],
       \   'label'         : ['dosbatch'],
+      \   'local'         : ['c#'],
       \   'modifiedfile'  : ['diff'],
       \   'package'       : ['go'],
       \   'parameter'     : ['c++', 'c', 'python'],
@@ -132,10 +133,13 @@ let g:uctags_kind_to_hlg      = get(g:, 'uctags_kind_to_hlg', {
 "
 " macro for make is already highlightedd by makeIndent, but there is too much
 "   that is highlighted by makeIndent
+"   \((\)\@! (?!\()
 let g:uctags_default_match  =  { 'start' : '/\<',  'end' : '\>/' }
 let g:uctags_match_map      = get(g:, 'uctags_match_map', {
       \   'c++'     : { 'member'  : { 'start' : '/\%\(\.\|->\)\<\zs', 'end' : '\>/' }},
-      \   'c#'      : { 'method'  : { 'start' : '/\<', 'end' : '\ze\s*\%\((\|<\)/'  }},
+      \   'c#'      : { 'method'  : { 'start' : '/\<', 'end' : '\ze\s*\%\((\|<\)/'  },
+      \                 'field'   : { 'start' : '/\<', 'end' : '\>\(\s*(\)\@!/' },
+      \                 'struct'  : { 'start' : '/\<', 'end' : '\>\s*\((\)\@!/' }},
       \   'go'      : { 'member'  : g:uctags_default_match },
       \   'javascript'  : { 'method' : { 'start' : '/\<', 'end' : '\%\(\>\|\ze(\)/'}},
       \   'python'  : { 'class'   : { 'start' : '/\<', 'end' : '\ze(/' }},
