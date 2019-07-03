@@ -136,9 +136,13 @@ if has('perl')
         my ($tfile, $file, $lang) = @_;
 
         my $is_cs = $lang eq 'cs';
-        my $str = $is_cs ? 'scope:namespace:' . substr $file, 0, -1 : (split('/', $file))[-1];
-        my $idx = $is_cs ? 6 : 0;
-        my @lines = grep { ($is_cs ? scalar @$_ > 6 : $_->[1] =~ /$tfile/) and $_->[$idx] eq $str } GetTags;
+        my $str = $is_cs ? substr($file, 0, -1) : (split('/', $file))[-1];
+        # XXX TODO Check if the $is_cs ? 1 .. can be done in a different way.
+        my @lines = grep {
+          ($is_cs ? 1 : $_->[1] =~ /$tfile/) and $_->[0] eq $str
+          # NOTE This was auto formatted..  Don't know how I feel about it..
+        } $is_cs ? GetKind('namespace') : GetTags;
+        #my @lines = grep { ($is_cs ? scalar @$_ > 6 : $_->[1] =~ /$tfile/) and $_->[$idx] eq $str } GetTags;
         #my @ret;
         return unless @lines;
         ReturnVimListList(@lines);
