@@ -1,5 +1,5 @@
 " File:         Utils.vim
-" Last Change:  07/01/2019
+" Last Change:  07/02/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -16,6 +16,15 @@ let s:lang_map =
       \   ['c#', 'csharp', 'cs'],
       \   ['javascript', 'jscript', 'js']
       \ ]
+
+function! UCTags#Utils#HaveTagFile(...)
+  if !filereadable(a:0 ? a:1 : g:uctags_tags_file)
+    echoerr 'No Tags file!'
+    finish
+  endif
+
+  return 1
+endfunction
 
 function! UCTags#Utils#Writefile(lines, file)
   if !g:uctags_use_perl || !has('perl')
@@ -35,6 +44,16 @@ function! UCTags#Utils#GetLang(lang)
   endfor
 
   return a:lang
+endfunction
+
+" COMBAK We need to get the namespace for files we are trying to update the syn
+"   file for, and get all tags for that namespace.  This is for cSharp as even
+"   code located in a different file, if it has the same namespace, it is valid
+"   and accessible in any file that uses that scoped namespace.
+function! UCTags#Utils#GetNamespace(file)
+    let l:ret = UCTags#Utils#FilterFile(a:file, 'v:val =~#', '^\s*namespace\s*\(\S*\)')
+    echomsg map(l:ret, 'split(v:val)[-1]')
+
 endfunction
 
 " Just like UCTags#UtilsFilter(), but expr1 is instead a file.
