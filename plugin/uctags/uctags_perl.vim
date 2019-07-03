@@ -15,6 +15,7 @@ if has('perl')
     perl << EOF
       use List::Util qw(first none any);
       use Data::Munge qw(list2re);
+      use Data::Dumper;
       use warnings;
       use strict;
       our $curbuf;
@@ -138,15 +139,16 @@ if has('perl')
         my $str = $is_cs ? 'scope:namespace:' . substr $file, 0, -1 : (split('/', $file))[-1];
         my $idx = $is_cs ? 6 : 0;
         my @lines = grep { ($is_cs ? scalar @$_ > 6 : $_->[1] =~ /$tfile/) and $_->[$idx] eq $str } GetTags;
-        my @ret;
+        #my @ret;
         return unless @lines;
-        for my $line (@lines) {
-          s/'/''/g for @$line;
-          push @ret, '[' . join(', ', map { "'$_'" } @$line) . ']';
+        ReturnVimListList(@lines);
+        #for my $line (@lines) {
+        #  s/'/''/g for @$line;
+        #  push @ret, '[' . join(', ', map { "'$_'" } @$line) . ']';
 
-        }
+        #}
 
-        VIM::DoCommand('return [' . join(', ', @ret) . ']');
+        #VIM::DoCommand('return [' . join(', ', @ret) . ']');
       }
 
       sub Readfile {
@@ -154,6 +156,23 @@ if has('perl')
         open my $in_file, "<", "$file"
           or die "Couldn't open '$file' $! " . (caller(0))[3];
         return <$in_file>;
+      }
+
+      sub ReturnVimListList {
+        my (@listlist) = @_;
+        my @ret;
+        for my $list (@listlist) {
+          s/'/''/g for @$list;
+          push @ret, '[' . join(', ', map { "'$_'" } @$list) . ']';
+        }
+
+        VIM::DoCommand('return [' . join(', ', @ret) . ']');
+      }
+
+      sub ReturnVimList {
+        my (@list) = @_;
+        VIM::DoCommand(
+          'return [' . join(', ', map { "'$_'" } @list) . ']');
       }
 
       sub ReadfileVim {
@@ -169,8 +188,9 @@ if has('perl')
           push @lines, $line =~ s/'/''/gr;
         }
 
-        VIM::DoCommand(
-          'return [' . join(', ', map { "'$_'" } @lines) . ']');
+        ReturnVimList(@lines);
+        #VIM::DoCommand(
+        #  'return [' . join(', ', map { "'$_'" } @lines) . ']');
       }
 
       sub FilterVim {
@@ -181,9 +201,24 @@ if has('perl')
         chomp for @filter;
         s/\R//g for @filter;
         s/'/''/g for @filter;
-        VIM::DoCommand(
-          'return [' . join(', ', map { "'$_'" } @filter) . ']');
+        ReturnVimList(@filter);
+        #VIM::DoCommand(
+        #  'return [' . join(', ', map { "'$_'" } @filter) . ']');
+      }
 
+      sub GetKindVim {
+        my ($kind) = @_;
+        ReturnVimListList(GetKind($kind));
+      }
+
+      sub GetKind {
+        my ($kind) = @_;
+        return grep { $_->[3] =~ /kind:$kind/g } GetTags;
+      }
+
+      sub GetTagsWithNamespace {
+        my ($namespace) = @_;
+        print Dumper(grep { $_->[0] eq $namespace } GetKind('namespace'));
       }
 EOF
   endfunction
