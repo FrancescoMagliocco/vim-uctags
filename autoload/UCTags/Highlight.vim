@@ -1,5 +1,5 @@
 " File:         Highlight.vim
-" Last Change:  07/01/2019
+" Last Change:  07/02/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -23,6 +23,8 @@ let s:pat_lang =
       \   'cs'  : ['', 'using', '\s\+.*;']
       \ }
 
+      ""\   'cs'  : 'let l:ret = filter(filter(UCTags#Parse#GetTags(), '
+      ""\     . "'len(v:val) > 6'), \"v:val[6] ==# 'scope:namespace:\" . a:2[:-2] . \"'\")"
 " TODO Rename
 let s:search =
       \ {
@@ -30,8 +32,8 @@ let s:search =
       \     . "'v:val[1] =~# a:1'), \"v:val[0] ==# split(a:2, '/')[-1]\")",
       \   'c'   : 'let l:ret = filter(filter(UCTags#Parse#GetTags(), '
       \     . "'v:val[1] =~# a:1'), \"v:val[0] ==# split(a:2, '/')[-1]\")",
-      \   'cs'  : 'let l:ret = filter(filter(UCTags#Parse#GetTags(), '
-      \     . "'len(v:val) > 6'), \"v:val[6] ==# 'scope:namespace:\" . a:2[:-2] . \"'\")"
+      \   'cs'  : "let l:ret = filter(UCTags#Tags#Kind('namespace'), "
+      \     . "\"v:val[0] ==# '\" . a:2[:-2] . \"'\")"
       \ }
 
 function! s:UpdateSyn(file)
