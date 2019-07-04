@@ -27,17 +27,6 @@ let s:pat_lang =
       \   'cs'  : ['', 'using', '\s\+.*;']
       \ }
 
-" TODO Rename
-" 
-let s:search =
-      \ {
-      \   'cpp' : 'let l:ret = filter(filter(UCTags#Parse#GetTags(), '
-      \     . "'v:val[1] =~# a:1'), \"v:val[0] ==# split(a:2, '/')[-1]\")",
-      \   'c'   : 'let l:ret = filter(filter(UCTags#Parse#GetTags(), '
-      \     . "'v:val[1] =~# a:1'), \"v:val[0] ==# split(a:2, '/')[-1]\")",
-      \   'cs'  : "let l:ret = filter(UCTags#Tags#Kind('namespace'), "
-      \     . "\"v:val[0] ==# '\" . a:2[:-2] . \"'\")"
-      \ }
 
 function! s:UpdateSyn(syn_file)
   if !g:uctags_use_perl || !has('perl')
@@ -74,16 +63,31 @@ function! s:UpdateSyn(syn_file)
   endif
 endfunction
 
+" TODO Rename
+" TODO Document this
+let s:search =
+      \ {
+      \   'cpp' : 'let l:ret = filter(filter(UCTags#Parse#GetTags(), '
+      \     . "'v:val[1] =~# a:1'), \"v:val[0] ==# split(a:2, '/')[-1]\")",
+      \   'c'   : 'let l:ret = filter(filter(UCTags#Parse#GetTags(), '
+      \     . "'v:val[1] =~# a:1'), \"v:val[0] ==# split(a:2, '/')[-1]\")",
+      \   'cs'  : "let l:ret = filter(UCTags#Tags#Kind('namespace'), "
+      \     . "\"v:val[0] ==# '\" . a:2[:-2] . \"'\")"
+      \ }
+
 " TODO Needs to be renamed
+"
 function! s:UpdateSynFilter(...)
-  if a:0 < 2
-    echoer 'Need 2 arguments1'
-  endif
+  " TODO Use Log namespace
+  " Just incase less than 2 argments are given
+  if a:0 < 2 | echoer 'Need 2 arguments!' | endif
 
   if !g:uctags_use_perl || !has('perl')
     let l:ret = [[]]
     " Updates l:ret
     execute s:search[&ft]
+    " The previous execution can result in a empty list.  The caller needs a 2
+    "   dimentinal list returned.
     return empty(l:ret) ? [[]] : l:ret
   endif
   
@@ -91,8 +95,8 @@ function! s:UpdateSynFilter(...)
         \ scalar VIM::Eval('a:1'),
         \ scalar VIM::Eval('a:2'),
         \ scalar VIM::Eval('&ft'))
-  " If @lines in Perl is empty, Perl returns (Not using VIM::DoCommand()),
-  "   then an empty list is returned to the caller.
+  " If @lines in Perl is empty, Perl returns (Not using VIM::DoCommand()), so
+  "   we return a list of an empty list.
   return [[]]
 endfunction
 
