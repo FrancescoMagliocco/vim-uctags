@@ -1,5 +1,5 @@
 " File:         Highlight.vim
-" Last Change:  07/03/2019
+" Last Change:  07/04/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -27,37 +27,46 @@ let s:pat_lang =
       \   'cs'  : ['', 'using', '\s\+.*;']
       \ }
 
-
 function! s:UpdateSyn(syn_file)
   if !g:uctags_use_perl || !has('perl')
-    " Read the syn file for the current active buffer
-    " If no syn file exists, l:lines is []
-    " If syn file exists, filters out all Vim comments
+    let l:buf_syn_file = expand('%') . '.syn'
+    " Read the syn file for the current active buffer.
+    " If no syn file exists, l:buf_syn is [].
+    " If syn file exists, filters out all Vim comments.
     silent! let l:buf_syn =
-          \ filter(readfile(expand('%') . '.syn'), "v:val !~# '^\\s*\\\"'")
-    " Reads and iterates through a:syn_file
+          \ filter(readfile(l:buf_syn_file), "v:val !~# '^\\s*\\\"'")
+    " Reads and iterates through a:syn_file.
     for l:t in readfile(a:syn_file)
       " Syntax of l:t:
       "   syn match {group-name} {pattern}
       "     Example: syn match csClassType /\<FileManager\>/
-      " Split l:t on whitespace
-      " Retrives the last item in l:t; the pattern
-      " Escapes all backslashes in pattern
-      " Truncates the first and last character; forwardslashes of pattern
-      " Checks the current buffer for the modified pattern
-      " If there is no match, or l:buf_syn already has l:t, continue
-      if empty(filter(getline(2, line('$')),
-            \   "v:val =~# escape(split(l:t, ' ')[-1], '\')[1:-2]"))
-            \ || index(l:buf_syn, l:t) >=0
+      " Split l:t on whitespace.
+      " Retrives the last item in l:t; the pattern.
+      " Escapes all backslashes in pattern.
+      " Truncates the first and last character; forwardslashes of pattern.
+      " Checks the current buffer for the modified pattern, and store the
+      "   results of the match.
+      let l:no_match = empty(filter(getline(2, line('$')),
+            \ "v:val =~# escape(split(l:t, ' ')[-1], '\')[1:-2]"))
+
+      " If l:buf_syn has l:t, we check the previously stored results, then
+      "   continue.
+      if count(l:buf_syn, l:t)
+        " Before we continue, if the result is there was no match, we remove
+        "   l:t from l:buf_syn, then continue.
+        if l:no_match | call filter(l:buf_syn, 'v:val !=# l:t') | endif
         continue
       endif
 
-      " Current buffer has match, add l:t to l:buf_syn
+      " If the previously stored results is there was no match, we continue.
+      if l:no_match | continue | endif
+
+      " Current buffer has match, add l:t to l:buf_syn.
       call add(l:buf_syn, l:t)
     endfor
 
-    " Write l:buf_syn to the syn file for the current buffer
-    call writefile(l:buf_syn, expand('%') . '.syn')
+    " Write l:buf_syn to the syn file for the current buffer.
+    call writefile(l:buf_syn, l:buf_syn_file)
   else
     perl UpdateSyn(scalar VIM::Eval('a:syn_file'))
   endif
@@ -100,8 +109,21 @@ function! s:UpdateSynFilter(...)
   return [[]]
 endfunction
 
-function! s:UpdateSynFor(file, ...)
+" TODO Document
+" Updates the syn file for the current buffer.  This function does not actually
+"   do the updating of the syn file, and barely even handles the syn file.
+" When using the command UpdateSynFile, a:src_file is specified with
+"   expand('%').  That is the FIRST call.  Calling this function with any other
+"   filename, you will not get desired results because where the updating of
+"   the actual syn file happens (s:UpdateSyn()), the way the syn file is
+"   located, is done the same way with expand('%').
+" All recursive calls after the FIRST call, a:src_file will be a filename that
+"   is specified in the tags file.
+" a:1 is l:sourced_syn
+function! s:UpdateSynFor(src_file, ...)
   if &ft ==? 'go' && !g:uctags_enable_go | return | endif
+  " TODO Document
+  " TODO Use Log namespace
   if assert_false(g:uctags_max_syn && a:0 && a:1 >= g:uctags_max_syn, s:max_syn_msg)
     if g:uctags_verbose
       echohl warningMsg | echomsg v:errors[-1] | echohl None
@@ -110,50 +132,57 @@ function! s:UpdateSynFor(file, ...)
     return
   endif
 
-  let l:is_cs = &ft ==? 'cs'
+  let l:is_cs       = &ft ==? 'cs'
   let l:sourced_syn = a:0 ? a:1 : 0
 
   " Remove quotes
-  let l:file = substitute(a:file, "\\(\"\\|\'\\)", '', 'g')
-  let l:ofile = l:file
+  let l:src_file  = substitute(a:src_file, "\\(\"\\|\'\\)", '', 'g')
+  " Was used for when ft is go..  I think
+  let l:ofile = l:src_file
 
-  let l:syn_file = l:file . '.syn'
+  let l:src_syn_file = l:src_file . '.syn'
   if index(s:inc_lan, tolower(&ft)) < 0
     " Current language doesn't support include directives.
-    return l:syn_file
-  elseif filereadable(l:syn_file)
-    call s:UpdateSyn(l:syn_file)
+    return l:src_syn_file
+  " Current language supports include directives
+  elseif filereadable(l:src_syn_file)
+    " Found syn file for a:src_file; update it
+    call s:UpdateSyn(l:src_syn_file)
     let l:sourced_syn += 1
   else
-    let l:tfile = escape(l:file, '^.$\*')
-    let l:lines = s:UpdateSynFilter(l:tfile, l:file)
+    " Can't find syn file for a:src_file
+    " During the FIRST call, 
+    " Escapes special characters
+    let l:safe_src_file = escape(l:src_file, '^.$\*')
+    " Try to find
+    let l:lines = s:UpdateSynFilter(l:safe_src_file, l:src_file)
     if empty(l:lines[0]) | return | endif
 
     for l:f in l:is_cs ? l:lines : l:lines[-1:1]
-      let l:file = l:f[1]
-      let l:syn_file = l:file . '.syn'
-      if filereadable(l:syn_file)
-        call s:UpdateSyn(l:syn_file)
+      let l:src_file = l:f[1]
+      let l:src_syn_file = l:src_file . '.syn'
+      if filereadable(l:src_syn_file)
+        call s:UpdateSyn(l:src_syn_file)
         let l:sourced_syn += 1
       endif
     endfor
   endif
 
-  for l:f in exists('l:lines') && l:is_cs ? l:lines : [[0, l:file]]
-    let l:file = l:f[1]
-    if !filereadable(l:file) | return | endif
+  for l:f in exists('l:lines') && l:is_cs ? l:lines : [[0, l:src_file]]
+    let l:src_file = l:f[1]
+    if !filereadable(l:src_file) | return | endif
     let l:pat = s:pat_lang[&ft]
     let l:list = uniq(sort(
-          \ UCTags#Utils#FilterFile(l:file, 'v:val =~#', join(l:pat, ''))))
-    for l:file in l:list
-      if a:0 && index(a:2, l:file) >= 0 | continue | endif
+          \ UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', join(l:pat, ''))))
+    for l:src_file in l:list
+      if a:0 && index(a:2, l:src_file) >= 0 | continue | endif
       call s:UpdateSynFor(substitute(
-            \   l:file, '^.*' . l:pat[1] . '\s\+', '', 'g'),
+            \   l:src_file, '^.*' . l:pat[1] . '\s\+', '', 'g'),
             \ l:sourced_syn, extend(a:0 ? a:2 : [], l:list), l:ofile)
     endfor
   endfor
 
-  return l:syn_file
+  return l:src_syn_file
 endfunction
 
 function! UCTags#Highlight#UpdateSynFile(file)

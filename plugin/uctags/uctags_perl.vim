@@ -1,5 +1,5 @@
 " File:         uctags_perl.vim
-" Last Change:  07/02/2019
+" Last Change:  07/04/2019
 " Maintainer:   FrancescoMagliocco
 " vim: ft=perl
 
@@ -62,8 +62,15 @@ if has('perl')
           my $re = list2re keys %trans;
           $str =~ s/($re)/$trans{$1}/g;
           $str =~ s/\( (\S+) \) \\ @!/(?!$1)/gxx if any { m/\\ @!/gxx } $str;
-            next if none { m/$str/g } @lines;
-            next if any {$_ eq $line} @buf;
+            my $no_match = none { m/$str/g } @lines;
+            # TODO I should be able to ommit the $_
+            if (any {$_ eq $line} @buf) {
+              # The parenthesis were a percaution meassure
+              (@buf = grep { $_ ne $line } @buf) if $no_match;
+              next;
+            }
+
+            next if $no_match;
             push @buf, $line;
         }
 
@@ -222,7 +229,7 @@ if has('perl')
 
       sub GetTagsWithNamespace {
         my ($namespace) = @_;
-        print Dumper(grep { $_->[0] eq $namespace } GetKind('namespace'));
+        return grep { $_->[0] eq $namespace } GetKind('namespace');
       }
 EOF
   endfunction
