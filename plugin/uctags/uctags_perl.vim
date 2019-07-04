@@ -143,7 +143,8 @@ if has('perl')
         my ($tfile, $file, $lang) = @_;
 
         my $is_cs = $lang eq 'cs';
-        my $str = $is_cs ? substr($file, 0, -1) : (split('/', $file))[-1];
+        my $str = ($is_cs and ((length($file) - 1) == rindex($file, ';'))) ? substr($file, 0, -1) : (split('/', $file))[-1];
+        #my $str = $is_cs ? substr($file, 0, -1) : (split('/', $file))[-1];
         # XXX TODO Check if the $is_cs ? 1 .. can be done in a different way.
         my @lines = grep {
           ($is_cs ? 1 : $_->[1] =~ /$tfile/) and $_->[0] eq $str

@@ -74,6 +74,7 @@ endfunction
 
 " TODO Rename
 " TODO Document this
+" For cs, gets all tags of kind 'namespace'
 let s:search =
       \ {
       \   'cpp' : 'let l:ret = filter(filter(UCTags#Parse#GetTags(), '
@@ -81,7 +82,7 @@ let s:search =
       \   'c'   : 'let l:ret = filter(filter(UCTags#Parse#GetTags(), '
       \     . "'v:val[1] =~# a:1'), \"v:val[0] ==# split(a:2, '/')[-1]\")",
       \   'cs'  : "let l:ret = filter(UCTags#Tags#Kind('namespace'), "
-      \     . "\"v:val[0] ==# '\" . a:2[:-2] . \"'\")"
+      \     . "\"v:val[0] ==# '\" . a:2[:-2 + (a:2[-1:] !=# ';')] . \"'\")"
       \ }
 
 " TODO Needs to be renamed
@@ -174,10 +175,17 @@ function! s:UpdateSynFor(src_file, ...)
     let l:pat = s:pat_lang[&ft]
     let l:list = uniq(sort(
           \ UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', join(l:pat, ''))))
+
+    " XXX COMBAK FIXME Revise
+    if l:is_cs
+      call extend(l:list, UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', '^\s*namespace\s\+'))
+    endif
+
     for l:src_file in l:list
       if a:0 && index(a:2, l:src_file) >= 0 | continue | endif
+      " XXX COMBAK FIXME Revise
       call s:UpdateSynFor(substitute(
-            \   l:src_file, '^.*' . l:pat[1] . '\s\+', '', 'g'),
+            \   l:src_file, '^.*' . l:is_cs ? '\%\(' . l:pat[1] . '\|namespace\)' : l:pat[1] . '\s\+', '', 'g'),
             \ l:sourced_syn, extend(a:0 ? a:2 : [], l:list), l:ofile)
     endfor
   endfor
