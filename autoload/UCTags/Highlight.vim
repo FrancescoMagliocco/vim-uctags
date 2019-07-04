@@ -1,5 +1,5 @@
 " File:         Highlight.vim
-" Last Change:  07/02/2019
+" Last Change:  07/03/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -12,8 +12,12 @@ let g:loaded_UCTags_Highlight = 1
 
 let g:uctags_enable_go = get(g:, 'uctags_enable_go', 0)
 " TODO Rename
+" Languages that use include directives, namespaces etc..
 let s:inc_lan = ['cpp', 'c', 'asm', 'cs']
+
 " TODO Rename
+" Pattern used to find include direcetives, namespaces etc.. of the given
+"   language.
 let s:pat_lang =
       \ {
       \   'asm' : ['', '%include', ''],
@@ -23,9 +27,8 @@ let s:pat_lang =
       \   'cs'  : ['', 'using', '\s\+.*;']
       \ }
 
-      ""\   'cs'  : 'let l:ret = filter(filter(UCTags#Parse#GetTags(), '
-      ""\     . "'len(v:val) > 6'), \"v:val[6] ==# 'scope:namespace:\" . a:2[:-2] . \"'\")"
 " TODO Rename
+" 
 let s:search =
       \ {
       \   'cpp' : 'let l:ret = filter(filter(UCTags#Parse#GetTags(), '
@@ -36,24 +39,38 @@ let s:search =
       \     . "\"v:val[0] ==# '\" . a:2[:-2] . \"'\")"
       \ }
 
-function! s:UpdateSyn(file)
+function! s:UpdateSyn(syn_file)
   if !g:uctags_use_perl || !has('perl')
-
-    silent! let l:lines =
+    " Read the syn file for the current active buffer
+    " If no syn file exists, l:lines is []
+    " If syn file exists, filters out all Vim comments
+    silent! let l:buf_syn =
           \ filter(readfile(expand('%') . '.syn'), "v:val !~# '^\\s*\\\"'")
-    for l:t in readfile(a:file)
+    " Reads and iterates through a:syn_file
+    for l:t in readfile(a:syn_file)
+      " Syntax of l:t:
+      "   syn match {group-name} {pattern}
+      "     Example: syn match csClassType /\<FileManager\>/
+      " Split l:t on whitespace
+      " Retrives the last item in l:t; the pattern
+      " Escapes all backslashes in pattern
+      " Truncates the first and last character; forwardslashes of pattern
+      " Checks the current buffer for the modified pattern
+      " If there is no match, or l:buf_syn already has l:t, continue
       if empty(filter(getline(2, line('$')),
             \   "v:val =~# escape(split(l:t, ' ')[-1], '\')[1:-2]"))
-            \ || index(l:lines, l:t) >=0
+            \ || index(l:buf_syn, l:t) >=0
         continue
       endif
 
-        call add(l:lines, l:t)
+      " Current buffer has match, add l:t to l:buf_syn
+      call add(l:buf_syn, l:t)
     endfor
 
-    call writefile(l:lines, expand('%') . '.syn')
+    " Write l:buf_syn to the syn file for the current buffer
+    call writefile(l:buf_syn, expand('%') . '.syn')
   else
-    perl UpdateSyn(scalar VIM::Eval('a:file'))
+    perl UpdateSyn(scalar VIM::Eval('a:syn_file'))
   endif
 endfunction
 
@@ -101,7 +118,7 @@ function! s:UpdateSynFor(file, ...)
     " Current language doesn't support include directives.
     return l:syn_file
   elseif filereadable(l:syn_file)
-      call s:UpdateSyn(l:syn_file)
+    call s:UpdateSyn(l:syn_file)
     let l:sourced_syn += 1
   else
     let l:tfile = escape(l:file, '^.$\*')
