@@ -1,5 +1,5 @@
 " File:         uctags_globals.vim
-" Last Change:  07/02/2019
+" Last Change:  07/04/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -241,6 +241,7 @@ let s:hlg_map               =
       \   'enumerator'      : 'Enumerator',
       \   'externvar'       : 'ExternVar',
       \   'define'          : 'Define',
+      \   'event'           : 'Event',
       \   'field'           : 'Field',
       \   'func'            : 'Func',
       \   'function'        : 'Func',
