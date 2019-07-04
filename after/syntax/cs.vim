@@ -692,15 +692,153 @@ function! s:test()
           \ 'UtcTicks', 'ValidOn', 'Value', 'Version', 'VersionString',
           \ 'WildcardPathSegments', 'WindowHeight', 'WindowLeft', 'WindowTop',
           \ 'WindowWidth', 'WorkingSet', 'Year']
-      if len(filter(getline(1, line('$')), "v:val =~# '\\%(long\\|int\\%(16\\|32\\|64\\)\?\\)\<\\" . l:p . "\\>'"))
-        execute 'syn match csBuiltInProp /\%(long\|int\%(16\|32\|64\)\?\)\<\' . l:p . '\>/'
+      " FIXME TODO This needs to be improved, there is a lot more types a
+      "   property can be.
+      if len(filter(getline(1, line('$')), "v:val =~# '\\.\\zs" . l:p . "\\>\\s*\\((\\)\\@!'"))
+      "if len(filter(getline(1, line('$')), "v:val =~# '\\%(long\\|int\\%(16\\|32\\|64\\)\?\\)\<\\" . l:p . "\\>'"))
+        execute 'syn match csBuiltInProp /\.\zs' . l:p . '\>\s*\((\)\@!/'
+        "execute 'syn match csBuiltInProp /\%(long\|int\%(16\|32\|64\)\?\)\<\' . l:p . '\>/'
+      endif
+    endfor
+    for l:e in ['Loose', 'StoreBounded', 'None', 'RegisterWithHost', 'All',
+          \ 'Assembly', 'Class', 'Constructor', 'Delegate', 'Enum', 'Event',
+          \ 'Field', 'GenericParameter', 'Interface', 'Method', 'Module',
+          \ 'Parameter', 'Property', 'ReturnValue', 'Struct', 'InsertLineBreaks',
+          \ 'Black', 'Blue', 'Cyan', 'DarkBlue', 'DarkCyan', 'DarkGray',
+          \ 'DarkGreen', 'DarkMagenta', 'DarkRed', 'DarkYellow', 'Gray', 'Green',
+          \ 'Magenta', 'Red', 'White', 'Yellow', 'A', 'Add', 'Applications',
+          \ 'Attention', 'B', 'Backspace', 'BrowserBack', 'BrowserFavorites',
+          \ 'BrowserForward', 'BrowserHome', 'BrowserRefresh', 'BrowserSearch',
+          \ 'BrowserStop', 'C', 'Clear', 'CrSel', 'D', 'D0', 'D1', 'D2', 'D3',
+          \ 'D4', 'D4', 'D5', 'D6', 'D6', 'D7', 'D8', 'D9', 'Decimal', 'Delete',
+          \ 'Delete', 'Divide', 'DownArrow', 'E', 'End', 'Enter', 'EraseEndOfFile',
+          \ 'Escape', 'Execute', 'ExSel', 'F', 'F1', 'F10', 'F11', 'F12', 'F13',
+          \ 'F14', 'F15', 'F16', 'F17', 'F18', 'F19', 'F2', 'F20', 'F21', 'F22',
+          \ 'F23', 'F24', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'G', 'H',
+          \ 'Help', 'Home', 'I', 'Insert', 'J', 'K', 'L', 'LaunchApp1',
+          \ 'LaunchApp2', 'LaunchMail', 'LaunchMediaSelect', 'LeftArrow',
+          \ 'LeftWindows', 'M', 'MediaNext', 'MediaPlay', 'MediaPrevious',
+          \ 'MediaStop', 'Multiply', 'N', 'NoName', 'NumPad0', 'NumPad1',
+          \ 'NumPad2', 'NumPad3', 'NumPad4', 'NumPad5', 'NumPad6', 'NumPad7',
+          \ 'NumPad8', 'NumPad9', 'O', 'Oem1', 'Oem102', 'Oem2', 'Oem3', 'Oem4',
+          \ 'Oem4', 'Oem5', 'Oem6', 'Oem7', 'Oem8', 'OemClear', 'OemComma',
+          \ 'OemMinus', 'OemPeriod', 'OemPlus', 'P', 'Pa1', 'Packet', 'PageDown',
+          \ 'PageUp', 'Pause', 'Play', 'Print', 'PrintScreen', 'Process', 'Q', 'R',
+          \ 'RightArrow', 'RightWindows', 'S', 'Select', 'Separator', 'Sleep',
+          \ 'Sleep', 'Spacebar', 'Subtract', 'T', 'Tab', 'U', 'UpArrow', 'V',
+          \ 'VolumeDown', 'VolumeMute', 'VolumeUp', 'W', 'X', 'Y', 'Z', 'Zoom',
+          \ 'Alt', 'Control', 'Shift', 'ControlBreak', 'ControlC', 'Local',
+          \ 'Unspecified', 'Utc', 'Friday', 'Monday', 'Saturday', 'Sunday',
+          \ 'Thursday', 'Tuesday', 'Wednesday', 'AdminTools', 'ApplicationData',
+          \ 'CDBurning', 'CommonAdminTools', 'CommonApplicationData',
+          \ 'CommonDesktopDirectory', 'CommonDocuments', 'CommonMusic',
+          \ 'CommonOemLinks', 'CommonPictures', 'CommonProgramFiles',
+          \ 'CommpongProgramFilesX86', 'CommponPrograms', 'CommonStartMenu',
+          \ 'CommonStartup', 'CommonTemplates', 'CommonVideos', 'Cookies',
+          \ 'Desktop', 'DesktopDirectory', 'Favorites', 'Fonts', 'History',
+          \ 'InternetCache', 'LocalApplicationData', 'LocalizedResources',
+          \ 'MyComputer', 'MyDocuments', 'MyMusic', 'MyPictures', 'MyVideos',
+          \ 'NetworkShortcuts', 'Personal', 'PrinterShortcuts', 'ProgramFiles',
+          \ 'ProgramFilesX86', 'Programs', 'Recent', 'Resources', 'SentTo',
+          \ 'StartMenu', 'StartUp', 'System', 'SystemX86', 'Templates',
+          \ 'UserProfile', 'Windows', 'Create', 'DoNotVerify', 'Machine',
+          \ 'Process', 'User', 'Default', 'Forced', 'Optimized', 'Canceled',
+          \ 'Failed', 'NotApplicable', 'Succeeded', 'Timeout',
+          \ 'AllowEmptyAuthority', 'DontCompressPath', 'DontConvertPathBackslashes',
+          \ 'DontUnescapePathDotsAndSlashes', 'GenericAuthority', 'Idn',
+          \ 'IriParsing', 'NoFragment', 'NoPort', 'NoQuery', 'NoUserInfo',
+          \ 'DissalowBindings', 'DomainMask', 'MultiDomain', 'MultiDomainhost',
+          \ 'NotSpeciied', 'SingleDomain', 'AwayFromZero', 'ToEven', 'MacOSX',
+          \ 'Unix', 'Win32NT', 'Win32S', 'Win32Windows', 'WinCE', 'Xbox',
+          \ 'CurrentCulture', 'CurrentCultureIgnoreCase', 'InvariantCulture',
+          \ 'InvariantCultureIgnoreCase', 'Ordinal', 'OrdinalIgnoreCase',
+          \ 'RemoveEmptyEntries', 'Boolean', 'Byte', 'Char', 'DateTime', 'DBNull',
+          \ 'Decimal', 'Double', 'Empty', 'Int16', 'Int32', 'Int64', 'Object',
+          \ 'SByte', 'Single', 'String', 'UInt16', 'UInt32', 'UInt64',
+          \ 'AbsoluteUri', 'Fragment', 'Host', 'HostAndPort', 'HttpRequestUrl',
+          \ 'KeepDelimiter', 'NormalizedHost', 'Path', 'PathAndQuery', 'Port',
+          \ 'Query', 'Scheme', 'SchemeAndServer', 'SerializationInfoString',
+          \ 'StrongAuthority', 'StrongPort', 'UserInfo', 'SafeUnescaped',
+          \ 'Unescaped', 'UriEscaped', 'Basic', 'Dns', 'IPv4', 'IPv6',
+          \ 'Unknown', 'All', 'AllExceptIntranet', 'Absolute', 'Relative',
+          \ 'RelativeOrAbsolute', 'Path', 'Query', 'Scheme']
+      if len(filter(getline(1, line('$')), "v:val =~# '\\.\\zs" . l:e . "\\>'"))
+        execute 'syn match csBuiltInEnumValue /\.\zs' . l:e . '\>/'
       endif
     endfor
 
   endif
+  if len(filter(getline(1, line('$')), "v:val =~# '^\\s*using\\s\\+System\.Diagnostics;'"))
+    syn keyword csBuiltInClasses  BooleanSwitch ConditionalAttribute
+    syn keyword csBuiltInClasses  ConsoleTraceListener CorrelationManager
+    syn keyword csBuiltInClasses  CounterCreationData
+    syn keyword csBuiltInClasses  CounterCreateDataCollection
+    syn keyword csBuiltInClasses  CounterSimpleCalculator DataRecievedEventArgs
+    syn keyword csBuiltInClasses  Debug DebuggableAttribute Debugger
+    syn keyword csBuiltInClasses  DebuggerBrowsableAttribute
+    syn keyword csBuiltInClasses  DebuggerDisplayAttribute
+    syn keyword csBuiltInClasses  DebuggerHiddenAttribute
+    syn keyword csBuiltInClasses  DebuggerNonUserCodeAttribute
+    syn keyword csBuiltInClasses  DebuggerStepperBoundaryAttribute
+    syn keyword csBuiltInClasses  DebuggerStepThroughAttribute
+    syn keyword csBuiltInClasses  DebuggerTypeProxyAttribute
+    syn keyword csBuiltInClasses  DebuggerVisualizerAttribute
+    syn keyword csBuiltInClasses  DefaultTraceListener
+    syn keyword csBuiltInClasses  DefaultListTraceListener
+    syn keyword csBuiltInClasses  DiagnosticsConfigurationHandler
+    syn keyword csBuiltInClasses  EntryWrittenEventArgs EventInstance EventLog
+    syn keyword csBuiltInClasses  EventLogEntry EventLogEntryCollection
+    syn keyword csBuiltInClasses  EventLogInstaller EvenLogPermission
+    syn keyword csBuiltInClasses  EventLogPermissionEntry
+    syn keyword csBuiltInClasses  EventLogPermissionEntryEntry
+    syn keyword csBuiltInClasses  EventLogTraceListener EventSchemaTraceListener
+    syn keyword csBuiltInClasses  EvenSourceCreationData EventTypeFilter
+    syn keyword csBuiltInClasses  FileVersionInfo InstanceData
+    syn keyword csBuiltInClasses  InstanceDataCollection
+    syn keyword csBuiltInClasses  InstanceDataCollectionCollection
+    syn keyword csBuiltInClasses  MonitoringDescriptionAttribute
+    syn keyword csBuiltInClasses  PerformanceCounter PerformanceCounterCategory
+    syn keyword csBuiltInClasses  PerformanceCounterInstaller
+    syn keyword csBuiltInClasses  PerformanceCounterManager
+    syn keyword csBuiltInClasses  PerformanceCounterPermission
+    syn keyword csBuiltInClasses  PerformanceCounterPermissionAttribute
+    syn keyword csBuiltInClasses  PerformanceCounterPermissionEntry
+    syn keyword csBuiltInClasses  PerformanceCounterPermissionEntryCollection
+    syn keyword csBuiltInClasses  PresentationTraceSources Process ProcessModule
+    syn keyword csBuiltInClasses  ProcessModuleCollection ProcessStartInfo
+    syn keyword csBuiltInClasses  ProcessStartInfo ProcessThread
+    syn keyword csBuiltInClasses  ProcessThreadCollection SourceFilter
+    syn keyword csBuiltInClasses  SourceSwitch StackFrame StackFrameExtensions
+    syn keyword csBuiltInClasses  StackTrace Stopwatch Switch SwitchAttribute
+    syn keyword csBuiltInClasses  SwitchLevelAttribute TextWriterTraceListener
+    syn keyword csBuiltInClasses  Trace TraceEventCache TraceFilter
+    syn keyword csBuiltInClasses  TraceListener TraceListenerCollection
+    syn keyword csBuiltInClasses  TraceSource TraceSwitch
+    syn keyword csBuiltInClasses  UnescapedXmlDiagnosticData
+    syn keyword csBuiltInClasses  XmlWriterTraceListener
+    syn keyword csBuiltInStructs  CounterSample
+    syn keyword csBuiltInInterfaces ICollectData
+    syn keyword csBuiltInEnums      DebuggableAttribute.DebuggingModes
+    syn keyword csBuiltInEnums      DebuggerBrowsableState
+    syn keyword csBuiltInEnums      EventEntryType EventLogPermissionAccess
+    syn keyword csBuiltInEnums      OverflowAction
+    syn keyword csBuiltInEnums      PerformanceCounterCategoryType
+    syn keyword csBuiltInEnums      PerformanceCounterInstanceLifetime
+    syn keyword csBuiltInEnums      PerformanceCounterPermissionAccess
+    syn keyword csBuiltInEnums      PerformanceCounterType
+    syn keyword csBuiltInEnums      PresentationTraceLevel ProcessPriorityClass
+    syn keyword csBuiltInEnums      ProcessWindowStyle SourceLevels
+    syn keyword csBuiltInEnums      ThreadPriorityLevel ThreadState
+    syn keyword csBuiltInEnums      ThreadWaitReason TraceEventType TraceLevel
+    syn keyword csBuiltInEnums      TraceLogRetentionOption TraceOptions
+    syn keyword csBuiltInDelegates  DataReceivedEventHandler
+    syn keyword csBuiltInDelegates  EntryWrittenEventHandler
+  endif
+
 endfunction
 hi def link csBuiltInClasses    class
 hi def link csBuiltInEnums      enumName
+hi def link csBuiltInEnumValues enumValue
 hi def link csBuiltInEvents     event
 hi def link csBuiltInFields     field
 " FIXME Change this; needs a group created for it
