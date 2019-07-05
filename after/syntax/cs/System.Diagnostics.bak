@@ -1,0 +1,2230 @@
+Classes
+    BooleanSwitch
+        Constructors
+            BooleanSwitch(String, String)
+            BooleanSwitch(String, String, String)
+        Properties
+            Attributes (Inherited from Switch)
+            Description (Inherited from Switch)
+            DisplayName (Inherited from Switch)
+            Enabled
+            SwitchSetting (Inherited from Switch)
+            Value (Inherited from Switch)
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetSupportedAttributes() (Inherited from Switch)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            OnSwitchSettingChanged() (Inherited from Switch)
+            OnValueChanged()
+            ToString() (Inherited from Object)
+    ConditionalAttribute
+        Constructors
+            ConditionalAttribute(String)
+        Properties
+            ConditionString
+            TypeId (Inherited from Attribute)
+        Methods
+            Equals(Object) (Inherited from Attribute)
+            GetHashCode() (Inherited from Attribute)
+            GetType() (Inherited from Object)
+            IsDefaultAttribute() (Inherited from Attribute)
+            Match(Object) (Inherited from Attribute)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    ConsoleTraceListener
+        Constructors
+            ConsoleTraceListener()
+            ConsoleTraceListener(Boolean)
+        Methods
+            Close()
+            CreateObjRef(Type) (Inherited from MarshalByRefObject)
+            Dispose() (Inherited from TraceListener)
+            Dispose(Boolean) (Inherited from TextWriterTraceListener)
+            Equals(Object) (Inherited from Object)
+            Fail(String) (Inherited from TraceListener)
+            Fail(String, String) (Inherited from TraceListener)
+            Flush() (Inherited from TextWriterTraceListener)
+            GetHashCode() (Inherited from Object)
+            GetLifetimeService() (Inherited from MarshalByRefObject)
+            GetSupportedAttributes() (Inherited from TraceListener)
+            GetType() (Inherited from Object)
+            InitializeLifetimeService() (Inherited from MarshalByRefObject)
+            MemberwiseClone() (Inherited from Object)
+            MemberwiseClone(Boolean) (Inherited from MarshalByRefObject)
+            ToString() (Inherited from Object)
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object) (Inherited from TraceListener)
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object[]) (Inherited from TraceListener)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32) (Inherited from TraceListener)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32, String) (Inherited from TraceListener)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32, String, Object[]) (Inherited from TraceListener)
+            TraceTransfer(TraceEventCache, String, Int32, String, Guid) (Inherited from TraceListener)
+            Write(Object) (Inherited from TraceListener)
+            Write(Object, String) (Inherited from TraceListener)
+            Write(String) (Inherited from TextWriterTraceListener)
+            Write(String, String) (Inherited from TraceListener)
+            WriteIndent() (Inherited from TraceListener)
+            WriteLine(Object) (Inherited from TraceListener)
+            WriteLine(Object, String) (Inherited from TraceListener)
+            WriteLine(String) (Inherited from TextWriterTraceListener)
+            WriteLine(String, String) (Inherited from TraceListener)
+        Properties
+            Attributes (Inherited from TraceListener)
+            Filter (Inherited from TraceListener)
+            IndentLevel (Inherited from TraceListener)
+            IndentSize (Inherited from TraceListener)
+            IsThreadSafe (Inherited from TraceListener)
+            Name (Inherited from TraceListener)
+            NeedIndent (Inherited from TraceListener)
+            TraceOutputOptions (Inherited from TraceListener)
+            Writer (Inherited from TextWriterTraceListener)
+    CorrelationManager
+        Properties
+            ActivityId
+            LogicalOperationStack
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            StartLogicalOperation()
+            StartLogicalOperation(Object)
+            StopLogicalOperation()
+            ToString() (Inherited from Object)
+    CounterCreationData
+        Constructors
+            CounterCreationData()
+            CounterCreationData(String, String, PerformanceCounterType)
+        Properties
+            CounterHelp
+            CounterName
+            CounterType
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    CounterCreationDataCollection
+        Constructors
+            CounterCreationDataCollection()
+            CounterCreationDataCollection(CounterCreationDataCollection)
+            CounterCreationDataCollection(CounterCreationData[])
+        Properties
+            Capacity (Inherited from CollectionBase)
+            Count (Inherited from CollectionBase)
+            ICollection.IsSynchronized (Inherited from CollectionBase)
+            ICollection.SyncRoot (Inherited from CollectionBase)
+            IList.IsFixedSize (Inherited from CollectionBase)
+            IList.IsReadOnly (Inherited from CollectionBase)
+            IList.Item[Int32] (Inherited from CollectionBase)
+            InnerList (Inherited from CollectionBase)
+            Item[Int32]
+            List (Inherited from CollectionBase)
+        Methods
+            Add(CounterCreationData)
+            AddRange(CounterCreationDataCollection)
+            AddRange(CounterCreationData[])
+            Clear() (Inherited from CollectionBase)
+            Contains(CounterCreationData)
+            CopyTo(CounterCreationData[], Int32)
+            Equals(Object) (Inherited from Object)
+            GetEnumerator() (Inherited from CollectionBase)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            IndexOf(CounterCreationData)
+            Insert(Int32, CounterCreationData)
+            MemberwiseClone() (Inherited from Object)
+            OnClear() (Inherited from CollectionBase)
+            OnClearComplete() (Inherited from CollectionBase)
+            OnInsertComplete(Int32, Object) (Inherited from CollectionBase)
+            OnRemove(Int32, Object) (Inherited from CollectionBase)
+            OnRemoveComplete(Int32, Object) (Inherited from CollectionBase)
+            OnSet(Int32, Object, Object) (Inherited from CollectionBase)
+            OnSetComplete(Int32, Object, Object) (Inherited from CollectionBase)
+            OnValidate(Object)
+            Remove(CounterCreationData)
+            RemoveAt(Int32) (Inherited from CollectionBase)
+            ToString() (Inherited from Object)
+    CounterSampleCalculator
+        Methods
+            ComputeCounterValue(CounterSample)
+            ComputeCounterValue(CounterSample, CounterSample)
+    DataReceivedEventArgs
+        Properties
+            Data
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    Debug
+        Properties
+            AutoFlush
+            IndentLevel
+            IndentSize
+            Listeners
+        Methods
+            Assert(Boolean)
+            Assert(Boolean, String)
+            Assert(Boolean, String, String)
+            Assert(Boolean, String, String, Object[])
+            Close()
+            Fail(String)
+            Fail(String, String)
+            Flush()
+            Indent()
+            Print(String)
+            Print(String, Object[])
+            Unindent()
+            Write(String, String)
+            Write(Object, String)
+            Write(Object)
+            Write(String)
+            WriteIf(Boolean, Object)
+            WriteIf(Boolean, String)
+            WriteIf(Boolean, Object, String)
+            WriteIf(Boolean, String, String)
+            WriteLine(Object)
+            WriteLine(String)
+            WriteLine(Object, String)
+            WriteLine(String, Object[])
+            WriteLine(String, String)
+            WriteLineIf(Boolean, Object, String)
+            WriteLineIf(Boolean, Object)
+            WriteLineIf(Boolean, String)
+            WriteLineIf(Boolean, String, String)
+    DebuggableAttribute
+        Constructors
+            DebuggableAttribute(Boolean, Boolean)
+            DebuggableAttribute(DebuggableAttribute+DebuggingModes)
+        Properties
+            DebuggingFlags
+            IsJITOptimizerDisabled
+            IsJITTrackingEnabled
+            TypeId (Inherited from Attribute)
+        Methods
+            Equals(Object) (Inherited from Attribute)
+            GetHashCode() (Inherited from Attribute)
+            GetType() (Inherited from Object)
+            IsDefaultAttribute() (Inherited from Attribute)
+            Match(Object) (Inherited from Attribute)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    Debugger
+        Constructors
+            Debugger()
+        Fields
+            DefaultCategory
+        Properties
+            IsAttached
+        Methods
+            Break()
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            IsLogging()
+            Launch()
+            Log(Int32, String, String)
+            MemberwiseClone() (Inherited from Object)
+            NotifyOfCrossThreadDependency()
+            ToString() (Inherited from Object)
+    DebuggerBrowsableAttribute
+        Constructors
+            DebuggerBrowsableAttribute(DebuggerBrowsableState)
+        Properties
+            State
+            TypeId (Inherited from Attribute)
+        Methods
+            Equals(Object) (Inherited from Attribute)
+            GetHashCode() (Inherited from Attribute)
+            GetType() (Inherited from Object)
+            IsDefaultAttribute() (Inherited from Attribute)
+            Match(Object) (Inherited from Attribute)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    DebuggerDisplayAttribute
+        Constructors
+            DebuggerDisplayAttribute(String)
+        Properties
+            Name
+            Target
+            TargetTypeName
+            Type
+            TypeId (Inherited from Attribute)
+            Value
+        Methods
+            Equals(Object) (Inherited from Attribute)
+            GetHashCode() (Inherited from Attribute)
+            GetType() (Inherited from Object)
+            IsDefaultAttribute() (Inherited from Attribute)
+            Match(Object) (Inherited from Attribute)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    DebuggerHiddenAttribute
+        Constructors
+            DebuggerHiddenAttribute()
+        Methods
+            Equals(Object) (Inherited from Attribute)
+            GetHashCode() (Inherited from Attribute)
+            GetType() (Inherited from Object)
+            IsDefaultAttribute() (Inherited from Attribute)
+            Match(Object) (Inherited from Attribute)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+        Properties
+            TypeId (Inherited from Attribute)
+    DebuggerNonUserCodeAttribute
+        Constructors
+            DebuggerNonUserCodeAttribute()
+        Methods
+            Equals(Object) (Inherited from Attribute)
+            GetHashCode() (Inherited from Attribute)
+            GetType() (Inherited from Object)
+            IsDefaultAttribute() (Inherited from Attribute)
+            Match(Object) (Inherited from Attribute)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+        Properties
+            TypeId (Inherited from Attribute)
+    DebuggerStepperBoundaryAttribute
+        Constructors
+            DebuggerStepperBoundaryAttribute()
+        Methods
+            Equals(Object) (Inherited from Attribute)
+            GetHashCode() (Inherited from Attribute)
+            GetType() (Inherited from Object)
+            IsDefaultAttribute() (Inherited from Attribute)
+            Match(Object) (Inherited from Attribute)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+        Properties
+            TypeId (Inherited from Attribute)
+    DebuggerStepThroughAttribute
+        Constructors
+            DebuggerStepThroughAttribute()
+        Methods
+            Equals(Object) (Inherited from Attribute)
+            GetHashCode() (Inherited from Attribute)
+            GetType() (Inherited from Object)
+            IsDefaultAttribute() (Inherited from Attribute)
+            Match(Object) (Inherited from Attribute)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+        Properties
+            TypeId (Inherited from Attribute)
+    DebuggerTypeProxyAttribute
+        Constructors
+            DebuggerTypeProxyAttribute(String)
+            DebuggerTypeProxyAttribute(Type)
+        Properties
+            ProxyTypeName
+            Target
+            TargetTypeName
+            TypeId (Inherited from Attribute)
+        Methods
+            Equals(Object) (Inherited from Attribute)
+            GetHashCode() (Inherited from Attribute)
+            GetType() (Inherited from Object)
+            IsDefaultAttribute() (Inherited from Attribute)
+            Match(Object) (Inherited from Attribute)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    DebuggerVisualizerAttribute
+        Constructors
+            DebuggerVisualizerAttribute(String)
+            DebuggerVisualizerAttribute(String, String)
+            DebuggerVisualizerAttribute(String, Type)
+            DebuggerVisualizerAttribute(Type)
+            DebuggerVisualizerAttribute(Type, String)
+            DebuggerVisualizerAttribute(Type, Type)
+        Properties
+            Description
+            Target
+            TargetTypeName
+            TypeId (Inherited from Attribute)
+            VisualizerObjectSourceTypeName
+            VisualizerTypeName
+        Methods
+            Equals(Object) (Inherited from Attribute)
+            GetHashCode() (Inherited from Attribute)
+            GetType() (Inherited from Object)
+            IsDefaultAttribute() (Inherited from Attribute)
+            Match(Object) (Inherited from Attribute)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    DefaultTraceListener
+        Constructors
+            DefaultTraceListener()
+        Properties
+            AssertUiEnabled
+            Attributes (Inherited from TraceListener)
+            Filter (Inherited from TraceListener)
+            IndentLevel (Inherited from TraceListener)
+            IndentSize (Inherited from TraceListener)
+            IsThreadSafe (Inherited from TraceListener)
+            LogFileName
+            Name (Inherited from TraceListener)
+            NeedIndent (Inherited from TraceListener)
+            TraceOutputOptions (Inherited from TraceListener)
+        Methods
+            Close() (Inherited from TraceListener)
+            CreateObjRef(Type) (Inherited from MarshalByRefObject)
+            Dispose() (Inherited from TraceListener)
+            Dispose(Boolean) (Inherited from TraceListener)
+            Equals(Object) (Inherited from Object)
+            Fail(String)
+            Fail(String, String)
+            Flush() (Inherited from TraceListener)
+            GetHashCode() (Inherited from Object)
+            GetLifetimeService() (Inherited from MarshalByRefObject)
+            GetSupportedAttributes() (Inherited from TraceListener)
+            GetType() (Inherited from Object)
+            InitializeLifetimeService() (Inherited from MarshalByRefObject)
+            MemberwiseClone() (Inherited from Object)
+            MemberwiseClone(Boolean) (Inherited from MarshalByRefObject)
+            ToString() (Inherited from Object)
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object) (Inherited from TraceListener)
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object[]) (Inherited from TraceListener)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32) (Inherited from TraceListener)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32, String) (Inherited from TraceListener)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32, String, Object[]) (Inherited from TraceListener)
+            TraceTransfer(TraceEventCache, String, Int32, String, Guid) (Inherited from TraceListener)
+            Write(Object) (Inherited from TraceListener)
+            Write(Object, String) (Inherited from TraceListener)
+            Write(String)
+            Write(String, String) (Inherited from TraceListener)
+            WriteIndent() (Inherited from TraceListener)
+            WriteLine(Object) (Inherited from TraceListener)
+            WriteLine(Object, String) (Inherited from TraceListener)
+            WriteLine(String)
+            WriteLine(String, String) (Inherited from TraceListener)
+    DelimitedListTraceListener
+        Constructors
+            DelimitedListTraceListener(Stream)
+            DelimitedListTraceListener(Stream, String)
+            DelimitedListTraceListener(String)
+            DelimitedListTraceListener(String, String)
+            DelimitedListTraceListener(TextWriter)
+            DelimitedListTraceListener(TextWriter, String)
+        Properties
+            Attributes (Inherited from TraceListener)
+            Delimiter
+            Filter (Inherited from TraceListener)
+            IndentLevel (Inherited from TraceListener)
+            IndentSize (Inherited from TraceListener)
+            IsThreadSafe (Inherited from TraceListener)
+            Name (Inherited from TraceListener)
+            NeedIndent (Inherited from TraceListener)
+            TraceOutputOptions (Inherited from TraceListener)
+            Writer (Inherited from TextWriterTraceListener)
+        Methods
+            Close() (Inherited from TextWriterTraceListener)
+            CreateObjRef(Type) (Inherited from MarshalByRefObject)
+            Dispose() (Inherited from TraceListener)
+            Dispose(Boolean) (Inherited from TextWriterTraceListener)
+            Equals(Object) (Inherited from Object)
+            Fail(String) (Inherited from TraceListener)
+            Fail(String, String) (Inherited from TraceListener)
+            Flush() (Inherited from TextWriterTraceListener)
+            GetHashCode() (Inherited from Object)
+            GetLifetimeService() (Inherited from MarshalByRefObject)
+            GetSupportedAttributes()
+            GetType() (Inherited from Object)
+            InitializeLifetimeService() (Inherited from MarshalByRefObject)
+            MemberwiseClone() (Inherited from Object)
+            MemberwiseClone(Boolean) (Inherited from MarshalByRefObject)
+            ToString() (Inherited from Object)
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object)
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object[])
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32) (Inherited from TraceListener)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32, String)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32, String, Object[])
+            TraceTransfer(TraceEventCache, String, Int32, String, Guid) (Inherited from TraceListener)
+            Write(Object) (Inherited from TraceListener)
+            Write(Object, String) (Inherited from TraceListener)
+            Write(String) (Inherited from TextWriterTraceListener)
+            Write(String, String) (Inherited from TraceListener)
+            WriteIndent() (Inherited from TraceListener)
+            WriteLine(Object) (Inherited from TraceListener)
+            WriteLine(Object, String) (Inherited from TraceListener)
+            WriteLine(String) (Inherited from TextWriterTraceListener)
+            WriteLine(String, String) (Inherited from TraceListener)
+    Obsolete
+    DiagnosticsConfigurationHandler
+        Constructors
+            DiagnosticsConfigurationHandler()
+        Methods
+            Create(Object, Object, XmlNode)
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    EntryWrittenEventArgs
+        Constructors
+            EntryWrittenEventArgs()
+            EntryWrittenEventArgs(EventLogEntry)
+        Properties
+            Entry
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    EventInstance
+        Constructors
+            EventInstance(Int64, Int32)
+            EventInstance(Int64, Int32, EventLogEntryType)
+        Properties
+            CategoryId
+            EntryType
+            InstanceId
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    EventLog
+        Constructors
+            EventLog()
+            EventLog(String)
+            EventLog(String, String)
+            EventLog(String, String, String)
+        Properties
+            CanRaiseEvents (Inherited from Component)
+            Container (Inherited from Component)
+            DesignMode (Inherited from Component)
+            EnableRaisingEvents
+            Entries
+            Events (Inherited from Component)
+            Log
+            LogDisplayName
+            MachineName
+            MaximumKilobytes
+            MinimumRetentionDays
+            OverflowAction
+            Site (Inherited from Component)
+            Source
+            SynchronizingObject
+        Methods
+            BeginInit()
+            Clear()
+            Close()
+            CreateEventSource(EventSourceCreationData)
+            CreateEventSource(String, String)
+            CreateEventSource(String, String, String)
+            CreateObjRef(Type) (Inherited from MarshalByRefObject)
+            Delete(String)
+            Delete(String, String)
+            DeleteEventSource(String)
+            DeleteEventSource(String, String)
+            Dispose() (Inherited from Component)
+            Dispose(Boolean)
+            EndInit()
+            Equals(Object) (Inherited from Object)
+            Exists(String)
+            Exists(String, String)
+            GetEventLogs()
+            GetEventLogs(String)
+            GetHashCode() (Inherited from Object)
+            GetLifetimeService() (Inherited from MarshalByRefObject)
+            GetService(Type) (Inherited from Component)
+            GetType() (Inherited from Object)
+            InitializeLifetimeService() (Inherited from MarshalByRefObject)
+            LogNameFromSourceName(String, String)
+            MemberwiseClone() (Inherited from Object)
+            MemberwiseClone(Boolean) (Inherited from MarshalByRefObject)
+            ModifyOverflowPolicy(OverflowAction, Int32)
+            RegisterDisplayName(String, Int64)
+            SourceExists(String)
+            SourceExists(String, String)
+            ToString() (Inherited from Component)
+            WriteEntry(String)
+            WriteEntry(String, EventLogEntryType)
+            WriteEntry(String, EventLogEntryType, Int32)
+            WriteEntry(String, EventLogEntryType, Int32, Int16)
+            WriteEntry(String, EventLogEntryType, Int32, Int16, Byte[])
+            WriteEntry(String, String)
+            WriteEntry(String, String, EventLogEntryType)
+            WriteEntry(String, String, EventLogEntryType, Int32)
+            WriteEntry(String, String, EventLogEntryType, Int32, Int16)
+            WriteEntry(String, String, EventLogEntryType, Int32, Int16, Byte[])
+            WriteEvent(EventInstance, Byte[], Object[])
+            WriteEvent(EventInstance, Object[])
+            WriteEvent(String, EventInstance, Byte[], Object[])
+            WriteEvent(String, EventInstance, Object[])
+        Events
+            Disposed (Inherited from Component)
+            EntryWritten
+    EventLogEntry
+        Properties
+            CanRaiseEvents (Inherited from Component)
+            Category
+            CategoryNumber
+            Container (Inherited from Component)
+            Data
+            DesignMode (Inherited from Component)
+            EntryType
+            EventID
+            Events (Inherited from Component)
+            Index
+            InstanceId
+            MachineName
+            Message
+            ReplacementStrings
+            Site (Inherited from Component)
+            Source
+            TimeGenerated
+            TimeWritten
+            UserName
+        Methods
+            CreateObjRef(Type) (Inherited from MarshalByRefObject)
+            Dispose() (Inherited from Component)
+            Dispose(Boolean) (Inherited from Component)
+            Equals(EventLogEntry)
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetLifetimeService() (Inherited from MarshalByRefObject)
+            GetService(Type) (Inherited from Component)
+            GetType() (Inherited from Object)
+            InitializeLifetimeService() (Inherited from MarshalByRefObject)
+            MemberwiseClone() (Inherited from Object)
+            MemberwiseClone(Boolean) (Inherited from MarshalByRefObject)
+            ToString() (Inherited from Component)
+        Events
+            Disposed (Inherited from Component)
+    EventLogEntryCollection
+        Properties
+            Count
+            Item[Int32]
+        Methods
+            CopyTo(EventLogEntry[], Int32)
+            Equals(Object) (Inherited from Object)
+            GetEnumerator()
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    EventLogInstaller
+        Constructors
+            EventLogInstaller()
+        Properties
+            CanRaiseEvents (Inherited from Component)
+            CategoryCount
+            CategoryResourceFile
+            Container (Inherited from Component)
+            Context (Inherited from Installer)
+            DesignMode (Inherited from Component)
+            Events (Inherited from Component)
+            HelpText (Inherited from Installer)
+            Installers (Inherited from Installer)
+            Log
+            MessageResourceFile
+            ParameterResourceFile
+            Parent (Inherited from Installer)
+            Site (Inherited from Component)
+            Source
+            UninstallAction
+        Methods
+            Commit(IDictionary) (Inherited from Installer)
+            CopyFromComponent(IComponent)
+            CreateObjRef(Type) (Inherited from MarshalByRefObject)
+            Dispose() (Inherited from Component)
+            Dispose(Boolean) (Inherited from Component)
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetLifetimeService() (Inherited from MarshalByRefObject)
+            GetService(Type) (Inherited from Component)
+            GetType() (Inherited from Object)
+            InitializeLifetimeService() (Inherited from MarshalByRefObject)
+            Install(IDictionary)
+            IsEquivalentInstaller(ComponentInstaller)
+            MemberwiseClone() (Inherited from Object)
+            MemberwiseClone(Boolean) (Inherited from MarshalByRefObject)
+            OnAfterInstall(IDictionary) (Inherited from Installer)
+            OnAfterRollback(IDictionary) (Inherited from Installer)
+            OnAfterUninstall(IDictionary) (Inherited from Installer)
+            OnBeforeInstall(IDictionary) (Inherited from Installer)
+            OnBeforeRollback(IDictionary) (Inherited from Installer)
+            OnBeforeUninstall(IDictionary) (Inherited from Installer)
+            OnCommitted(IDictionary) (Inherited from Installer)
+            OnCommitting(IDictionary) (Inherited from Installer)
+            Rollback(IDictionary)
+            ToString() (Inherited from Component)
+            Uninstall(IDictionary)
+        Events
+            AfterInstall (Inherited from Installer)
+            AfterRollback (Inherited from Installer)
+            AfterUninstall (Inherited from Installer)
+            BeforeInstall (Inherited from Installer)
+            BeforeRollback (Inherited from Installer)
+            BeforeUninstall (Inherited from Installer)
+            Committed (Inherited from Installer)
+            Committing (Inherited from Installer)
+            Disposed (Inherited from Component)
+    EventLogPermission
+        Constructors
+            EventLogPermission()
+            EventLogPermission(EventLogPermissionAccess, String)
+            EventLogPermission(EventLogPermissionEntry[])
+            EventLogPermission(PermissionState)
+        Properties
+            PermissionAccessType (Inherited from ResourcePermissionBase)
+            PermissionEntries
+            TagNames (Inherited from ResourcePermissionBase)
+        Methods
+            AddPermissionAccess(ResourcePermissionBaseEntry) (Inherited from ResourcePermissionBase)
+            Assert() (Inherited from CodeAccessPermission)
+            Clear() (Inherited from ResourcePermissionBase)
+            Copy() (Inherited from ResourcePermissionBase)
+            Demand() (Inherited from CodeAccessPermission)
+            Deny() (Inherited from CodeAccessPermission)
+            Equals(Object) (Inherited from CodeAccessPermission)
+            FromXml(SecurityElement) (Inherited from ResourcePermissionBase)
+            GetHashCode() (Inherited from CodeAccessPermission)
+            GetPermissionEntries() (Inherited from ResourcePermissionBase)
+            GetType() (Inherited from Object)
+            Intersect(IPermission) (Inherited from ResourcePermissionBase)
+            IsSubsetOf(IPermission) (Inherited from ResourcePermissionBase)
+            IsUnrestricted() (Inherited from ResourcePermissionBase)
+            MemberwiseClone() (Inherited from Object)
+            PermitOnly() (Inherited from CodeAccessPermission)
+            RemovePermissionAccess(ResourcePermissionBaseEntry) (Inherited from ResourcePermissionBase)
+            ToString() (Inherited from CodeAccessPermission)
+            ToXml() (Inherited from ResourcePermissionBase)
+            Union(IPermission) (Inherited from ResourcePermissionBase)
+        Fields
+            Any (Inherited from ResourcePermissionBase)
+            Local (Inherited from ResourcePermissionBase)
+    EventLogPermissionAttribute
+        Constructors
+            EventLogPermissionAttribute(SecurityAction)
+        Properties
+            Action (Inherited from SecurityAttribute)
+            MachineName
+            PermissionAccess
+            TypeId (Inherited from Attribute)
+            Unrestricted (Inherited from SecurityAttribute)
+        Methods
+            CreatePermission()
+            Equals(Object) (Inherited from Attribute)
+            GetHashCode() (Inherited from Attribute)
+            GetType() (Inherited from Object)
+            IsDefaultAttribute() (Inherited from Attribute)
+            Match(Object) (Inherited from Attribute)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    EventLogPermissionEntry
+        Constructors
+            EventLogPermissionEntry(EventLogPermissionAccess, String)
+        Properties
+            MachineName
+            PermissionAccess
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    EventLogPermissionEntryCollection
+        Properties
+            Capacity (Inherited from CollectionBase)
+            Count (Inherited from CollectionBase)
+            ICollection.IsSynchronized (Inherited from CollectionBase)
+            ICollection.SyncRoot (Inherited from CollectionBase)
+            IList.IsFixedSize (Inherited from CollectionBase)
+            IList.IsReadOnly (Inherited from CollectionBase)
+            IList.Item[Int32] (Inherited from CollectionBase)
+            InnerList (Inherited from CollectionBase)
+            Item[Int32]
+            List (Inherited from CollectionBase)
+        Methods
+            Add(EventLogPermissionEntry)
+            AddRange(EventLogPermissionEntryCollection)
+            AddRange(EventLogPermissionEntry[])
+            Clear() (Inherited from CollectionBase)
+            Contains(EventLogPermissionEntry)
+            CopyTo(EventLogPermissionEntry[], Int32)
+            Equals(Object) (Inherited from Object)
+            GetEnumerator() (Inherited from CollectionBase)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            IndexOf(EventLogPermissionEntry)
+            Insert(Int32, EventLogPermissionEntry)
+            MemberwiseClone() (Inherited from Object)
+            OnClear()
+            OnClearComplete() (Inherited from CollectionBase)
+            OnInsert(Int32, Object)
+            OnInsertComplete(Int32, Object) (Inherited from CollectionBase)
+            OnRemove(Int32, Object)
+            OnRemoveComplete(Int32, Object) (Inherited from CollectionBase)
+            OnSet(Int32, Object, Object)
+            OnSetComplete(Int32, Object, Object) (Inherited from CollectionBase)
+            OnValidate(Object) (Inherited from CollectionBase)
+            Remove(EventLogPermissionEntry)
+            RemoveAt(Int32) (Inherited from CollectionBase)
+            ToString() (Inherited from Object)
+    EventLogTraceListener
+        Constructors
+            EventLogTraceListener()
+            EventLogTraceListener(EventLog)
+            EventLogTraceListener(String)
+        Properties
+            Attributes (Inherited from TraceListener)
+            EventLog
+            Filter (Inherited from TraceListener)
+            IndentLevel (Inherited from TraceListener)
+            IndentSize (Inherited from TraceListener)
+            IsThreadSafe (Inherited from TraceListener)
+            Name
+            NeedIndent (Inherited from TraceListener)
+            TraceOutputOptions (Inherited from TraceListener)
+        Methods
+            Close()
+            CreateObjRef(Type) (Inherited from MarshalByRefObject)
+            Dispose() (Inherited from TraceListener)
+            Dispose(Boolean) (Inherited from TraceListener)
+            Equals(Object) (Inherited from Object)
+            Fail(String) (Inherited from TraceListener)
+            Fail(String, String) (Inherited from TraceListener)
+            Flush() (Inherited from TraceListener)
+            GetHashCode() (Inherited from Object)
+            GetLifetimeService() (Inherited from MarshalByRefObject)
+            GetSupportedAttributes() (Inherited from TraceListener)
+            GetType() (Inherited from Object)
+            InitializeLifetimeService() (Inherited from MarshalByRefObject)
+            MemberwiseClone() (Inherited from Object)
+            MemberwiseClone(Boolean) (Inherited from MarshalByRefObject)
+            ToString() (Inherited from Object)
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object)
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object[])
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32) (Inherited from TraceListener)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32, String)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32, String, Object[])
+            TraceTransfer(TraceEventCache, String, Int32, String, Guid) (Inherited from TraceListener)
+            Write(Object) (Inherited from TraceListener)
+            Write(Object, String) (Inherited from TraceListener)
+            Write(String)
+            Write(String, String) (Inherited from TraceListener)
+            WriteIndent() (Inherited from TraceListener)
+            WriteLine(Object) (Inherited from TraceListener)
+            WriteLine(Object, String) (Inherited from TraceListener)
+            WriteLine(String)
+            WriteLine(String, String) (Inherited from TraceListener)
+    EventSchemaTraceListener
+        Constructors
+            EventSchemaTraceListener(String)
+            EventSchemaTraceListener(String, String)
+            EventSchemaTraceListener(String, String, Int32)
+            EventSchemaTraceListener(String, String, Int32, TraceLogRetentionOption)
+            EventSchemaTraceListener(String, String, Int32, TraceLogRetentionOption, Int64)
+            EventSchemaTraceListener(String, String, Int32, TraceLogRetentionOption, Int64, Int32)
+        Properties
+            Attributes (Inherited from TraceListener)
+            BufferSize
+            Filter (Inherited from TraceListener)
+            IndentLevel (Inherited from TraceListener)
+            IndentSize (Inherited from TraceListener)
+            IsThreadSafe
+            MaximumFileSize
+            MaximumNumberOfFiles
+            Name (Inherited from TraceListener)
+            NeedIndent (Inherited from TraceListener)
+            TraceLogRetentionOption
+            TraceOutputOptions (Inherited from TraceListener)
+            Writer
+        Methods
+            Close()
+            CreateObjRef(Type) (Inherited from MarshalByRefObject)
+            Dispose() (Inherited from TraceListener)
+            Dispose(Boolean) (Inherited from TextWriterTraceListener)
+            Equals(Object) (Inherited from Object)
+            Fail(String) (Inherited from TraceListener)
+            Fail(String, String)
+            Flush()
+            GetHashCode() (Inherited from Object)
+            GetLifetimeService() (Inherited from MarshalByRefObject)
+            GetSupportedAttributes()
+            GetType() (Inherited from Object)
+            InitializeLifetimeService() (Inherited from MarshalByRefObject)
+            MemberwiseClone() (Inherited from Object)
+            MemberwiseClone(Boolean) (Inherited from MarshalByRefObject)
+            ToString() (Inherited from Object)
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object)
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object[])
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32) (Inherited from TraceListener)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32, String)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32, String, Object[])
+            TraceTransfer(TraceEventCache, String, Int32, String, Guid)
+            Write(Object) (Inherited from TraceListener)
+            Write(Object, String) (Inherited from TraceListener)
+            Write(String)
+            Write(String, String) (Inherited from TraceListener)
+            WriteIndent() (Inherited from TraceListener)
+            WriteLine(Object) (Inherited from TraceListener)
+            WriteLine(Object, String) (Inherited from TraceListener)
+            WriteLine(String)
+            WriteLine(String, String) (Inherited from TraceListener)
+    EventSourceCreationData
+        Constructors
+            EventSourceCreationData(String, String)
+        Properties
+            CategoryCount
+            CategoryResourceFile
+            LogName
+            MachineName
+            MessageResourceFile
+            ParameterResourceFile
+            Source
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    EventTypeFilter
+        Constructors
+            EventTypeFilter(SourceLevels)
+        Properties
+            EventType
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            ShouldTrace(TraceEventCache, String, TraceEventType, Int32, String, Object[], Object, Object[])
+            ToString() (Inherited from Object)
+    FileVersionInfo
+        Properties
+            Comments
+            CompanyName
+            FileBuildPart
+            FileDescription
+            FileMajorPart
+            FileMinorPart
+            FileName
+            FilePrivatePart
+            FileVersion
+            InternalName
+            IsDebug
+            IsPatched
+            IsPreRelease
+            IsPrivateBuild
+            IsSpecialBuild
+            Language
+            LegalCopyright
+            LegalTrademarks
+            OriginalFilename
+            PrivateBuild
+            ProductBuildPart
+            ProductMajorPart
+            ProductMinorPart
+            ProductName
+            ProductPrivatePart
+            ProductVersion
+            SpecialBuild
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            GetVersionInfo(String)
+            MemberwiseClone() (Inherited from Object)
+            ToString()
+    InstanceData
+        Constructors
+            InstanceData(String, CounterSample)
+        Properties
+            InstanceName
+            RawValue
+            Sample
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    InstanceDataCollection
+        Constructors
+            InstanceDataCollection(String)
+        Properties
+            Count (Inherited from DictionaryBase)
+            CounterName
+            Dictionary (Inherited from DictionaryBase)
+            ICollection.IsSynchronized (Inherited from DictionaryBase)
+            ICollection.SyncRoot (Inherited from DictionaryBase)
+            IDictionary.IsFixedSize (Inherited from DictionaryBase)
+            IDictionary.IsReadOnly (Inherited from DictionaryBase)
+            IDictionary.Item[Object] (Inherited from DictionaryBase)
+            IDictionary.Keys (Inherited from DictionaryBase)
+            IDictionary.Values (Inherited from DictionaryBase)
+            InnerHashtable (Inherited from DictionaryBase)
+            Item[String]
+            Keys
+            Values
+        Methods
+            Clear() (Inherited from DictionaryBase)
+            Contains(String)
+            CopyTo(Array, Int32) (Inherited from DictionaryBase)
+            CopyTo(InstanceData[], Int32)
+            Equals(Object) (Inherited from Object)
+            GetEnumerator() (Inherited from DictionaryBase)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            OnClear() (Inherited from DictionaryBase)
+            OnClearComplete() (Inherited from DictionaryBase)
+            OnGet(Object, Object) (Inherited from DictionaryBase)
+            OnInsert(Object, Object) (Inherited from DictionaryBase)
+            OnInsertComplete(Object, Object) (Inherited from DictionaryBase)
+            OnRemove(Object, Object) (Inherited from DictionaryBase)
+            OnRemoveComplete(Object, Object) (Inherited from DictionaryBase)
+            OnSet(Object, Object, Object) (Inherited from DictionaryBase)
+            OnSetComplete(Object, Object, Object) (Inherited from DictionaryBase)
+            OnValidate(Object, Object) (Inherited from DictionaryBase)
+            ToString() (Inherited from Object)
+    InstanceDataCollectionCollection
+        Constructors
+            InstanceDataCollectionCollection()
+        Properties
+            Count (Inherited from DictionaryBase)
+            Dictionary (Inherited from DictionaryBase)
+            ICollection.IsSynchronized (Inherited from DictionaryBase)
+            ICollection.SyncRoot (Inherited from DictionaryBase)
+            IDictionary.IsFixedSize (Inherited from DictionaryBase)
+            IDictionary.IsReadOnly (Inherited from DictionaryBase)
+            IDictionary.Item[Object] (Inherited from DictionaryBase)
+            IDictionary.Keys (Inherited from DictionaryBase)
+            IDictionary.Values (Inherited from DictionaryBase)
+            InnerHashtable (Inherited from DictionaryBase)
+            Item[String]
+            Keys
+            Values
+        Methods
+            Clear() (Inherited from DictionaryBase)
+            Contains(String)
+            CopyTo(Array, Int32) (Inherited from DictionaryBase)
+            CopyTo(InstanceDataCollection[], Int32)
+            Equals(Object) (Inherited from Object)
+            GetEnumerator() (Inherited from DictionaryBase)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            OnClear() (Inherited from DictionaryBase)
+            OnClearComplete() (Inherited from DictionaryBase)
+            OnGet(Object, Object) (Inherited from DictionaryBase)
+            OnInsert(Object, Object) (Inherited from DictionaryBase)
+            OnInsertComplete(Object, Object) (Inherited from DictionaryBase)
+            OnRemove(Object, Object) (Inherited from DictionaryBase)
+            OnRemoveComplete(Object, Object) (Inherited from DictionaryBase)
+            OnSet(Object, Object, Object) (Inherited from DictionaryBase)
+            OnSetComplete(Object, Object, Object) (Inherited from DictionaryBase)
+            OnValidate(Object, Object) (Inherited from DictionaryBase)
+            ToString() (Inherited from Object)
+    MonitoringDescriptionAttribute
+        Constructors
+            MonitoringDescriptionAttribute(String)
+        Properties
+            Description
+            DescriptionValue (Inherited from DescriptionAttribute)
+            TypeId (Inherited from Attribute)
+        Methods
+            Equals(Object) (Inherited from DescriptionAttribute)
+            GetHashCode() (Inherited from DescriptionAttribute)
+            GetType() (Inherited from Object)
+            IsDefaultAttribute() (Inherited from DescriptionAttribute)
+            Match(Object) (Inherited from Attribute)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    PerformanceCounter
+        Constructors
+            PerformanceCounter()
+            PerformanceCounter(String, String)
+            PerformanceCounter(String, String, Boolean)
+            PerformanceCounter(String, String, String)
+            PerformanceCounter(String, String, String, Boolean)
+            PerformanceCounter(String, String, String, String)
+        Fields
+            DefaultFileMappingSize
+        Properties
+            CanRaiseEvents (Inherited from Component)
+            CategoryName
+            Container (Inherited from Component)
+            CounterHelp
+            CounterName
+            CounterType
+            DesignMode (Inherited from Component)
+            Events (Inherited from Component)
+            InstanceLifetime
+            InstanceName
+            MachineName
+            RawValue
+            ReadOnly
+            Site (Inherited from Component)
+        Methods
+            BeginInit()
+            Close()
+            CloseSharedResources()
+            CreateObjRef(Type) (Inherited from MarshalByRefObject)
+            Decrement()
+            Dispose() (Inherited from Component)
+            Dispose(Boolean) (Inherited from Component)
+            EndInit()
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetLifetimeService() (Inherited from MarshalByRefObject)
+            GetService(Type) (Inherited from Component)
+            GetType() (Inherited from Object)
+            Increment()
+            IncrementBy(Int64)
+            InitializeLifetimeService() (Inherited from MarshalByRefObject)
+            MemberwiseClone() (Inherited from Object)
+            MemberwiseClone(Boolean) (Inherited from MarshalByRefObject)
+            NextSample()
+            NextValue()
+            RemoveInstance()
+            ToString() (Inherited from Component)
+        Events
+            Disposed (Inherited from Component)
+    PerformanceCounterCategory
+        Constructors
+            PerformanceCounterCategory()
+            PerformanceCounterCategory(String)
+            PerformanceCounterCategory(String, String)
+        Properties
+            CategoryHelp
+            CategoryName
+            CategoryType
+            MachineName
+        Methods
+            CounterExists(String)
+            CounterExists(String, String)
+            CounterExists(String, String, String)
+            Create(String, String, CounterCreationDataCollection)
+            Create(String, String, PerformanceCounterCategoryType, CounterCreationDataCollection)
+            Create(String, String, PerformanceCounterCategoryType, String, String)
+            Create(String, String, String, String)
+            Delete(String)
+            Equals(Object) (Inherited from Object)
+            Exists(String)
+            Exists(String, String)
+            GetCategories()
+            GetCategories(String)
+            GetCounters()
+            GetCounters(String)
+            GetHashCode() (Inherited from Object)
+            GetInstanceNames()
+            GetType() (Inherited from Object)
+            InstanceExists(String)
+            InstanceExists(String, String)
+            InstanceExists(String, String, String)
+            MemberwiseClone() (Inherited from Object)
+            ReadCategory()
+            ToString() (Inherited from Object)
+    PerformanceCounterInstaller
+        Constructors
+            PerformanceCounterInstaller()
+        Properties
+            CanRaiseEvents (Inherited from Component)
+            CategoryHelp
+            CategoryName
+            CategoryType
+            Container (Inherited from Component)
+            Context (Inherited from Installer)
+            Counters
+            DesignMode (Inherited from Component)
+            Events (Inherited from Component)
+            HelpText (Inherited from Installer)
+            Installers (Inherited from Installer)
+            Parent (Inherited from Installer)
+            Site (Inherited from Component)
+            UninstallAction
+        Methods
+            Commit(IDictionary) (Inherited from Installer)
+            CopyFromComponent(IComponent)
+            CreateObjRef(Type) (Inherited from MarshalByRefObject)
+            Dispose() (Inherited from Component)
+            Dispose(Boolean) (Inherited from Component)
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetLifetimeService() (Inherited from MarshalByRefObject)
+            GetService(Type) (Inherited from Component)
+            GetType() (Inherited from Object)
+            InitializeLifetimeService() (Inherited from MarshalByRefObject)
+            Install(IDictionary)
+            IsEquivalentInstaller(ComponentInstaller) (Inherited from ComponentInstaller)
+            MemberwiseClone() (Inherited from Object)
+            MemberwiseClone(Boolean) (Inherited from MarshalByRefObject)
+            OnAfterInstall(IDictionary) (Inherited from Installer)
+            OnAfterRollback(IDictionary) (Inherited from Installer)
+            OnAfterUninstall(IDictionary) (Inherited from Installer)
+            OnBeforeInstall(IDictionary) (Inherited from Installer)
+            OnBeforeRollback(IDictionary) (Inherited from Installer)
+            OnBeforeUninstall(IDictionary) (Inherited from Installer)
+            OnCommitted(IDictionary) (Inherited from Installer)
+            OnCommitting(IDictionary) (Inherited from Installer)
+            Rollback(IDictionary)
+            ToString() (Inherited from Component)
+            Uninstall(IDictionary)
+        Events
+            AfterInstall (Inherited from Installer)
+            AfterRollback (Inherited from Installer)
+            AfterUninstall (Inherited from Installer)
+            BeforeInstall (Inherited from Installer)
+            BeforeRollback (Inherited from Installer)
+            BeforeUninstall (Inherited from Installer)
+            Committed (Inherited from Installer)
+            Committing (Inherited from Installer)
+            Disposed (Inherited from Component)
+    Obsolete
+    PerformanceCounterManager
+        Constructors
+            PerformanceCounterManager()
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    PerformanceCounterPermission
+        Constructors
+            PerformanceCounterPermission()
+            PerformanceCounterPermission(PerformanceCounterPermissionAccess, String, String)
+            PerformanceCounterPermission(PerformanceCounterPermissionEntry[])
+            PerformanceCounterPermission(PermissionState)
+        Properties
+            PermissionAccessType (Inherited from ResourcePermissionBase)
+            PermissionEntries
+            TagNames (Inherited from ResourcePermissionBase)
+        Methods
+            AddPermissionAccess(ResourcePermissionBaseEntry) (Inherited from ResourcePermissionBase)
+            Assert() (Inherited from CodeAccessPermission)
+            Clear() (Inherited from ResourcePermissionBase)
+            Copy() (Inherited from ResourcePermissionBase)
+            Demand() (Inherited from CodeAccessPermission)
+            Deny() (Inherited from CodeAccessPermission)
+            Equals(Object) (Inherited from CodeAccessPermission)
+            FromXml(SecurityElement) (Inherited from ResourcePermissionBase)
+            GetHashCode() (Inherited from CodeAccessPermission)
+            GetPermissionEntries() (Inherited from ResourcePermissionBase)
+            GetType() (Inherited from Object)
+            Intersect(IPermission) (Inherited from ResourcePermissionBase)
+            IsSubsetOf(IPermission) (Inherited from ResourcePermissionBase)
+            IsUnrestricted() (Inherited from ResourcePermissionBase)
+            MemberwiseClone() (Inherited from Object)
+            PermitOnly() (Inherited from CodeAccessPermission)
+            RemovePermissionAccess(ResourcePermissionBaseEntry) (Inherited from ResourcePermissionBase)
+            ToString() (Inherited from CodeAccessPermission)
+            ToXml() (Inherited from ResourcePermissionBase)
+            Union(IPermission) (Inherited from ResourcePermissionBase)
+        Fields
+            Any (Inherited from ResourcePermissionBase)
+            Local (Inherited from ResourcePermissionBase)
+    PerformanceCounterPermissionAttribute
+        Constructors
+            PerformanceCounterPermissionAttribute(SecurityAction)
+        Properties
+            Action (Inherited from SecurityAttribute)
+            CategoryName
+            MachineName
+            PermissionAccess
+            TypeId (Inherited from Attribute)
+            Unrestricted (Inherited from SecurityAttribute)
+        Methods
+            CreatePermission()
+            Equals(Object) (Inherited from Attribute)
+            GetHashCode() (Inherited from Attribute)
+            GetType() (Inherited from Object)
+            IsDefaultAttribute() (Inherited from Attribute)
+            Match(Object) (Inherited from Attribute)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    PerformanceCounterPermissionEntry
+        Constructors
+            PerformanceCounterPermissionEntry(PerformanceCounterPermissionAccess, String, String)
+        Properties
+            CategoryName
+            MachineName
+            PermissionAccess
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    PerformanceCounterPermissionEntryCollection
+        Properties
+            Capacity (Inherited from CollectionBase)
+            Count (Inherited from CollectionBase)
+            ICollection.IsSynchronized (Inherited from CollectionBase)
+            ICollection.SyncRoot (Inherited from CollectionBase)
+            IList.IsFixedSize (Inherited from CollectionBase)
+            IList.IsReadOnly (Inherited from CollectionBase)
+            IList.Item[Int32] (Inherited from CollectionBase)
+            InnerList (Inherited from CollectionBase)
+            Item[Int32]
+            List (Inherited from CollectionBase)
+        Methods
+            Add(PerformanceCounterPermissionEntry)
+            AddRange(PerformanceCounterPermissionEntryCollection)
+            AddRange(PerformanceCounterPermissionEntry[])
+            Clear() (Inherited from CollectionBase)
+            Contains(PerformanceCounterPermissionEntry)
+            CopyTo(PerformanceCounterPermissionEntry[], Int32)
+            Equals(Object) (Inherited from Object)
+            GetEnumerator() (Inherited from CollectionBase)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            IndexOf(PerformanceCounterPermissionEntry)
+            Insert(Int32, PerformanceCounterPermissionEntry)
+            MemberwiseClone() (Inherited from Object)
+            OnClear()
+            OnClearComplete() (Inherited from CollectionBase)
+            OnInsert(Int32, Object)
+            OnInsertComplete(Int32, Object) (Inherited from CollectionBase)
+            OnRemove(Int32, Object)
+            OnRemoveComplete(Int32, Object) (Inherited from CollectionBase)
+            OnSet(Int32, Object, Object)
+            OnSetComplete(Int32, Object, Object) (Inherited from CollectionBase)
+            OnValidate(Object) (Inherited from CollectionBase)
+            Remove(PerformanceCounterPermissionEntry)
+            RemoveAt(Int32) (Inherited from CollectionBase)
+            ToString() (Inherited from Object)
+    PresentationTraceSources
+        Fields
+            TraceLevelProperty
+        Properties
+            AnimationSource
+            DataBindingSource
+            DependencyPropertySource
+            DocumentsSource
+            FreezableSource
+            HwndHostSource
+            MarkupSource
+            NameScopeSource
+            ResourceDictionarySource
+            RoutedEventSource
+            ShellSource
+            Methods
+            GetTraceLevel(Object)
+            Refresh()
+            SetTraceLevel(Object, PresentationTraceLevel)
+    Process
+        Constructors
+            Process()
+        Properties
+            BasePriority
+            CanRaiseEvents (Inherited from Component)
+            Container (Inherited from Component)
+            DesignMode (Inherited from Component)
+            EnableRaisingEvents
+            Events (Inherited from Component)
+            ExitCode
+            ExitTime
+            Handle
+            HandleCount
+            HasExited
+            Id
+            MachineName
+            MainModule
+            MainWindowHandle
+            MainWindowTitle
+            MaxWorkingSet
+            MinWorkingSet
+            Modules
+            NonpagedSystemMemorySize
+            NonpagedSystemMemorySize64
+            PagedMemorySize
+            PagedMemorySize64
+            PagedSystemMemorySize
+            PagedSystemMemorySize64
+            PeakPagedMemorySize
+            PeakPagedMemorySize64
+            PeakVirtualMemorySize
+            PeakVirtualMemorySize64
+            PeakWorkingSet
+            PeakWorkingSet64
+            PriorityBoostEnabled
+            PriorityClass
+            PrivateMemorySize
+            PrivateMemorySize64
+            PrivilegedProcessorTime
+            ProcessName
+            ProcessorAffinity
+            Responding
+            SafeHandle
+            SessionId
+            Site (Inherited from Component)
+            StandardError
+            StandardInput
+            StandardOutput
+            StartInfo
+            StartTime
+            SynchronizingObject
+            Threads
+            TotalProcessorTime
+            UserProcessorTime
+            VirtualMemorySize
+            VirtualMemorySize64
+            WorkingSet
+            WorkingSet64
+        Methods
+            BeginErrorReadLine()
+            BeginOutputReadLine()
+            CancelErrorRead()
+            CancelOutputRead()
+            Close()
+            CloseMainWindow()
+            CreateObjRef(Type) (Inherited from MarshalByRefObject)
+            Dispose(Boolean)
+            EnterDebugMode()
+            Equals(Object) (Inherited from Object)
+            GetCurrentProcess()
+            GetHashCode() (Inherited from Object)
+            GetLifetimeService() (Inherited from MarshalByRefObject)
+            GetProcessById(Int32)
+            GetProcessById(Int32, String)
+            GetProcesses()
+            GetProcesses(String)
+            GetProcessesByName(String)
+            GetProcessesByName(String, String)
+            GetService(Type) (Inherited from Component)
+            GetType() (Inherited from Object)
+            InitializeLifetimeService() (Inherited from MarshalByRefObject)
+            Kill()
+            LeaveDebugMode()
+            MemberwiseClone() (Inherited from Object)
+            MemberwiseClone(Boolean) (Inherited from MarshalByRefObject)
+            OnExited()
+            Refresh()
+            Start()
+            Start(ProcessStartInfo)
+            Start(String)
+            Start(String, String)
+            Start(String, String, SecureString, String)
+            Start(String, String, String, SecureString, String)
+            ToString()
+            WaitForExit()
+            WaitForExit(Int32)
+            WaitForInputIdle()
+            WaitForInputIdle(Int32)
+        Events
+            Disposed (Inherited from Component)
+            ErrorDataReceived
+            Exited
+            OutputDataReceived
+    ProcessModule
+        Properties
+            BaseAddress
+            CanRaiseEvents (Inherited from Component)
+            Container (Inherited from Component)
+            DesignMode (Inherited from Component)
+            EntryPointAddress
+            Events (Inherited from Component)
+            FileName
+            FileVersionInfo
+            ModuleMemorySize
+            ModuleName
+            Site (Inherited from Component)
+        Methods
+            CreateObjRef(Type) (Inherited from MarshalByRefObject)
+            Dispose() (Inherited from Component)
+            Dispose(Boolean) (Inherited from Component)
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetLifetimeService() (Inherited from MarshalByRefObject)
+            GetService(Type) (Inherited from Component)
+            GetType() (Inherited from Object)
+            InitializeLifetimeService() (Inherited from MarshalByRefObject)
+            MemberwiseClone() (Inherited from Object)
+            MemberwiseClone(Boolean) (Inherited from MarshalByRefObject)
+            ToString()
+        Events
+            Disposed (Inherited from Component)
+    ProcessModuleCollection
+        Constructors
+            ProcessModuleCollection()
+            ProcessModuleCollection(ProcessModule[])
+        Properties
+            InnerList (Inherited from ReadOnlyCollectionBase)
+            Item[Int32]
+        Methods
+            Contains(ProcessModule)
+            CopyTo(ProcessModule[], Int32)
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            IndexOf(ProcessModule)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    ProcessStartInfo
+        Constructors
+            ProcessStartInfo()
+            ProcessStartInfo(String)
+            ProcessStartInfo(String, String)
+        Properties
+            Arguments
+            CreateNoWindow
+            Domain
+            Environment
+            EnvironmentVariables
+            ErrorDialog
+            ErrorDialogParentHandle
+            FileName
+            LoadUserProfile
+            Password
+            PasswordInClearText
+            RedirectStandardError
+            RedirectStandardInput
+            RedirectStandardOutput
+            StandardErrorEncoding
+            StandardOutputEncoding
+            UserName
+            UseShellExecute
+            Verb
+            Verbs
+            WindowStyle
+            WorkingDirectory
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    ProcessThread
+        Properties
+            BasePriority
+            CanRaiseEvents (Inherited from Component)
+            Container (Inherited from Component)
+            CurrentPriority
+            DesignMode (Inherited from Component)
+            Events (Inherited from Component)
+            Id
+            IdealProcessor
+            PriorityBoostEnabled
+            PriorityLevel
+            PrivilegedProcessorTime
+            ProcessorAffinity
+            Site (Inherited from Component)
+            StartAddress
+            StartTime
+            ThreadState
+            TotalProcessorTime
+            UserProcessorTime
+            WaitReason
+        Methods
+            CreateObjRef(Type) (Inherited from MarshalByRefObject)
+            Dispose() (Inherited from Component)
+            Dispose(Boolean) (Inherited from Component)
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetLifetimeService() (Inherited from MarshalByRefObject)
+            GetService(Type) (Inherited from Component)
+            GetType() (Inherited from Object)
+            InitializeLifetimeService() (Inherited from MarshalByRefObject)
+            MemberwiseClone() (Inherited from Object)
+            MemberwiseClone(Boolean) (Inherited from MarshalByRefObject)
+            ResetIdealProcessor()
+            ToString() (Inherited from Component)
+        Events
+            Disposed (Inherited from Component)
+    ProcessThreadCollection
+        Constructors
+            ProcessThreadCollection()
+            ProcessThreadCollection(ProcessThread[])
+        Properties
+            InnerList (Inherited from ReadOnlyCollectionBase)
+            Item[Int32]
+        Methods
+            Add(ProcessThread)
+            Contains(ProcessThread)
+            CopyTo(ProcessThread[], Int32)
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            IndexOf(ProcessThread)
+            Insert(Int32, ProcessThread)
+            MemberwiseClone() (Inherited from Object)
+            Remove(ProcessThread)
+            ToString() (Inherited from Object)
+    SourceFilter
+        Constructors
+            SourceFilter(String)
+        Properties
+            Source
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            ShouldTrace(TraceEventCache, String, TraceEventType, Int32, String, Object[], Object, Object[])
+            ToString() (Inherited from Object)
+    SourceSwitch
+        Constructors
+            SourceSwitch(String)
+            SourceSwitch(String, String)
+        Properties
+            Attributes (Inherited from Switch)
+            Description (Inherited from Switch)
+            DisplayName (Inherited from Switch)
+            Level
+            SwitchSetting (Inherited from Switch)
+            Value (Inherited from Switch)
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetSupportedAttributes() (Inherited from Switch)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            OnSwitchSettingChanged() (Inherited from Switch)
+            OnValueChanged()
+            ShouldTrace(TraceEventType)
+            ToString() (Inherited from Object)
+    StackFrame
+        Constructors
+            StackFrame()
+            StackFrame(Boolean)
+            StackFrame(Int32)
+            StackFrame(Int32, Boolean)
+            StackFrame(String, Int32)
+            StackFrame(String, Int32, Int32)
+        Fields
+            OFFSET_UNKNOWN
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetFileColumnNumber()
+            GetFileLineNumber()
+            GetFileName()
+            GetHashCode() (Inherited from Object)
+            GetILOffset()
+            GetMethod()
+            GetNativeOffset()
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            ToString()
+    StackFrameExtensions
+        Methods
+            GetNativeImageBase(StackFrame)
+            GetNativeIP(StackFrame)
+            HasILOffset(StackFrame)
+            HasMethod(StackFrame)
+            HasNativeImage(StackFrame)
+            HasSource(StackFrame)
+    StackTrace
+        Constructors
+            StackTrace()
+            StackTrace(Boolean)
+            StackTrace(Exception)
+            StackTrace(Exception, Boolean)
+            StackTrace(Exception, Int32)
+            StackTrace(Exception, Int32, Boolean)
+            StackTrace(Int32)
+            StackTrace(Int32, Boolean)
+            StackTrace(StackFrame)
+            StackTrace(Thread, Boolean)
+        Fields
+            METHODS_TO_SKIP
+            Properties
+            FrameCount
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetFrame(Int32)
+            GetFrames()
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            ToString()
+    Stopwatch
+        Constructors
+            Stopwatch()
+        Fields
+            Frequency
+            IsHighResolution
+        Properties
+            Elapsed
+            ElapsedMilliseconds
+            ElapsedTicks
+            IsRunning
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetTimestamp()
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            Reset()
+            Restart()
+            Start()
+            StartNew()
+            Stop()
+            ToString() (Inherited from Object)
+    Switch
+        Constructors
+            Switch(String, String)
+            Switch(String, String, String)
+        Properties
+            Attributes
+            Description
+            DisplayName
+            SwitchSetting
+            Value
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetSupportedAttributes()
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            OnSwitchSettingChanged()
+            OnValueChanged()
+            ToString() (Inherited from Object)
+    SwitchAttribute
+        Constructors
+            SwitchAttribute(String, Type)
+        Properties
+            SwitchDescription
+            SwitchName
+            SwitchType
+            TypeId (Inherited from Attribute)
+        Methods
+            Equals(Object) (Inherited from Attribute)
+            GetAll(Assembly)
+            GetHashCode() (Inherited from Attribute)
+            GetType() (Inherited from Object)
+            IsDefaultAttribute() (Inherited from Attribute)
+            Match(Object) (Inherited from Attribute)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    SwitchLevelAttribute
+        Constructors
+            SwitchLevelAttribute(Type)
+            Properties
+            SwitchLevelType
+            TypeId (Inherited from Attribute)
+        Methods
+            Equals(Object) (Inherited from Attribute)
+            GetHashCode() (Inherited from Attribute)
+            GetType() (Inherited from Object)
+            IsDefaultAttribute() (Inherited from Attribute)
+            Match(Object) (Inherited from Attribute)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    TextWriterTraceListener
+        Constructors
+            TextWriterTraceListener()
+            TextWriterTraceListener(Stream)
+            TextWriterTraceListener(Stream, String)
+            TextWriterTraceListener(String)
+            TextWriterTraceListener(String, String)
+            TextWriterTraceListener(TextWriter)
+            TextWriterTraceListener(TextWriter, String)
+        Properties
+            Attributes (Inherited from TraceListener)
+            Filter (Inherited from TraceListener)
+            IndentLevel (Inherited from TraceListener)
+            IndentSize (Inherited from TraceListener)
+            IsThreadSafe (Inherited from TraceListener)
+            Name (Inherited from TraceListener)
+            NeedIndent (Inherited from TraceListener)
+            TraceOutputOptions (Inherited from TraceListener)
+            Writer
+        Methods
+            Close()
+            CreateObjRef(Type) (Inherited from MarshalByRefObject)
+            Dispose() (Inherited from TraceListener)
+            Dispose(Boolean)
+            Equals(Object) (Inherited from Object)
+            Fail(String) (Inherited from TraceListener)
+            Fail(String, String) (Inherited from TraceListener)
+            Flush()
+            GetHashCode() (Inherited from Object)
+            GetLifetimeService() (Inherited from MarshalByRefObject)
+            GetSupportedAttributes() (Inherited from TraceListener)
+            GetType() (Inherited from Object)
+            InitializeLifetimeService() (Inherited from MarshalByRefObject)
+            MemberwiseClone() (Inherited from Object)
+            MemberwiseClone(Boolean) (Inherited from MarshalByRefObject)
+            ToString() (Inherited from Object)
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object) (Inherited from TraceListener)
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object[]) (Inherited from TraceListener)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32) (Inherited from TraceListener)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32, String) (Inherited from TraceListener)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32, String, Object[]) (Inherited from TraceListener)
+            TraceTransfer(TraceEventCache, String, Int32, String, Guid) (Inherited from TraceListener)
+            Write(Object) (Inherited from TraceListener)
+            Write(Object, String) (Inherited from TraceListener)
+            Write(String)
+            Write(String, String) (Inherited from TraceListener)
+            WriteIndent() (Inherited from TraceListener)
+            WriteLine(Object) (Inherited from TraceListener)
+            WriteLine(Object, String) (Inherited from TraceListener)
+            WriteLine(String)
+            WriteLine(String, String) (Inherited from TraceListener)
+    Trace
+        Properties
+            AutoFlush
+            CorrelationManager
+            IndentLevel
+            IndentSize
+            Listeners
+            UseGlobalLock
+        Methods
+            Assert(Boolean)
+            Assert(Boolean, String)
+            Assert(Boolean, String, String)
+            Close()
+            Equals(Object) (Inherited from Object)
+            Fail(String)
+            Fail(String, String)
+            Flush()
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            Indent()
+            MemberwiseClone() (Inherited from Object)
+            Refresh()
+            ToString() (Inherited from Object)
+            TraceError(String)
+            TraceError(String, Object[])
+            TraceInformation(String)
+            TraceInformation(String, Object[])
+            TraceWarning(String)
+            TraceWarning(String, Object[])
+            Unindent()
+            Write(Object)
+            Write(Object, String)
+            Write(String)
+            Write(String, String)
+            WriteIf(Boolean, Object)
+            WriteIf(Boolean, Object, String)
+            WriteIf(Boolean, String)
+            WriteIf(Boolean, String, String)
+            WriteLine(Object)
+            WriteLine(Object, String)
+            WriteLine(String)
+            WriteLine(String, String)
+            WriteLineIf(Boolean, Object)
+            WriteLineIf(Boolean, Object, String)
+            WriteLineIf(Boolean, String)
+            WriteLineIf(Boolean, String, String)
+    TraceEventCache
+        Constructors
+            TraceEventCache()
+        Properties
+            Callstack
+            DateTime
+            LogicalOperationStack
+            ProcessId
+            ThreadId
+            Timestamp
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+    TraceFilter
+        Constructors
+            TraceFilter()
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            ShouldTrace(TraceEventCache, String, TraceEventType, Int32, String, Object[], Object, Object[])
+            ToString() (Inherited from Object)
+    TraceListener
+        Constructors
+            TraceListener()
+            TraceListener(String)
+        Properties
+            Attributes
+            Filter
+            IndentLevel
+            IndentSize
+            IsThreadSafe
+            Name
+            NeedIndent
+            TraceOutputOptions
+        Methods
+            Close()
+            CreateObjRef(Type) (Inherited from MarshalByRefObject)
+            Dispose()
+            Dispose(Boolean)
+            Equals(Object) (Inherited from Object)
+            Fail(String)
+            Fail(String, String)
+            Flush()
+            GetHashCode() (Inherited from Object)
+            GetLifetimeService() (Inherited from MarshalByRefObject)
+            GetSupportedAttributes()
+            GetType() (Inherited from Object)
+            InitializeLifetimeService() (Inherited from MarshalByRefObject)
+            MemberwiseClone() (Inherited from Object)
+            MemberwiseClone(Boolean) (Inherited from MarshalByRefObject)
+            ToString() (Inherited from Object)
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object)
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object[])
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32, String)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32, String, Object[])
+            TraceTransfer(TraceEventCache, String, Int32, String, Guid)
+            Write(Object)
+            Write(Object, String)
+            Write(String)
+            Write(String, String)
+            WriteIndent()
+            WriteLine(Object)
+            WriteLine(Object, String)
+            WriteLine(String)
+            WriteLine(String, String)
+    TraceListenerCollection
+        Properties
+            Count
+            Item[Int32]
+            Item[String]
+        Methods
+            Add(TraceListener)
+            AddRange(TraceListenerCollection)
+            AddRange(TraceListener[])
+            Clear()
+            Contains(TraceListener)
+            CopyTo(TraceListener[], Int32)
+            Equals(Object) (Inherited from Object)
+            GetEnumerator()
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            IndexOf(TraceListener)
+            Insert(Int32, TraceListener)
+            MemberwiseClone() (Inherited from Object)
+            Remove(String)
+            Remove(TraceListener)
+            RemoveAt(Int32)
+            ToString() (Inherited from Object)
+    TraceSource
+        Constructors
+            TraceSource(String)
+            TraceSource(String, SourceLevels)
+        Properties
+            Attributes
+            Listeners
+            Name
+            Switch
+        Methods
+            Close()
+            Equals(Object) (Inherited from Object)
+            Flush()
+            GetHashCode() (Inherited from Object)
+            GetSupportedAttributes()
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            ToString() (Inherited from Object)
+            TraceData(TraceEventType, Int32, Object)
+            TraceData(TraceEventType, Int32, Object[])
+            TraceEvent(TraceEventType, Int32)
+            TraceEvent(TraceEventType, Int32, String)
+            TraceEvent(TraceEventType, Int32, String, Object[])
+            TraceInformation(String)
+            TraceInformation(String, Object[])
+            TraceTransfer(Int32, String, Guid)
+    TraceSwitch
+        Constructors
+            TraceSwitch(String, String)
+            TraceSwitch(String, String, String)
+        Properties
+            Attributes (Inherited from Switch)
+            Description (Inherited from Switch)
+            DisplayName (Inherited from Switch)
+            Level
+            SwitchSetting (Inherited from Switch)
+            TraceError
+            TraceInfo
+            TraceVerbose
+            TraceWarning
+            Value (Inherited from Switch)
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetSupportedAttributes() (Inherited from Switch)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+            OnSwitchSettingChanged()
+            OnValueChanged()
+            ToString() (Inherited from Object)
+    UnescapedXmlDiagnosticData
+        Constructors
+            UnescapedXmlDiagnosticData(String)
+            Properties
+            UnescapedXml
+        Methods
+            Equals(Object) (Inherited from Object)
+            GetHashCode() (Inherited from Object)
+            GetType() (Inherited from Object)
+            MemberwiseClone() (Inherited from Object)
+ToString()
+    XmlWriterTraceListener
+        Constructors
+            XmlWriterTraceListener(Stream)
+            XmlWriterTraceListener(Stream, String)
+            XmlWriterTraceListener(String)
+            XmlWriterTraceListener(String, String)
+            XmlWriterTraceListener(TextWriter)
+            XmlWriterTraceListener(TextWriter, String)
+        Methods
+            Close()
+            CreateObjRef(Type) (Inherited from MarshalByRefObject)
+            Dispose() (Inherited from TraceListener)
+            Dispose(Boolean) (Inherited from TextWriterTraceListener)
+            Equals(Object) (Inherited from Object)
+            Fail(String) (Inherited from TraceListener)
+            Fail(String, String)
+            Flush() (Inherited from TextWriterTraceListener)
+            GetHashCode() (Inherited from Object)
+            GetLifetimeService() (Inherited from MarshalByRefObject)
+            GetSupportedAttributes() (Inherited from TraceListener)
+            GetType() (Inherited from Object)
+            InitializeLifetimeService() (Inherited from MarshalByRefObject)
+            MemberwiseClone() (Inherited from Object)
+            MemberwiseClone(Boolean) (Inherited from MarshalByRefObject)
+            ToString() (Inherited from Object)
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object)
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object[])
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32) (Inherited from TraceListener)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32, String)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32, String, Object[])
+            TraceTransfer(TraceEventCache, String, Int32, String, Guid)
+            Write(Object) (Inherited from TraceListener)
+            Write(Object, String) (Inherited from TraceListener)
+            Write(String)
+            Write(String, String) (Inherited from TraceListener)
+            WriteIndent() (Inherited from TraceListener)
+            WriteLine(Object) (Inherited from TraceListener)
+            WriteLine(Object, String) (Inherited from TraceListener)
+            WriteLine(String)
+            WriteLine(String, String) (Inherited from TraceListener)
+        Properties
+            Attributes (Inherited from TraceListener)
+            Filter (Inherited from TraceListener)
+            IndentLevel (Inherited from TraceListener)
+            IndentSize (Inherited from TraceListener)
+            IsThreadSafe (Inherited from TraceListener)
+            Name (Inherited from TraceListener)
+            NeedIndent (Inherited from TraceListener)
+            TraceOutputOptions (Inherited from TraceListener)
+            Writer (Inherited from TextWriterTraceListener)
+
+Structs
+    CounterSample
+        Constructors
+            CounterSample(Int64, Int64, Int64, Int64, Int64, Int64, PerformanceCounterType)
+            CounterSample(Int64, Int64, Int64, Int64, Int64, Int64, PerformanceCounterType, Int64)
+        Fields
+            Empty
+        Properties
+            BaseValue
+            CounterFrequency
+            CounterTimeStamp
+            CounterType
+            RawValue
+            SystemFrequency
+            TimeStamp
+            TimeStamp100nSec
+        Methods
+            Calculate(CounterSample)
+            Calculate(CounterSample, CounterSample)
+            Equals(CounterSample)
+            Equals(Object)
+            GetHashCode()
+        Operators
+            Equality(CounterSample, CounterSample)
+            Inequality(CounterSample, CounterSample)
+Interfaces
+    ICollectData
+        Methods
+            CloseData()
+            CollectData(Int32, IntPtr, IntPtr, Int32, IntPtr)
+
+Enums
+    DebuggableAttribute.DebuggingModes
+        Fields
+            Default 1
+            DisableOptimizations 256
+            EnableEditAndContinue 4
+            IgnoreSymbolStoreSequencePoints 2
+            None 0
+    DebuggerBrowsableState
+        Fields
+            Collapsed 2
+            Never 0
+            RootHidden 3
+    EventLogEntryType
+        Fields
+            Error 1
+            FailureAudit 16
+            Information 4
+            SuccessAudit 8
+            Warning 2
+    EventLogPermissionAccess
+        Fields
+            Administer 48
+            Audit 10
+            Browse 2
+            Instrument 6
+            None 0
+            Write 16
+    OverflowAction
+        Fields
+            DoNotOverwrite -1
+            OverwriteAsNeeded 0
+            OverwriteOlder 1
+    PerformanceCounterCategoryType
+        Fields
+            MultiInstance 1
+            SingleInstance 0
+            Unknown -1
+    PerformanceCounterInstanceLifetime
+        Fields
+            Global 0
+            Process 1
+    PerformanceCounterPermissionAccess
+        Fields
+            Administer 7
+            Browse 1
+            Instrument 3
+            None 0
+            Read 1
+            Write 2
+    PerformanceCounterType
+        Fields
+            AverageBase 1073939458
+            AverageCount64 1073874176
+            AverageTimer32 805438464
+            CounterDelta32 4195328
+            CounterDelta64 4195584
+            CounterMultiBase 1107494144
+            CounterMultiTimer 574686464
+            CounterMultiTimer100Ns 575735040
+            CounterMultiTimer100NsInverse 592512256
+            CounterMultiTimerInverse 591463680
+            CounterTimer 541132032
+            CounterTimerInverse 557909248
+            CountPerTimeInterval32 4523008
+            CountPerTimeInterval64 4523264
+            ElapsedTime 807666944
+            NumberOfItems32 65536
+            NumberOfItems64 65792
+            NumberOfItemsHEX32 0
+            NumberOfItemsHEX64 256
+            RateOfCountsPerSecond32 272696320
+            RateOfCountsPerSecond64 272696576
+            RawBase 1073939459
+            RawFraction 537003008
+            SampleBase 1073939457
+            SampleCounter 4260864
+            SampleFraction 549585920
+            Timer100Ns 542180608
+            Timer100NsInverse 558957824
+    PresentationTraceLevel
+        Fields
+            High 3
+            Low 1
+            Medium 2
+            None 0
+    ProcessPriorityClass
+        Fields
+            AboveNormal 32768
+            BelowNormal 16384
+            High 128
+            Idle 64
+            Normal 32
+            RealTime 256
+    ProcessWindowStyle
+        Fields
+            Hidden 1
+            Maximized 3
+            Minimized 2
+            Normal 0
+    SourceLevels
+        Fields
+            ActivityTracing 65280
+            All -1
+            Critical 1
+            Error 3
+            Information 15
+            Off 0
+            Verbose 31
+            Warning 7
+    ThreadPriorityLevel
+        Fields
+            AboveNormal 1
+            BelowNormal -1
+            Highest 2
+            Idle -15
+            Lowest -2
+            Normal 0
+            TimeCritical 15
+    ThreadState
+        Fields
+            Initialized 0
+            Ready 1
+            Running 2
+            Standby 3
+            Terminated 4
+            Transition 6
+            Unknown 7
+            Wait 5
+    ThreadWaitReason
+        Fields
+            EventPairHigh 7
+            EventPairLow 8
+            ExecutionDelay 4
+            Executive 0
+            FreePage 1
+            LpcReceive 9
+            LpcReply 10
+            PageIn 2
+            PageOut 12
+            Suspended 5
+            SystemAllocation 3
+            Unknown 13
+            UserRequest 6
+            VirtualMemory 11
+    TraceEventType
+        Fields
+            Critical 1
+            Error 2
+            Information 8
+            Resume 2048
+            Start 256
+            Stop 512
+            Suspend 1024
+            Transfer 4096
+            Verbose 16
+            Warning 4
+    TraceLevel
+        Fields
+            Error 1
+            Info 3
+            Off 0
+            Verbose 4
+            Warning 2
+    TraceLogRetentionOption
+        Fields
+            LimitedCircularFiles 1
+            LimitedSequentialFiles 3
+            SingleFileBoundedSize 4
+            SingleFileUnboundedSize 2
+            UnlimitedSequentialFiles 0
+    TraceOptions
+        Fields
+            Callstack 32
+            DateTime 2
+            LogicalOperationStack 1
+            None 0
+            ProcessId 8
+            ThreadId 16
+            Timestamp 4
+Delegates
+    DataReceivedEventHandler
+    EntryWrittenEventHandler

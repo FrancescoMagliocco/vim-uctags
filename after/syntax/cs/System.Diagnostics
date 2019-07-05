@@ -1,0 +1,876 @@
+Classes
+    BooleanSwitch
+        Constructors
+            BooleanSwitch(String, String)
+        Properties
+            Enabled
+        Methods
+            OnValueChanged()
+    ConditionalAttribute
+        Constructors
+            ConditionalAttribute(String)
+        Properties
+            ConditionString
+    ConsoleTraceListener
+        Constructors
+            ConsoleTraceListener()
+        Methods
+            Close()
+    CorrelationManager
+        Properties
+            ActivityId
+            LogicalOperationStack
+        Methods
+            StartLogicalOperation()
+            StopLogicalOperation()
+    CounterCreationData
+        Constructors
+            CounterCreationData()
+        Properties
+            CounterHelp
+            CounterName
+            CounterType
+    CounterCreationDataCollection
+        Constructors
+            CounterCreationDataCollection()
+        Properties
+            Item[Int32]
+        Methods
+            Add(CounterCreationData)
+            AddRange(CounterCreationDataCollection)
+            Contains(CounterCreationData)
+            Insert(Int32, CounterCreationData)
+            OnValidate(Object)
+            Remove(CounterCreationData)
+    CounterSampleCalculator
+        Methods
+            ComputeCounterValue(CounterSample)
+    DataReceivedEventArgs
+        Properties
+            Data
+    Debug
+        Properties
+            AutoFlush
+            IndentLevel
+            IndentSize
+            Listeners
+        Methods
+            Assert(Boolean)
+            Fail(String)
+            Flush()
+            Indent()
+            Print(String)
+            Unindent()
+            WriteIf(Boolean, Object)
+            WriteLineIf(Boolean, Object, String)
+    DebuggableAttribute
+        Constructors
+            DebuggableAttribute(Boolean, Boolean)
+        Properties
+            DebuggingFlags
+            IsJITOptimizerDisabled
+            IsJITTrackingEnabled
+    Debugger
+        Constructors
+            Debugger()
+        Fields
+            DefaultCategory
+        Properties
+            IsAttached
+        Methods
+            Break()
+            IsLogging()
+            Launch()
+            Log(Int32, String, String)
+            NotifyOfCrossThreadDependency()
+    DebuggerBrowsableAttribute
+        Constructors
+            DebuggerBrowsableAttribute(DebuggerBrowsableState)
+        Properties
+            State
+    DebuggerDisplayAttribute
+        Constructors
+            DebuggerDisplayAttribute(String)
+        Properties
+            Name
+            Target
+            TargetTypeName
+            Type
+    DebuggerHiddenAttribute
+        Constructors
+            DebuggerHiddenAttribute()
+    DebuggerNonUserCodeAttribute
+        Constructors
+            DebuggerNonUserCodeAttribute()
+    DebuggerStepperBoundaryAttribute
+        Constructors
+            DebuggerStepperBoundaryAttribute()
+    DebuggerStepThroughAttribute
+        Constructors
+            DebuggerStepThroughAttribute()
+    DebuggerTypeProxyAttribute
+        Constructors
+            DebuggerTypeProxyAttribute(String)
+        Properties
+            ProxyTypeName
+    DebuggerVisualizerAttribute
+        Constructors
+            DebuggerVisualizerAttribute(String)
+        Properties
+            Description
+            VisualizerObjectSourceTypeName
+            VisualizerTypeName
+    DefaultTraceListener
+        Constructors
+            DefaultTraceListener()
+        Properties
+            AssertUiEnabled
+            LogFileName
+        Methods
+            GetSupportedAttributes() (Inherited from TraceListener)
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object) (Inherited from TraceListener)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32) (Inherited from TraceListener)
+            TraceTransfer(TraceEventCache, String, Int32, String, Guid) (Inherited from TraceListener)
+            WriteIndent() (Inherited from TraceListener)
+    DelimitedListTraceListener
+        Constructors
+            DelimitedListTraceListener(Stream)
+        Properties
+            Delimiter
+        Methods
+            GetSupportedAttributes()
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32) (Inherited from TraceListener)
+            TraceTransfer(TraceEventCache, String, Int32, String, Guid) (Inherited from TraceListener)
+    Obsolete
+    DiagnosticsConfigurationHandler
+        Constructors
+            DiagnosticsConfigurationHandler()
+        Methods
+            Create(Object, Object, XmlNode)
+    EntryWrittenEventArgs
+        Constructors
+            EntryWrittenEventArgs()
+        Properties
+            Entry
+    EventInstance
+        Constructors
+            EventInstance(Int64, Int32)
+        Properties
+            CategoryId
+            EntryType
+            InstanceId
+    EventLog
+        Constructors
+            EventLog()
+        Properties
+            EnableRaisingEvents
+            Entries
+            Log
+            LogDisplayName
+            MachineName
+            MaximumKilobytes
+            MinimumRetentionDays
+            OverflowAction
+            Source
+            SynchronizingObject
+        Methods
+            BeginInit()
+            CreateEventSource(EventSourceCreationData)
+            Delete(String)
+            DeleteEventSource(String)
+            EndInit()
+            Exists(String)
+            GetEventLogs()
+            LogNameFromSourceName(String, String)
+            ModifyOverflowPolicy(OverflowAction, Int32)
+            RegisterDisplayName(String, Int64)
+            SourceExists(String)
+            SourceExists(String, String)
+            WriteEntry(String)
+            WriteEvent(EventInstance, Byte[], Object[])
+        Events
+            EntryWritten
+    EventLogEntry
+        Properties
+            Category
+            CategoryNumber
+            EventID
+            Index
+            Message
+            ReplacementStrings
+            TimeGenerated
+            TimeWritten
+            UserName
+    EventLogEntryCollection
+        Properties
+            Count
+    EventLogInstaller
+        Constructors
+            EventLogInstaller()
+        Properties
+            CategoryCount
+            CategoryResourceFile
+            MessageResourceFile
+            ParameterResourceFile
+            UninstallAction
+        Methods
+            CopyFromComponent(IComponent)
+            Install(IDictionary)
+            IsEquivalentInstaller(ComponentInstaller)
+            Rollback(IDictionary)
+            Uninstall(IDictionary)
+    EventLogPermission
+        Constructors
+            EventLogPermission()
+        Properties
+            PermissionEntries
+        Methods
+            Demand() (Inherited from CodeAccessPermission)
+            Deny() (Inherited from CodeAccessPermission)
+    EventLogPermissionAttribute
+        Constructors
+            EventLogPermissionAttribute(SecurityAction)
+        Properties
+            PermissionAccess
+        Methods
+            CreatePermission()
+    EventLogPermissionEntry
+        Constructors
+            EventLogPermissionEntry(EventLogPermissionAccess, String)
+    EventLogPermissionEntryCollection
+        Methods
+            OnClear()
+            OnInsert(Int32, Object)
+            OnRemove(Int32, Object)
+            OnSet(Int32, Object, Object)
+    EventLogTraceListener
+        Constructors
+            EventLogTraceListener()
+        Properties
+            EventLog
+        Methods
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object)
+    EventSchemaTraceListener
+        Constructors
+            EventSchemaTraceListener(String)
+        Properties
+            BufferSize
+            IsThreadSafe
+            MaximumFileSize
+            MaximumNumberOfFiles
+            TraceLogRetentionOption
+            Writer
+        Methods
+            GetSupportedAttributes()
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object)
+            TraceTransfer(TraceEventCache, String, Int32, String, Guid)
+    EventSourceCreationData
+        Constructors
+            EventSourceCreationData(String, String)
+        Properties
+            LogName
+        Methods
+    EventTypeFilter
+        Constructors
+            EventTypeFilter(SourceLevels)
+        Properties
+            EventType
+        Methods
+            ShouldTrace(TraceEventCache, String, TraceEventType, Int32, String, Object[], Object, Object[])
+    FileVersionInfo
+        Properties
+            Comments
+            CompanyName
+            FileBuildPart
+            FileDescription
+            FileMajorPart
+            FileMinorPart
+            FileName
+            FilePrivatePart
+            FileVersion
+            InternalName
+            IsDebug
+            IsPatched
+            IsPreRelease
+            IsPrivateBuild
+            IsSpecialBuild
+            Language
+            LegalCopyright
+            LegalTrademarks
+            OriginalFilename
+            PrivateBuild
+            ProductBuildPart
+            ProductMajorPart
+            ProductMinorPart
+            ProductName
+            ProductPrivatePart
+            ProductVersion
+            SpecialBuild
+        Methods
+            GetVersionInfo(String)
+    InstanceData
+        Constructors
+            InstanceData(String, CounterSample)
+        Properties
+            InstanceName
+            RawValue
+            Sample
+        Methods
+    InstanceDataCollection
+        Constructors
+            InstanceDataCollection(String)
+        Properties
+            Keys
+            Values
+    InstanceDataCollectionCollection
+        Constructors
+            InstanceDataCollectionCollection()
+    MonitoringDescriptionAttribute
+        Constructors
+            MonitoringDescriptionAttribute(String)
+    PerformanceCounter
+        Constructors
+            PerformanceCounter()
+        Fields
+            DefaultFileMappingSize
+        Properties
+            CategoryName
+            InstanceLifetime
+            ReadOnly
+        Methods
+            BeginInit()
+            CloseSharedResources()
+            Decrement()
+            EndInit()
+            Increment()
+            IncrementBy(Int64)
+            NextSample()
+            NextValue()
+            RemoveInstance()
+    PerformanceCounterCategory
+        Constructors
+            PerformanceCounterCategory()
+        Properties
+            CategoryHelp
+            CategoryType
+        Methods
+            CounterExists(String)
+            Create(String, String, CounterCreationDataCollection)
+            Delete(String)
+            Exists(String)
+            GetCategories()
+            GetCounters()
+            GetInstanceNames()
+            InstanceExists(String)
+            ReadCategory()
+    PerformanceCounterInstaller
+        Constructors
+            PerformanceCounterInstaller()
+        Properties
+            Counters
+        Methods
+            CopyFromComponent(IComponent)
+            Install(IDictionary)
+            Rollback(IDictionary)
+            Uninstall(IDictionary)
+    Obsolete
+    PerformanceCounterManager
+        Constructors
+            PerformanceCounterManager()
+    PerformanceCounterPermission
+        Constructors
+            PerformanceCounterPermission()
+    PerformanceCounterPermissionAttribute
+        Constructors
+            PerformanceCounterPermissionAttribute(SecurityAction)
+        Methods
+            CreatePermission()
+    PerformanceCounterPermissionEntry
+        Constructors
+            PerformanceCounterPermissionEntry(PerformanceCounterPermissionAccess, String, String)
+    PerformanceCounterPermissionEntryCollection
+        Methods
+            OnClear()
+            OnInsert(Int32, Object)
+            OnRemove(Int32, Object)
+            OnSet(Int32, Object, Object)
+    PresentationTraceSources
+        Fields
+            TraceLevelProperty
+        Properties
+            AnimationSource
+            DataBindingSource
+            DependencyPropertySource
+            DocumentsSource
+            FreezableSource
+            HwndHostSource
+            MarkupSource
+            NameScopeSource
+            ResourceDictionarySource
+            RoutedEventSource
+            ShellSource
+        Methods
+            GetTraceLevel(Object)
+            Refresh()
+    Process
+        Constructors
+            Process()
+        Properties
+            BasePriority
+            ExitCode
+            ExitTime
+            Handle
+            HandleCount
+            HasExited
+            Id
+            MainModule
+            MainWindowHandle
+            MainWindowTitle
+            MaxWorkingSet
+            MinWorkingSet
+            Modules
+            NonpagedSystemMemorySize
+            NonpagedSystemMemorySize64
+            PagedMemorySize
+            PagedMemorySize64
+            PagedSystemMemorySize
+            PagedSystemMemorySize64
+            PeakPagedMemorySize
+            PeakPagedMemorySize64
+            PeakVirtualMemorySize
+            PeakVirtualMemorySize64
+            PeakWorkingSet
+            PeakWorkingSet64
+            PriorityBoostEnabled
+            PriorityClass
+            PrivateMemorySize
+            PrivateMemorySize64
+            PrivilegedProcessorTime
+            ProcessName
+            ProcessorAffinity
+            Responding
+            SafeHandle
+            SessionId
+            StandardError
+            StandardInput
+            StandardOutput
+            StartInfo
+            StartTime
+            Threads
+            TotalProcessorTime
+            UserProcessorTime
+            VirtualMemorySize
+            VirtualMemorySize64
+            WorkingSet
+            WorkingSet64
+        Methods
+            BeginErrorReadLine()
+            BeginOutputReadLine()
+            CancelErrorRead()
+            CancelOutputRead()
+            CloseMainWindow()
+            EnterDebugMode()
+            GetCurrentProcess()
+            GetProcessById(Int32)
+            GetProcesses()
+            GetProcesses(String)
+            GetProcessesByName(String)
+            Kill()
+            LeaveDebugMode()
+            OnExited()
+            Refresh()
+            Start()
+            WaitForExit()
+            WaitForInputIdle()
+        Events
+            ErrorDataReceived
+            Exited
+            OutputDataReceived
+    ProcessModule
+        Properties
+            BaseAddress
+            EntryPointAddress
+            FileVersionInfo
+            ModuleMemorySize
+            ModuleName
+    ProcessModuleCollection
+        Constructors
+            ProcessModuleCollection()
+    ProcessStartInfo
+        Constructors
+            ProcessStartInfo()
+        Properties
+            Arguments
+            CreateNoWindow
+            Domain
+            Environment
+            EnvironmentVariables
+            ErrorDialog
+            ErrorDialogParentHandle
+            LoadUserProfile
+            Password
+            PasswordInClearText
+            RedirectStandardError
+            RedirectStandardInput
+            RedirectStandardOutput
+            StandardErrorEncoding
+            StandardOutputEncoding
+            UseShellExecute
+            Verb
+            Verbs
+            WindowStyle
+            WorkingDirectory
+    ProcessThread
+        Properties
+            CurrentPriority
+            IdealProcessor
+            PriorityLevel
+            StartAddress
+            ThreadState
+            WaitReason
+        Methods
+            ResetIdealProcessor()
+    ProcessThreadCollection
+        Constructors
+            ProcessThreadCollection()
+    SourceFilter
+        Constructors
+            SourceFilter(String)
+        Methods
+            ShouldTrace(TraceEventCache, String, TraceEventType, Int32, String, Object[], Object, Object[])
+    SourceSwitch
+        Constructors
+            SourceSwitch(String)
+        Properties
+            Level
+        Methods
+            ShouldTrace(TraceEventType)
+    StackFrame
+        Constructors
+            StackFrame()
+        Fields
+            OFFSET_UNKNOWN
+        Methods
+            GetFileColumnNumber()
+            GetFileLineNumber()
+            GetFileName()
+            GetILOffset()
+            GetMethod()
+            GetNativeOffset()
+    StackFrameExtensions
+        Methods
+            GetNativeImageBase(StackFrame)
+            GetNativeIP(StackFrame)
+            HasILOffset(StackFrame)
+            HasMethod(StackFrame)
+            HasNativeImage(StackFrame)
+            HasSource(StackFrame)
+    StackTrace
+        Constructors
+            StackTrace()
+        Fields
+            METHODS_TO_SKIP
+        Properties
+            FrameCount
+        Methods
+            GetFrame(Int32)
+            GetFrames()
+    Stopwatch
+        Constructors
+            Stopwatch()
+        Fields
+            Frequency
+            IsHighResolution
+        Properties
+            Elapsed
+            ElapsedMilliseconds
+            ElapsedTicks
+            IsRunning
+        Methods
+            GetTimestamp()
+            Reset()
+            Restart()
+            StartNew()
+            Stop()
+    Switch
+        Constructors
+            Switch(String, String)
+        Properties
+            Attributes
+            DisplayName
+            SwitchSetting
+            Value
+        Methods
+            GetSupportedAttributes()
+            OnSwitchSettingChanged()
+    SwitchAttribute
+        Constructors
+            SwitchAttribute(String, Type)
+        Properties
+            SwitchDescription
+            SwitchName
+            SwitchType
+        Methods
+            GetAll(Assembly)
+    SwitchLevelAttribute
+        Constructors
+            SwitchLevelAttribute(Type)
+        Properties
+            SwitchLevelType
+    TextWriterTraceListener
+        Constructors
+            TextWriterTraceListener()
+    Trace
+        Properties
+            CorrelationManager
+            UseGlobalLock
+        Methods
+            Refresh()
+            TraceError(String)
+            TraceInformation(String)
+            TraceWarning(String)
+            Unindent()
+            WriteIf(Boolean, Object)
+            WriteLineIf(Boolean, Object)
+    TraceEventCache
+        Constructors
+            TraceEventCache()
+        Properties
+            Callstack
+            DateTime
+            ProcessId
+            ThreadId
+            Timestamp
+    TraceFilter
+        Constructors
+            TraceFilter()
+        Methods
+            ShouldTrace(TraceEventCache, String, TraceEventType, Int32, String, Object[], Object, Object[])
+    TraceListener
+        Constructors
+            TraceListener()
+        Properties
+            Filter
+            NeedIndent
+            TraceOutputOptions
+        Methods
+            GetSupportedAttributes()
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object)
+            TraceEvent(TraceEventCache, String, TraceEventType, Int32)
+            TraceTransfer(TraceEventCache, String, Int32, String, Guid)
+            WriteIndent()
+    TraceListenerCollection
+        Methods
+            RemoveAt(Int32)
+    TraceSource
+        Constructors
+            TraceSource(String)
+        Properties
+            Switch
+        Methods
+            GetSupportedAttributes()
+            TraceData(TraceEventType, Int32, Object)
+            TraceEvent(TraceEventType, Int32)
+            TraceInformation(String)
+            TraceTransfer(Int32, String, Guid)
+    TraceSwitch
+        Constructors
+            TraceSwitch(String, String)
+        Properties
+            TraceError
+            TraceInfo
+            TraceVerbose
+            TraceWarning
+        Methods
+            OnSwitchSettingChanged()
+    UnescapedXmlDiagnosticData
+        Constructors
+            UnescapedXmlDiagnosticData(String)
+        Properties
+            UnescapedXml
+    XmlWriterTraceListener
+        Constructors
+            XmlWriterTraceListener(Stream)
+        Methods
+            TraceData(TraceEventCache, String, TraceEventType, Int32, Object)
+            TraceTransfer(TraceEventCache, String, Int32, String, Guid)
+Structs
+    CounterSample
+        Constructors
+            CounterSample(Int64, Int64, Int64, Int64, Int64, Int64, PerformanceCounterType)
+        Fields
+            Empty
+        Properties
+            BaseValue
+            CounterFrequency
+            CounterTimeStamp
+            SystemFrequency
+            TimeStamp
+            TimeStamp100nSec
+        Methods
+            Calculate(CounterSample)
+        Operators
+            Equality(CounterSample, CounterSample)
+            Inequality(CounterSample, CounterSample)
+Interfaces
+    ICollectData
+        Methods
+            CloseData()
+            CollectData(Int32, IntPtr, IntPtr, Int32, IntPtr)
+
+Enums
+    DebuggableAttribute.DebuggingModes
+        Fields
+            Default 1
+            DisableOptimizations 256
+            EnableEditAndContinue 4
+            IgnoreSymbolStoreSequencePoints 2
+            None 0
+    DebuggerBrowsableState
+        Fields
+            Collapsed 2
+            Never 0
+            RootHidden 3
+    EventLogEntryType
+        Fields
+            Error 1
+            FailureAudit 16
+            Information 4
+            SuccessAudit 8
+            Warning 2
+    EventLogPermissionAccess
+        Fields
+            Administer 48
+            Audit 10
+            Browse 2
+            Instrument 6
+            Write 16
+    OverflowAction
+        Fields
+            DoNotOverwrite -1
+            OverwriteAsNeeded 0
+            OverwriteOlder 1
+    PerformanceCounterCategoryType
+        Fields
+            MultiInstance 1
+            SingleInstance 0
+            Unknown -1
+    PerformanceCounterInstanceLifetime
+        Fields
+            Global 0
+            Process 1
+    PerformanceCounterPermissionAccess
+        Fields
+            Read 1
+    PerformanceCounterType
+        Fields
+            AverageBase 1073939458
+            AverageCount64 1073874176
+            AverageTimer32 805438464
+            CounterDelta32 4195328
+            CounterDelta64 4195584
+            CounterMultiBase 1107494144
+            CounterMultiTimer 574686464
+            CounterMultiTimer100Ns 575735040
+            CounterMultiTimer100NsInverse 592512256
+            CounterMultiTimerInverse 591463680
+            CounterTimer 541132032
+            CounterTimerInverse 557909248
+            CountPerTimeInterval32 4523008
+            CountPerTimeInterval64 4523264
+            ElapsedTime 807666944
+            NumberOfItems32 65536
+            NumberOfItems64 65792
+            NumberOfItemsHEX32 0
+            NumberOfItemsHEX64 256
+            RateOfCountsPerSecond32 272696320
+            RateOfCountsPerSecond64 272696576
+            RawBase 1073939459
+            RawFraction 537003008
+            SampleBase 1073939457
+            SampleCounter 4260864
+            SampleFraction 549585920
+            Timer100Ns 542180608
+            Timer100NsInverse 558957824
+    PresentationTraceLevel
+        Fields
+            High 3
+            Low 1
+            Medium 2
+    ProcessPriorityClass
+        Fields
+            AboveNormal 32768
+            BelowNormal 16384
+            Idle 64
+            Normal 32
+            RealTime 256
+    ProcessWindowStyle
+        Fields
+            Hidden 1
+            Maximized 3
+            Minimized 2
+    SourceLevels
+        Fields
+            ActivityTracing 65280
+            All -1
+            Critical 1
+            Off 0
+            Verbose 31
+    ThreadPriorityLevel
+        Fields
+            Highest 2
+            Lowest -2
+            TimeCritical 15
+    ThreadState
+        Fields
+            Initialized 0
+            Ready 1
+            Running 2
+            Standby 3
+            Terminated 4
+            Transition 6
+            Wait 5
+    ThreadWaitReason
+        Fields
+            EventPairHigh 7
+            EventPairLow 8
+            ExecutionDelay 4
+            Executive 0
+            FreePage 1
+            LpcReceive 9
+            LpcReply 10
+            PageIn 2
+            PageOut 12
+            Suspended 5
+            SystemAllocation 3
+            UserRequest 6
+            VirtualMemory 11
+    TraceEventType
+        Fields
+            Resume 2048
+            Start 256
+            Stop 512
+            Suspend 1024
+            Transfer 4096
+    TraceLevel
+        Fields
+            Info 3
+    TraceLogRetentionOption
+        Fields
+            LimitedCircularFiles 1
+            LimitedSequentialFiles 3
+            SingleFileBoundedSize 4
+            SingleFileUnboundedSize 2
+            UnlimitedSequentialFiles 0
+    TraceOptions
+        Fields
+            Callstack 32
+            DateTime 2
+            LogicalOperationStack 1
+            ProcessId 8
+            ThreadId 16
+            Timestamp 4
+Delegates
+    DataReceivedEventHandler
+    EntryWrittenEventHandler
