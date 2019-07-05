@@ -185,7 +185,7 @@ function! s:UpdateSynFor(src_file, ...)
       if a:0 && index(a:2, l:src_file) >= 0 | continue | endif
       " XXX COMBAK FIXME Revise
       call s:UpdateSynFor(substitute(
-            \   l:src_file, '^.*' . l:is_cs ? '\%\(' . l:pat[1] . '\|namespace\)' : l:pat[1] . '\s\+', '', 'g'),
+            \   l:src_file, '^.*' . (l:is_cs ? ('\%\(' . l:pat[1] . '\|namespace\)') : l:pat[1]) . '\s\+', '', 'g'),
             \ l:sourced_syn, extend(a:0 ? a:2 : [], l:list), l:ofile)
     endfor
   endfor
