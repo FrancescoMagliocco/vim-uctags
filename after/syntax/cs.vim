@@ -1,5 +1,5 @@
 " File:         cs.vim
-" Last Change:  07/01/2019
+" Last Change:  07/04/2019
 " Maintainer:   FrancescoMagliocco
 
 function! s:test()
@@ -604,6 +604,7 @@ function! s:test()
     syn keyword csObsolete ContextMarshallException ExecutionEngineException
     syn keyword csObsolete TimeZone
 
+    " TODO Look at 'Type Handle'
     for l:p in ['AbsolutePath', 'AbsoluteUri', 'ActivationArguments',
           \ 'ActivationContext', 'ActivationTrust', 'ActualValue',
           \ 'AllowMultiple', 'AppDomainInitializer',
@@ -833,8 +834,265 @@ function! s:test()
     syn keyword csBuiltInEnums      TraceLogRetentionOption TraceOptions
     syn keyword csBuiltInDelegates  DataReceivedEventHandler
     syn keyword csBuiltInDelegates  EntryWrittenEventHandler
+    let s:p = ['Attributes', 'Description', 'DisplayName', 'Enabled',
+          \ 'SwitchSetting', 'Value', 'ConditionString', 'Filter', 'IndentLevel',
+          \ 'IndentSize', 'IsThreadSafe', 'Name', 'NameIndent', 'TraceOutputOptions',
+          \ 'ActivityId', 'LogicalOperationStack', 'CounterHelp', 'CounterName',
+          \ 'CounterType', 'BaseValue', 'CounterFrequency', 'CouterTimeStamp',
+          \ 'RawValue', 'SysmtemFrequency', 'TimeStamp', 'TimeStamp100nSec',
+          \ 'ConditionString', 'Writer']
+    " CounterSample
+    syn keyword csBuiltInFields   Empty
+    syn keyword csBuiltInMethods  Calculate
+    syn keyword csBuiltInOperators Equality Inequality
+    " Switch
+    syn keyword csBuiltInMethods  GetSupportedAttributes
+    syn keyword csBuiltInMethods  OnSwitchSettingChanged OnValueChanged
+    " ConditionalAttribute
+    " TraceListener
+    syn keyword csBuiltInMethods  Close Dispose Fail Flush TraceData
+    syn keyword csBuiltInMethods  TraceEvent WriteIndent
+    " CorrelationManager
+    syn keyword csBuiltInMethods  StartLogicalOperation StopLogicalOperation
+    " CounterCreationData
+    syn keyword csBuiltInMethods  Add
+    let l:e = ['Default', 'DisableOptimizations', 'EnableEditAndContinue',
+          \ 'IgnoreSymbolStoreSequencePoints', 'None', 'Collapsed', 'Never',
+          \ 'RootHidden', 'Error', 'FailureAudit', 'Information',
+          \ 'SuccessAudit', 'Warning', 'Administer', 'Audit', 'Browse',
+          \ 'Instrument', 'Write', 'DoNotOverwrite', 'OverwriteAsNeeded',
+          \ 'OverwriteOlder', 'MultiInstance', 'SingleInstance', 'Unknown',
+          \ 'Global', 'Process', 'Read', 'Write', 'AverageBase',
+          \ 'AverageCount64', 'AverageTimer32', 'CounterDelta32',
+          \ 'CounterDelta64', 'CounterMultiBase', 'CounterMultiTimer',
+          \ 'CounterMultiTimer100Ns', 'CounterMultiTimer100NsInverse',
+          \ 'CounterMultiTimerInverse', 'CounterTimer', 'CounterTimerInverse',
+          \ 'CounterPerTimeInterval32', 'CountPerTimeInterval64', 'ElapsedTime',
+          \ 'NumberOfItems32', 'NumberOfItems64', 'NumberOfItemsHEX32',
+          \ 'NumberOfItemsHEX64', 'RateOfCountsPerSecond32',
+          \ 'RateOfCountsPerSecond64', 'RawBase', 'RawFraction', 'SampleBase',
+          \ 'SampleCounter', 'SampleFraction', 'Timer100Ns', 'Timer100NsInverse',
+          \ 'High', 'Low', 'Medium', 'AboveNormal', 'BelowNormal', 'Idle',
+          \ 'Normal', 'RealTime', 'Hidden', 'Maximized', 'Minimized',
+          \ 'ActivityTracing', 'All', 'Critical', 'Error', 'Information', 'Off',
+          \ 'Verbose', 'Warning', 'Highest', 'Lowest', 'TimeCritical',
+          \ 'Initialized', 'Ready', 'Running', 'Standby', 'Terminated',
+          \ 'Transition', 'Unknown', 'Wait', 'EventPairHigh', 'EventPairLow',
+          \ 'ExecutionDelay', 'Executive', 'FreePage', 'LpcRecive', 'LpcReply',
+          \ 'PageIn', 'PageOut', 'Suspended', 'SystemAllocation', 'UserRequest',
+          \ 'VirtualMemory', 'Resume', 'Start', 'Stop', 'Suspend', 'Transfer',
+          \ 'Info', 'LimitedCircularFiles', 'LimitedSequentialFiles',
+          \ 'SingleFileBoundedSize', 'SingleFileUnboundedSize',
+          \ 'UnlimitedSequentialFiles', 'Callstack', 'DateTime',
+          \ 'LogicalOperationStack', 'ProcessId', 'ThreadId', 'Timestamp']
   endif
 
+  if len(filter(getline(1, line('$')), "v:val =~# '^\\s*using\\s\\+System\\.Collections;'"))
+    syn keyword csBuiltInClasses  ArrayList BitArray CaseInsensitiveComparer
+    syn keyword csBuiltInClasses  CaseInsensitiveHashCodeProvider CollectionBase
+    syn keyword csBuiltInClasses  Comparer DictionaryBase Hashtable Queue
+    syn keyword csBuiltInClasses  ReadOnlyCollectionBase SortedList Stack
+    syn keyword csBuiltInClasses  StructuralComparisons
+    syn keyword csBuiltInStructs  DictionaryEntry
+    syn keyword csBuiltInInterfaces ICollection IComparer IDictionary
+    syn keyword csBuiltInInterfaces IDictionaryEnuerator IEnumerable
+    syn keyword csBuiltInInterfaces IEnumerator IEqualityComparer
+    syn keyword csBuiltInInterfaces IList
+    syn keyword csBuiltInInterfaces IStructuralComparable IStructuralEquatable
+    " Item is a list
+    let l:p = ['Count', 'IsSynchronized', 'SyncRoot', 'IsFixedSize', 'IsReadOnly',
+          \ 'Item', 'Keys', 'Values', 'Entry', 'Current', 'Capacity', 'Length',
+          \ 'Default', 'DefaultInvariant', 'InnerList', 'List', 'Dictionary',
+          \ 'InnerHashtable', 'comparer', 'EqualityComparer', 'hcp',
+          \ 'StructuralComparer', 'StructuralEqualityComparer', 'Key', 'Value']
+    " IEnumerable
+    syn keyword csBuiltInMethods  GetEnumerator
+    " ICollection
+    syn keyword csBuiltInMethods  CopyTo
+    " ICommparer
+    syn keyword csBuiltInMethods   Compare
+    " IDictionary
+    syn keyword csBuiltInMethods  Add Clear Contains
+    " IDicrionaryEnumerator
+    " IEnumerator
+    syn keyword csBuiltInMethods  MoveNext Reset
+    " IEqualityComparer
+    syn keyword csBuiltInMethods  Equals GetHashCode
+    " IHashCodeProvider
+    " IList
+    syn keyword csBuiltInMethods  IndexOf Insert Remove RemoveAt
+    " IStructuralComparable
+    syn keyword csBuiltInMethods  CompareTo
+    " ArrayList
+    syn keyword csBuiltInMethods  Adapter AddRange BinarySearch FixedSize
+    syn keyword csBuiltInMethods  GetRange InsertRange LastIndex LastIndexOf
+    syn keyword csBuiltInMethods  ReadOnly Reverse Sort Synchronized ToArray
+    syn keyword csBuiltInMethods  TrimToSize
+    " BitArray
+    syn keyword csBuiltInMethods  And Get Not Or Set SetAll Xor
+    " CollectionBase
+    syn keyword csBuiltInMethods  OnClear OnInsert OnRemove OnSet
+    syn keyword csBuiltInMethods  OnSetComplete OnValidate RemoveAt
+    " Comparer
+    syn keyword csBuiltInFields   Default DefaultInvariant
+    " DictrionaryBase
+    syn keyword csBuiltInMethods  OnClearComplete OnGet OnInsertComplete
+    syn keyword csBuiltInMethods  OnRemoveComplete OnSetComplete
+    " Hashtable
+    syn keyword csBuiltInMethods  KeyEquals
+    " Queue
+    syn keyword csBuiltInMethods  Dequeue Enqueue Peek
+    " SortedList
+    syn keyword csBuiltInMethods  ContainsKey ContainsValue GetByteIndex
+    syn keyword csBuiltInMethods  GetKey GetKeyList IndexOfKey IndexOfValue
+    syn keyword csBuiltInMethods  SetByIndex
+    " Stack
+    syn keyword csBuiltInMethods  Pop Push
+
+
+  endif
+    if len(filter(getline(1, line('$')), "v:val =~# '^\\s*using\\s\\+System\\.Runtime\\.Serialization;'"))
+      " SerilizedReadOnlyTypes may be a typo
+      let l:p = ['IsItemNameSetExplicitly', 'IsKeyNameSetExplicitly',
+            \ 'IsNameSetExplicitly', 'IsNamespaceSetExplicitly', 'IsReference',
+            \ 'IsReferenceSetExplicitly', 'IsValueNameSetExplicitly', 'ItemName',
+            \ 'KeyName', 'Name', 'Namespace', 'ValueName', 'ClrNamespace',
+            \ 'ContractNamespace', 'DataContractResolver', 'DataContractSurrogate',
+            \ 'IgnoreExtensionDataObject', 'KnownTypes', 'MaxItemsInObjectGraph',
+            \ 'PreserveObjectReferences', 'SerializedReadOnlyTypes',
+            \ 'DataContractResolver', 'DataContractSurrogate',
+            \ 'IgnoreExtensionDataObject', 'RootName', 'RootNamespace',
+            \ 'SerializeReadOnlyTypes', 'EmitDefaultValue', 'IsRequired', 'Order',
+            \ 'DateTypeStyles', 'FormatProvider', 'FormatString', 'CodeProvider',
+            \ 'DataContractSurrogate', 'EnableDatainding', 'GenerateInternal',
+            \ 'GenerateSerialzable', 'ImportXmlType', 'Namespaces',
+            \ 'ReferencedCollectionTypes', 'ReerencedTypes', 'MethodName', 'Type',
+            \ 'Binder', 'Context', 'SurrogateSelector', 'AssemblyFormat',
+            \ 'StreamingContext', 'FullTypeName', 'IsAssemblyNameSetExplicit',
+            \ 'IsFullTypeNameSetExplicit', 'MemberCount', 'ObjectType', 'Options',
+            \ 'Schemas', 'CodeCompileUnit', 'State', 'ExtensionData']
+      syn keyword csBuiltInClasses  CollectionDataContractAttribute
+      syn keyword csBuiltInClasses  ContractNamespaceAttribute
+      syn keyword csBuiltInClasses  DataContractAttribute DataContractResolver
+      syn keyword csBuiltInClasses  DataContractSerializer
+      syn keyword csBuiltInClasses  DataContractSerializerExtensions
+      syn keyword csBuiltInClasses  DataContractSerializerSettings
+      syn keyword csBuiltInClasses  DataMemberAttribute DateTimeFormat
+      syn keyword csBuiltInClasses  EnumMemberAttribute ExportOptions
+      syn keyword csBuiltInClasses  ExtensionDataObject Formatter
+      syn keyword csBuiltInClasses  FormatterConverter FormatterServices
+      syn keyword csBuiltInClasses  IgnoreDataMemberAttribute ImportOptions
+      syn keyword csBuiltInClasses  InvalidDataContractException
+      syn keyword csBuiltInClasses  KnownTypeAttribute NetDataContractSerializer
+      syn keyword csBuiltInClasses  ObjectIDGenerator ObjectManager
+      syn keyword csBuiltInClasses  OnDeserializedAttribute
+      syn keyword csBuiltInClasses  OnDeserializingAttribute
+      syn keyword csBuiltInClasses  OnSerializedAttribute OnSerializingAttribute
+      syn keyword csBuiltInClasses  OptionalFieldAttribute SafeSerializationEventArgs
+      syn keyword csBuiltInClasses  SerializationBinder SerializationException
+      syn keyword csBuiltInClasses  SerializationInfo SerializationInfoEnumerator
+      syn keyword csBuiltInClasses  SerializationObjectManager SurrogateSelector
+      syn keyword csBuiltInClasses  XmlObjectSerializer XmlSerializableServices
+      syn keyword csBuiltInClasses  XPathQueryGenerator XsdDataContractExporter
+      syn keyword csBuiltInClasses  XsdDataContractImporter
+      syn keyword csBuiltInStructs  SerializationEntry StreamingContext
+      syn keyword csBuiltInInterfaces IDataContractSurrogate
+      syn keyword csBuiltInInterfaces IDeserializationCallback IExtensibleDataObject
+      syn keyword csBuiltInInterfaces IFormatter IFormatterConverter
+      syn keyword csBuiltInInterfaces IObjectReference ISafeSerilzationData
+      syn keyword csBuiltInInterfaces ISerializable ISerializationSurrogate
+      syn keyword csBuiltInInterfaces ISerializationSurrogateProvider
+      syn keyword csBuiltInInterfaces ISurrogateSelector
+      syn keyword csBuiltInEnums    EmitTypeInformation StreamContextStates
+      let l:e = ['Always', 'AsNeeded', 'Never', 'Clone', 'CrossAppDomain',
+            \ 'CrossMachine', 'CrossProcess', 'File', 'Other', 'Persistence',
+            \ 'Remoting']
+      " DataContractResolver
+      syn keyword csBuiltInMethods  ResolveName TryResolveType
+      " DataContractSerializer
+      " XmlObjectSerializer
+      syn keyword csBuiltInMethods  IsStartObject ReadObject WriteEndObject
+      syn keyword csBuiltInMethods  WriteObject WriteObjectContent
+      syn keyword csBuiltInMethods  WriteStartObject
+      " DataContractSerializerExtensions
+      syn keyword csBuiltInMethods  GetSerializationSurrogateProvider
+      syn keyword csBuiltInMethods  SetSerializationSurrogateProvider
+      " DataContractSerializerSettings
+      " Formatter
+      syn keyword csBuiltInFields   m_idGenerator m_objectQueue
+      syn keyword csBuiltInMethods  GetNext Schedule Serialize WriteArray
+      syn keyword csBuiltInMethods  WriteBoolean WriteBye WriteChar
+      syn keyword csBuiltInMethods  WriteDateTime WriteDecimal WriteDouble
+      syn keyword csBuiltInMethods  WriteInt16 WriteIn32 WriteIn64
+      syn keyword csBuiltInMethods  WriteMember WriteObjectRef WriteSByte
+      syn keyword csBuiltInMethods  WriteSingle WriteTimeSpan WriteUInt16
+      syn keyword csBuiltInMethods  WriteUInt32 WriteUInt64 WriteValueType
+
+      " IFormatterConverter
+      syn keyword csBuiltInMethods  Convert
+      " FormatterServices
+      syn keyword csBuiltInMethods  CheckTypeSecurity GetSafeUninitializedObject
+      syn keyword csBuiltInMethods  GetSerializableMembers
+      syn keyword csBuiltInMethods  GetSurrogateForCyclicalReference
+      syn keyword csBuiltInMethods  GetTypeFromAssembly GetUninitializedObject
+      syn keyword csBuiltInMethods  PopulateObjectMembers
+      " ImportOptions
+      " InvalidDataContractException
+      " IFormatter
+      syn keyword csBuiltInMethods  Deserialize Serialize
+      " ObjectIDGenerator
+      syn keyword csBuiltInMethods  GetId HasId
+      " ObjectManager
+      syn keyword csBuiltInMethods  DoFixups RaiseDeserializationEvent
+      syn keyword csBuiltInMethods  RaiseOnDeserialzingEvent
+      syn keyword csBuiltInMethods  RecordArrayElementFixup
+      syn keyword csBuiltInMethods  RecordDelayedFixup RegisterObject
+      " SafeSerializationEventArgs
+      " SerializationBinder
+      syn keyword csBuiltInMethods  BindToName BindToType
+      " SerializationInfo
+      syn keyword csBuiltInMethods  AddValue GetBoolean GetByte GetChar
+      syn keyword csBuiltInMethods  GetDateTime GetDecimal GetDouble
+      syn keyword csBuiltInMethods  GetInt16 GetInt32 GetInt64 GetSByte
+      syn keyword csBuiltInMethods  GetSingle GetString GetUint16 GetUint32
+      syn keyword csBuiltInMethods  GetUInt64 SetType
+      " SerializationObjectManager
+      syn keyword csBuiltInMethods  RaiseOnSerializedEvent
+      " ISurrogateSelector
+      syn keyword csBuiltInMethods  ChainSelector GetNextSelector GetSurrogate
+      " SurrogateSelector
+      syn keyword csBuiltInMethods  AddSurrogate RemoveSurrogate
+      " XmlSerializableServices
+      syn keyword csBuiltInMethods  AddDefaultSchema ReadNodes WriteNotdes
+      " XPathQueryGenerator
+      syn keyword csBuiltInMethods  CreateFromDataContractSerializer
+      " XsdDataContractExporter
+      syn keyword csBuiltInMethods  CanExport Export GetRootElementName
+      syn keyword csBuiltInMethods  GetSchemaType GetSchemaTypeName
+      " XsdDataContractImporter
+      syn keyword csBuiltInMethods  CanImport GetCodeTypeReference
+      syn keyword csBuiltInMethods  GetKnownTypeReferences Import
+      " IDataContractSurrogate
+      syn keyword csBuiltInMethods  GetCustomDataToExport GetDataContractType
+      syn keyword csBuiltInMethods  GetDeserializedObject GetKnownCustomDataTypes
+      syn keyword csBuiltInMethods  GetObjectToSerialize
+      syn keyword csBuiltInMethods  GetReferencedTypeOnImport
+      syn keyword csBuiltInMethods  ProcessImportedType
+      " IDeserializationCallback
+      syn keyword csBuiltInMethods  OnDeserialization
+      " IObjectReference
+      syn keyword csBuiltInMethods  GetRealObject
+      " ISafeSerializationData
+      syn keyword csBuiltInMethods  CompleteDeserialization
+      " ISerializationSurrogate
+      syn keyword csBuiltInMethods  SetObjectData
+      " ISerializationSurrogateProvider
+      syn keyword csBuiltInMethods  GetSurrogateType
+
+
+    endif
+" Obsolete
+"IHashCodeProvider, CaseInsensitiveHashCodeProvider
 endfunction
 hi def link csBuiltInClasses    class
 hi def link csBuiltInEnums      enumName
