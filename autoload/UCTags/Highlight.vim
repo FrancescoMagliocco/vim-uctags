@@ -1,5 +1,5 @@
 " File:         Highlight.vim
-" Last Change:  07/04/2019
+" Last Change:  07/11/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -142,7 +142,7 @@ function! s:UpdateSynFor(src_file, ...)
   let l:ofile = l:src_file
 
   let l:src_syn_file = l:src_file . '.syn'
-  if index(s:inc_lan, tolower(&ft)) < 0
+  if !count(s:inc_lan, tolower(&ft))
     " Current language doesn't support include directives.
     return l:src_syn_file
   " Current language supports include directives
@@ -182,7 +182,7 @@ function! s:UpdateSynFor(src_file, ...)
     endif
 
     for l:src_file in l:list
-      if a:0 && index(a:2, l:src_file) >= 0 | continue | endif
+      if a:0 && count(a:2, l:src_file) | continue | endif
       " XXX COMBAK FIXME Revise
       call s:UpdateSynFor(substitute(
             \   l:src_file, '^.*' . (l:is_cs ? ('\%\(' . l:pat[1] . '\|namespace\)') : l:pat[1]) . '\s\+', '', 'g'),
@@ -254,7 +254,7 @@ function! UCTags#Highlight#ReadTags(file, ...)
       "call UCTags#Highlight#TestSyn(l:syn_file)
     "execute 'source' l:syn_file
     let l:sourced_syn += 1
-  elseif index(s:inc_lan, tolower(&ft)) < 0
+  elseif !count(s:inc_lan, tolower(&ft))
     return
   else
     " To get around the current directoy not be relative to that of a:file, we
@@ -328,7 +328,7 @@ function! UCTags#Highlight#ReadTags(file, ...)
     "   includes on files that aren't already in queue to be read, which is why
     "   we send the current list as an optinal so we don't read something
     "   twice.
-    if a:0 && index(a:2, l:file) >= 0 | continue | endif
+    if a:0 && count(a:2, l:file) | continue | endif
     call UCTags#Highlight#ReadTags(substitute(
           \   l:file, '^.*' . l:pat . '\s\+', '', 'g'),
           \ l:sourced_syn, extend(a:0 ? a:2 : [], l:list), l:ofile)
@@ -343,8 +343,8 @@ function! UCTags#Highlight#CreateSynFiles(tags)
   " COMBAK Revise
   let l:skip =
         \ 'has_key(g:uctags_skip_kind_for, tolower(v:val[3][5:]))'
-        \ . '? index(g:uctags_skip_kind_for[tolower(v:val[3][5:])],'
-        \     . "tolower(v:val[5][9:])) < 0 && index(g:uctags_skip_kind_for[tolower(v:val[3][5:])], 'all') < 0"
+        \ . '? !count(g:uctags_skip_kind_for[tolower(v:val[3][5:])],'
+        \     . "tolower(v:val[5][9:])) && !count(g:uctags_skip_kind_for[tolower(v:val[3][5:])], 'all')"
         \ . ': 1'
   let l:file = ''
   let l:lines = []
