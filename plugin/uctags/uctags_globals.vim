@@ -1,5 +1,5 @@
 " File:         uctags_globals.vim
-" Last Change:  07/04/2019
+" Last Change:  07/11/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -15,9 +15,9 @@ let g:uctags_max_info         = get(g:, 'uctags_max_info', 0)
 
 let g:uctags_extra_args       = get(g:, 'uctags_extra_args', {})
 let g:uctags_syntax_c_enabled = get(g:, 'uctags_syntax_c_enabled', 1)
-let g:uctags_use_keyword      = get(g:, 'uctags_use_keyword', 1)
+let g:uctags_use_keyword      = get(g:, 'uctags_use_keyword', 0)
 let g:uctags_skip_non_keyword = get(g:, 'uctags_skip_non_keyword', 0)
-let g:uctags_use_only_match   = get(g:, 'uctags_use_only_match', 0)
+let g:uctags_use_only_match   = get(g:, 'uctags_use_only_match', 1)
 let g:uctags_use_keyword_over_match = get(g:, 'uctags_use_keyword_over_match', 0)
 
 " TODO Change name
@@ -214,7 +214,8 @@ let g:uctags_args           = get(g:, 'uctags_args', {
       \   '--kinds-html='           : '-{heading1}',
       \   '--kinds-json='           : '-{number}{object}{array}',
       \   '--kinds-maven2='         : '-{artifactId}',
-      \   '--languages='            : '-markdown,json'
+      \   '--kinds-python='         : '-{unknown}',
+      \   '--languages='            : '-markdown,json,restructuredtext'
       \ })
 
 " Extends g:uctags_args with g:uctags_extra_args so

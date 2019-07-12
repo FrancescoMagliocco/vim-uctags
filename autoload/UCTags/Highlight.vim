@@ -13,22 +13,25 @@ let g:loaded_UCTags_Highlight = 1
 let g:uctags_enable_go = get(g:, 'uctags_enable_go', 0)
 " TODO Rename
 " Languages that use include directives, namespaces etc..
-let s:inc_lan = ['cpp', 'c', 'asm', 'cs']
+let s:inc_lan = ['cpp', 'c', 'asm', 'cs', 'python']
 
 " TODO Rename
 " Pattern used to find include direcetives, namespaces etc.. of the given
 "   language.
+" COMBAK Python needs to be redone
 let s:pat_lang =
       \ {
       \   'asm' : ['%include'],
       \   'cpp' : ['\s*#\s*include\s\+"\{1\}.*"\{1\}', '#\s*include'],
       \   'c'   : ['\s*#\s*include\s\+"\{1\}.*"\{1\}', '#\s*include'],
       \   'go'  : ['import'],
-      \   'cs'  : ['using\s\+.*;', '\s*namespace\s\+', '\%\(using\|namespace\)']
+      \   'cs'  : ['using\s\+.*;', '\s*namespace\s\+', '\%\(using\|namespace\)'],
+      \   'python'  : [['^\s*', 'import', '\s\+[a-zA-Z0-9.]\+'], ['^\s*', 'from\s\+[a-zA-Z0-9.]\s\+import\s.\+$', '']
       \ }
 
 function! s:UpdateSyn(syn_file)
   if !g:uctags_use_perl || !has('perl')
+      echomsg 'Not using perl'
     let l:buf_syn_file = expand('%') . '.syn'
     " Read the syn file for the current active buffer.
     " If no syn file exists, l:buf_syn is [].
@@ -138,6 +141,16 @@ function! s:UpdateSynFor(src_file, ...)
 
   " Remove quotes
   let l:src_file  = substitute(a:src_file, "\\(\"\\|\'\\)", '', 'g')
+  let l:is_py = &ft ==? 'python'
+
+  " We do this here, rather than after elseif filereadable(... because the
+  "   module may be relative to our current directory.
+  if l:is_py && !filereadable(l:src_file)
+    " TODO merge into one line
+    let l:src_file = substitute(l:src_file, '\s.*$', '', 'g')
+    let l:src_file = (substitute(l:src_file, '\.', '/', 'g') . '.py')
+  endif
+
   " Was used for when ft is go..  I think
   let l:ofile = l:src_file
 
@@ -151,6 +164,9 @@ function! s:UpdateSynFor(src_file, ...)
     call s:UpdateSyn(l:src_syn_file)
     let l:sourced_syn += 1
   else
+    echomsg 'Not readable'
+    echomsg l:src_syn_file
+
     " Can't find syn file for a:src_file
     " During the FIRST call, 
     " Escapes special characters
@@ -158,6 +174,7 @@ function! s:UpdateSynFor(src_file, ...)
     " Try to find
     let l:lines = s:UpdateSynFilter(l:safe_src_file, l:src_file)
     if empty(l:lines[0]) | return | endif
+    echomsg l:lines
 
     for l:f in l:is_cs ? l:lines : l:lines[-1:1]
       let l:src_file = l:f[1]
@@ -181,9 +198,14 @@ function! s:UpdateSynFor(src_file, ...)
 
     let l:tmp = l:src_file
 
+    " COMBAK This probably wont work as expected
+    if l:is_py
+      call extend(l:list, UCTags#Utils#FilterFile(l:src_file, 'v:val=~#', '^\s*from\s\+\S\+\s\+import\s\+'))
+    endif
+
     for l:src_file in keys(l:list)
       if a:0 && has_key(a:2, l:src_file) | continue | endif
-      " XXX COMBAK FIXME Revise
+
       call s:UpdateSynFor(substitute(
             \   l:src_file, '^.*' . l:pat[-1] . '\s\+', '', 'g'),
             \ l:sourced_syn, extend(a:0 ? a:2 : {}, l:list), l:ofile)
