@@ -26,12 +26,11 @@ let s:pat_lang =
       \   'c'   : ['\s*#\s*include\s\+"\{1\}.*"\{1\}', '#\s*include'],
       \   'go'  : ['import'],
       \   'cs'  : ['using\s\+.*;', '\s*namespace\s\+', '\%\(using\|namespace\)'],
-      \   'python'  : [['^\s*', 'import', '\s\+[a-zA-Z0-9.]\+'], ['^\s*', 'from\s\+[a-zA-Z0-9.]\s\+import\s.\+$', '']
+      \   'python'  : [['^\s*', 'import', '\s\+[a-zA-Z0-9.]\+'], ['^\s*', 'from\s\+[a-zA-Z0-9.]\s\+import\s.\+$', '']]
       \ }
 
 function! s:UpdateSyn(syn_file)
   if !g:uctags_use_perl || !has('perl')
-      echomsg 'Not using perl'
     let l:buf_syn_file = expand('%') . '.syn'
     " Read the syn file for the current active buffer.
     " If no syn file exists, l:buf_syn is [].
@@ -164,8 +163,6 @@ function! s:UpdateSynFor(src_file, ...)
     call s:UpdateSyn(l:src_syn_file)
     let l:sourced_syn += 1
   else
-    echomsg 'Not readable'
-    echomsg l:src_syn_file
 
     " Can't find syn file for a:src_file
     " During the FIRST call, 
@@ -174,7 +171,6 @@ function! s:UpdateSynFor(src_file, ...)
     " Try to find
     let l:lines = s:UpdateSynFilter(l:safe_src_file, l:src_file)
     if empty(l:lines[0]) | return | endif
-    echomsg l:lines
 
     for l:f in l:is_cs ? l:lines : l:lines[-1:1]
       let l:src_file = l:f[1]
