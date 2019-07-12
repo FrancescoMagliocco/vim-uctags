@@ -1,5 +1,5 @@
 " File:         Highlight.vim
-" Last Change:  07/11/2019
+" Last Change:  07/12/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -18,13 +18,15 @@ let s:inc_lan = ['cpp', 'c', 'asm', 'cs']
 " TODO Rename
 " Pattern used to find include direcetives, namespaces etc.. of the given
 "   language.
+" COMBAK FOr each entry, we may be able to merge each element together, except
+"   for the last one.  The last one alwayus needs to be on it's own.
 let s:pat_lang =
       \ {
-      \   'asm' : ['', '%include', ''],
-      \   'cpp' : ['\s*', '#include', '\s\+"\{1\}.*"\{1\}'],
-      \   'c'   : ['\s*', '#include', '\s\+"\{1\}.*"\{1\}'],
-      \   'go'  : ['', 'import', ''],
-      \   'cs'  : ['', 'using', '\s\+.*;']
+      \   'asm' : ['', '%include', '', '%include'],
+      \   'cpp' : ['\s*', '#\s*include', '\s\+"\{1\}.*"\{1\}', '#\s*include'],
+      \   'c'   : ['\s*', '#\s*include', '\s\+"\{1\}.*"\{1\}', '#\s*include'],
+      \   'go'  : ['', 'import', '', 'import'],
+      \   'cs'  : [['', 'using', '\s\+.*;'], ['\s*', 'namespace', '\s\+'], '\%\(using\|namespace\)']
       \ }
 
 function! s:UpdateSyn(syn_file)
@@ -173,20 +175,44 @@ function! s:UpdateSynFor(src_file, ...)
     let l:src_file = l:f[1]
     if !filereadable(l:src_file) | return | endif
     let l:pat = s:pat_lang[&ft]
-    let l:list = uniq(sort(
-          \ UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', join(l:pat, ''))))
+    let l:list = {}
+
+    if type(l:pat[0]) == v:t_list
+      for l:p in l:pat[:-2]
+        "let l:list += UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', join(l:p, ''))
+        call extend(l:list, UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', join(l:p, '')))
+      endfor
+    else
+      "let l:list = UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', join(l:pat[:-2], ''))
+      call extend(l:list, UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', join(l:pat[:-2], '')))
+    endif
+    " When running UpdateSynFile in fftools/ffmpeg.c, for the header
+    "   libavutil/pixdesc.h, the header pixfmt.h is shown.
+    "let l:list = uniq(sort(
+    "      \ UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', join(l:pat, ''))))
+    "let l:a = len(l:list)
+    "call uniq(sort(l:list))
+    "if l:a != len(l:list)
+    "  echomsg 'yup'
+    "endif
 
     " XXX COMBAK FIXME Revise
-    if l:is_cs
-      call extend(l:list, UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', '^\s*namespace\s\+'))
-    endif
+    "if l:is_cs
+    "  call extend(l:list, UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', '^\s*namespace\s\+'))
+    "endif
+    let l:tmp = l:src_file
 
-    for l:src_file in l:list
-      if a:0 && count(a:2, l:src_file) | continue | endif
+    for l:src_file in keys(l:list)
+      "if a:0 && count(a:2, l:src_file) | continue | endif
+      if a:0 && has_key(a:2, l:src_file) | continue | endif
+      "if a:0 && count(a:2, l:src_file) | continue | endif
       " XXX COMBAK FIXME Revise
       call s:UpdateSynFor(substitute(
-            \   l:src_file, '^.*' . (l:is_cs ? ('\%\(' . l:pat[1] . '\|namespace\)') : l:pat[1]) . '\s\+', '', 'g'),
-            \ l:sourced_syn, extend(a:0 ? a:2 : [], l:list), l:ofile)
+            \   l:src_file, '^.*' . l:pat[-1] . '\s\+', '', 'g'),
+            \ l:sourced_syn, extend(a:0 ? a:2 : {}, l:list), l:ofile)
+      "call s:UpdateSynFor(substitute(
+      "      \   l:src_file, '^.*' . (l:is_cs ? ('\%\(' . l:pat[1] . '\|namespace\)') : l:pat[1]) . '\s\+', '', 'g'),
+      "      \ l:sourced_syn, extend(a:0 ? a:2 : [], l:list), l:ofile)
     endfor
   endfor
 

@@ -1,5 +1,5 @@
 " File:         uctags_perl.vim
-" Last Change:  07/04/2019
+" Last Change:  07/12/2019
 " Maintainer:   FrancescoMagliocco
 " vim: ft=perl
 
@@ -187,6 +187,12 @@ if has('perl')
           'return [' . join(', ', map { "'$_'" } @list) . ']');
       }
 
+      sub ReturnVimDict {
+        my (@list) = @_;
+        VIM::DoCommand(
+          'return {' . join(', ', map { "'$_' : '$_'" } @list) . '}');
+      }
+
       sub ReadfileVim {
         my ($file, $arg2) = @_;
         open my $in_file, "<", "$file"
@@ -213,7 +219,8 @@ if has('perl')
         chomp for @filter;
         s/\R//g for @filter;
         s/'/''/g for @filter;
-        ReturnVimList(@filter);
+        #ReturnVimList(@filter);
+        ReturnVimDict(@filter);
         #VIM::DoCommand(
         #  'return [' . join(', ', map { "'$_'" } @filter) . ']');
       }

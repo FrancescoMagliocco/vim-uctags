@@ -73,9 +73,16 @@ endfunction
 function! UCTags#Utils#FilterFile(file, lhs, rhs, ...)
   if !filereadable(a:file) | return [] | endif
   if !g:uctags_use_perl || !has('perl')
-    return UCTags#Utils#Filter(
+  let l:ret = {}
+    for l:i in UCTags#Utils#Filter(
           \ function('UCTags#Utils#Readfile', [a:file] + a:000)(), a:lhs, a:rhs)
+      let l:ret[l:i] = l:i
+    endfor
+    return l:ret
+    "return UCTags#Utils#Filter(
+    "      \ function('UCTags#Utils#Readfile', [a:file] + a:000)(), a:lhs, a:rhs)
   endif
+
 
   " FIXME Doens't support range for readfile on Perl side yet
   perl FilterVim(
