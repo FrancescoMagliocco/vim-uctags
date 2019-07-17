@@ -164,7 +164,7 @@ Everything specified in `g:uctags_extra_args`, has a higher precedence over the
 default arguments provided internally.  `g:uctags_extra_args`
 will be appended to the internal arguments vim-uctags passes to
 universal-ctags.  If you want to change a default argument, do so here, not by
-changing  [`g:uctags_args`](#g:uctags_args).  You are likely to break
+changing  [`g:uctags_args`](#guctags_args).  You are likely to break
 vim-uctags if you change `g:uctags_args`.  Be careful when disabling different
 *kinds*, as that may break vim-uctags as well.
 
@@ -204,22 +204,22 @@ have the same name, but are of different *kinds*.
 ### g:uctags\_skip\_non\_keyword
 **Default: 0**  
 If `g:uctags_skip_non_keyword` is enabled, any patterns in
-[`g:uctags_match_map`](#g:uctags_match_map) that aren't equal to
-[`g:uctags_default_match`](#g:uctags_default_match) will be skipped.
+[`g:uctags_match_map`](#guctags_match_map) that aren't equal to
+[`g:uctags_default_match`](#guctags_default_match) will be skipped.
 
 #### NOTE
 In order for `g:uctags_skip_non_keyword` to successfully work,
-[`g:uctags_use_keyword`](#g:uctags_use_keyword) needs to be enabled, and
-[`g:uctags_use_only_match`](#g:uctags_use_only_match) needs to be disabled.
+[`g:uctags_use_keyword`](#guctags_use_keyword) needs to be enabled, and
+[`g:uctags_use_only_match`](#guctags_use_only_match) needs to be disabled.
 
 ### g:uctags\_use\_only\_match
 When `g:uctags_use_only_match` is enabled, Vim will **only** use the much
 slower, but much *much* more accurate *syn-match*.
 
 The option `g:uctags_use_only_match` has a higher precedence than
-[`g:uctags_use_keyword`](#g:uctags_use_keyword),
-[`g:uctags_skip_non_keyword`](#g:uctags_skip_non_keyword) and
-[`g:uctags_use_keyword_over_match`](#g:uctags_use_keyword_over_match).
+[`g:uctags_use_keyword`](#guctags_use_keyword),
+[`g:uctags_skip_non_keyword`](#guctags_skip_non_keyword) and
+[`g:uctags_use_keyword_over_match`](#guctags_use_keyword_over_match).
 Regardless if any the forementioned options are enabled or not, will not affect
 `g:uctags_use_only_match`.  Thus, `g:uctags_use_only_match` will perform as
 intended no matter the situation.
@@ -227,8 +227,8 @@ intended no matter the situation.
 ### g:uctags\_use\_keyword\_over\_match
 **Default: 0**  
 `g:uctags_use_keyword_over_match` applies to when a pattern in
-[`g:uctags_match_map`](#g:uctags_match_map) is equal to
-[`g:uctags_default_match`](#g:uctags_default_match), or if there isn't an entry
+[`g:uctags_match_map`](#guctags_match_map) is equal to
+[`g:uctags_default_match`](#guctags_default_match), or if there isn't an entry
 for the patterns corresponding *kind*.
 
 It is not recommended to use *syn-keyword* for highlighting.  Even though
@@ -280,7 +280,7 @@ duplicates.
 For projects that have piles of include directives in a single source file,
 setting a limit for how many syn files can be processed and included can
 improve performance substantially.  However, the same drawback as in
-[`g:uctags_max_lines_header_search`](#g:uctags_max_lines_header_search) is
+[`g:uctags_max_lines_header_search`](#guctags_max_lines_header_search) is
 perpetual.
 
 #### TODO
@@ -346,7 +346,7 @@ vim-uctags, resulting in vim-uctags operating in a way that wasn't intended.
 - [ ] Properly link *plugin/uctags/uctags_globals.vim*
 - [ ] Create a *pre* and *post* option of strings for options to be prefixed
 and appended to `g:uctags_args` and
-[`g:uctags_exttra_args`](#g:uctags_extra_args) respectively.
+[`g:uctags_exttra_args`](#guctags_extra_args) respectively.
 
 ### g:uctags\_hl\_group\_map
 **Default: See plugin/uctags/uctags_globals.vim**  
