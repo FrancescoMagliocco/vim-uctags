@@ -91,8 +91,8 @@ header, but the path as well.  There can be multiple headers with the same
 name, but only one with that name in a given path.
 
 #### Planned Implementations for Smart Syn
-- [ ] Option for max depth a header can be processed
-- [ ] Option to limit how many lines can be searched to find a header
+- [x] Option for max depth a header can be processed
+- [x] Option to limit how many lines can be searched to find a header
 
 ### Smart Syntax Files
 Not to be confused with [Syn Files](#syn-files) but yes another stupid use of
@@ -110,3 +110,246 @@ functions wont be highlighted unless the corresponding header is included.
 [uctags]: https://ctags.io/ 'Universal Ctags'
 [uctags-repo]: https://github.com/universal-ctags/ctags 'Universal Ctags Repo'
 [vundle]:  https://github.com/VundleVim/Vundle.vim 'Plug-in manager for Vim'
+
+## Global Options
+This section will break down each global option, explaining what the option
+does, if the option depends on another option or options, whether or not those
+options to be set and what they outcome will be with different combinations of
+options.  The default value for options will also be shown where applicable.
+The default of some options will require you to refer to the source code.
+
+### g:uctags\_execuable
+**Default: 'ctags-universal'**  
+Name of the universal-ctags executable.  Typically the default should suffice.
+If you built universal-ctags manually and didn't change `--program-prefix` or
+`program-transform-name`, set `g:uctags_execuable` to *'ctags'* (Shown below)
+in your *.vimrc*.
+```vim
+let g:uctags_executable = 'ctags'
+```
+
+#### NOTE
+If you did change `--program-prefix`, make sure to append *ctags* to
+`g:uctags_execuable`:
+
+##### Examples
+If you're confused as to if you need to include a dash (*-*) when setting
+`g:uctags_executable`, the following should give you some clarification.
+`--program-prefix=my`
+```vim
+let g:uctags_executable = 'myctags'
+```
+`--program-prefix=my-`
+```vim
+let g:uctags_executable = 'my-ctags'
+```
+`--program-prefix=my-ctags`
+```vim
+let g:uctags_executable = 'my-ctagsctags'
+```
+
+##### TODO
+- [ ] Make the example more appealing
+
+### g:uctags\_extra\_args
+**Default: {}**  
+Extra arguments to pass to universal-ctags.  Extra arguments are specified
+using a dictionary.  The format to specify extra arguments is
+`{argument}=:{value}`.  The equal sign is needed.  If the argument you're
+specifying, doesn't take a value, such as `-R` (*Recursion*), just give an
+empty string (*''*) for `{value}`.  Even though `-R` does not take a value, the
+equal sign is needed.
+
+Everything specified in `g:uctags_extra_args`, has a higher precedence over the
+default arguments provided internally.  `g:uctags_extra_args`
+will be appended to the internal arguments vim-uctags passes to
+universal-ctags.  If you want to change a default argument, do so here, not by
+changing  [`g:uctags_args`](#g:uctags_args).  You are likely to break
+vim-uctags if you change `g:uctags_args`.  Be careful when disabling different
+*kinds*, as that may break vim-uctags as well.
+
+Vim-uctags will not be able to understand the tags file, if the option
+`--fields` contains the `-K` flag.  Consequently, the `--fields` option will
+require the `+K` flag.  From the current development state, the *kind* of tag,
+must be described as a *full-name* and not a *single-letter*.  In the future
+this is likely to change.
+
+In order for vim-uctags to parse the tag file, vim-uctags requires the option
+`--fields` to contain the `+z` or `+{kind}`, and `+l` or `+{language}` flags.
+
+Universal-ctags allows a select few options to licitly be specified numerous
+times.  Unfortunately, due to the structure of dictionaries, if an option is
+specified numerously, only the latter will be validated.
+
+#### NOTE
+If both `g:uctags_args` and `g:uctags_extra_args` hold the same option,
+whatever was stored in `g:uctags_args` by that option, will be discarded and
+replaced with what `g:uctags_extra_args` holds for that option.  This includes
+the default arguments that make vim-uctags operable.  There **will** be a fix
+for this.
+
+### g:uctags\_use\_keyword
+**Default: 0**  
+When `g:uctags_use_keyword` is enabled, Vim will use *syn-keyword* (If
+`g:uctags_use_only_match` is disabled) and *syn-match* (If
+`g:uctags_skip_non_keyword` is disabled) when highlighting.
+
+It is not recommended to use *syn-keyword* for highlighting.  Even though
+*syn-keyword* is a lot faster, you will run into issues with that tags that
+have the same name, but are of different *kinds*.
+
+#### TODO
+- [ ] Explain in more detail
+
+### g:uctags\_skip\_non\_keyword
+**Default: 0**  
+If `g:uctags_skip_non_keyword` is enabled, any patterns in
+[`g:uctags_match_map`](#g:uctags_match_map) that aren't equal to
+[`g:uctags_default_match`](#g:uctags_default_match) will be skipped.
+
+#### NOTE
+In order for `g:uctags_skip_non_keyword` to successfully work,
+[`g:uctags_use_keyword`](#g:uctags_use_keyword) needs to be enabled, and
+[`g:uctags_use_only_match`](#g:uctags_use_only_match) needs to be disabled.
+
+### g:uctags\_use\_only\_match
+When `g:uctags_use_only_match` is enabled, Vim will **only** use the much
+slower, but much *much* more accurate *syn-match*.
+
+The option `g:uctags_use_only_match` has a higher precedence than
+[`g:uctags_use_keyword`](#g:uctags_use_keyword),
+[`g:uctags_skip_non_keyword`](#g:uctags_skip_non_keyword) and
+[`g:uctags_use_keyword_over_match`](#g:uctags_use_keyword_over_match).
+Regardless if any the forementioned options are enabled or not, will not affect
+`g:uctags_use_only_match`.  Thus, `g:uctags_use_only_match` will perform as
+intended no matter the situation.
+
+### g:uctags\_use\_keyword\_over\_match
+**Default: 0**  
+`g:uctags_use_keyword_over_match` applies to when a pattern in
+[`g:uctags_match_map`](#g:uctags_match_map) is equal to
+[`g:uctags_default_match`](#g:uctags_default_match), or if there isn't an entry
+for the patterns corresponding *kind*.
+
+It is not recommended to use *syn-keyword* for highlighting.  Even though
+*syn-keyword* is a lot faster, you will run into issues with that tags that
+have the same name, but are of different *kinds*.
+
+#### TODO
+- [ ] Explain in more detail
+
+### g:uctags\_max\_lines\_header\_search
+**Default: 0**  
+Maximum lines to search files of languages that support include directives
+(*And alike*), for an include directive.  Setting a limit will increase
+performance whole files wont be searched.  The downfall however is, if there is
+an include directive beyond what `g:uctags_max_lines_header_search` is set to,
+vim-uctags will won't know about it, and any tags that may have been defined
+with respect to the file associated with the include directive, will not be
+highlighted for the active buffer.
+
+### g:uctags\_use\_perl
+**Default: 1 (If Vim is compiled with the `+perl` feature)**  
+Each function that utilizes Perl, will first check if Vim has support for Perl.
+If Perl isn't supported, the Vim variant functions will be used.  It is highly
+recommended to use Perl, especially for larger projects with an exceedingly
+amount of tags.  You **will** notice an enormous increase in performance.  You
+do not need any knowledge of how to use Perl.
+
+### g:uctags\_max\_syn
+**Default: 0 (Unlimited)**  
+Maximum amount of [syn files](#syn-files) to be processed and included when
+updating the syn file for the active buffer.
+
+Syn files are named by appending *.syn* to the end of a file name.
+
+Foo.c has a syn file called Foo.c.syn.  
+The active buffer is Foo.c.  
+Foo.c contains include directives for Bar.h, FooBar.h and BarFoo.h.  
+Each header has a syn file; Bar.h.syn, FooBar.h.syn and BarFoo.h.syn.
+
+Setting `g:uctags_max_syn` to 2, will only process **one** of those syn files,
+and update the syn file for Foo.c.  This is because the syn file for Foo.c
+(Foo.c.syn) counts as one syn file.
+
+The order for which include directives are shown in Foo.c, does not determine
+the order the syn files of the aforementioned include directives will be
+processed.  There is no guarantee of the order due to sorting and removing
+duplicates.
+
+For projects that have piles of include directives in a single source file,
+setting a limit for how many syn files can be processed and included can
+improve performance substantially.  However, the same drawback as in
+[`g:uctags_max_lines_header_search`](#g:uctags_max_lines_header_search) is
+perpetual.
+
+#### TODO
+- [ ] Make any value less than or equal to 0, unlimited
+
+### g:uctags\_skip\_kind\_for
+**Default: See plugin/uctags/uctags_globals.vim**  
+Skips highlighting a specific *kind* for a particular language, or all
+languages.  This is done so using a dictionary.  The format is
+`{kind}:[{languages|all}]`.  The key `{kind}` is a string of the *kind* of tag.
+The value `[{languages|all}]` must be a list containing languages you wish to
+skip highlighting `{kind}` for, or all.
+
+To see a full of *kinds*, run the command `ctags-universal --list-kinds-full`,
+or `ctags-universal --list-kinds<language>` for language specific *kinds*.
+
+To see a list of supported languages, run the command `ctags-universal
+--list-languages`.
+
+#### TODO
+- [ ] Properly link *plugin/uctags/uctags_globals.vim*
+- [ ] Give examples
+
+### g:uctags\_kind\_to\_hlg
+**Default: See plugin/uctags/uctags_globals.vim**  
+Maps each *kind* to a group-name when creating syn files.  This motive is for
+granular control on how
+
+#### TODO
+- [ ] Properly link *plugin/uctags/uctags_globals.vim*
+- [ ] Finish document
+- [ ] Give examples
+
+### g:uctags\_default\_match
+**Default: { 'start' : '/\<',  'end' : '\>/' }**  
+
+#### TODO
+- [ ] Finish document
+
+### g:uctags\_match\_map
+**Default: See plugin/uctags/uctags_globals.vim**  
+A dictionary containing *kinds* that map to a pattern to be used for when using
+*syn-match* during highlighting.  There is two formats that can be used.
+`{kind}:{ 'start':{start-pattern}, 'end':{end-pattern} }` and `{lang}:[{kind}:{ 
+'start':{start-pattern}, 'end':{end-pattern} }]`
+
+The former binds for every *kind*, barring *kind* is not bound to the language
+in operation, thus the latter has the higher precedence.
+
+#### TODO
+- [ ] Properly link *plugin/uctags/uctags_globals.vim*
+- [ ] Elaborate and enlighten
+- [ ] Finish document
+- [ ] Give examples
+
+### g:uctags\_args
+**Default: See plugin/uctags/uctags_globals.vim**  
+Discards all arguments vim-uctags passes to universal-ctags, in favor of what
+`g:uctags_args` is set to.  This is nott recommended, as this will likely break
+vim-uctags, resulting in vim-uctags operating in a way that wasn't intended.
+
+#### TODO
+- [ ] Properly link *plugin/uctags/uctags_globals.vim*
+- [ ] Create a *pre* and *post* option of strings for options to be prefixed
+and appended to `g:uctags_args` and
+[`g:uctags_exttra_args`](#g:uctags_extra_args) respectively.
+
+### g:uctags\_hl\_group\_map
+**Default: See plugin/uctags/uctags_globals.vim**  
+
+### g:uctags\_lang\_map
+**Default: See plugin/uctags/uctags_globals.vim**  
