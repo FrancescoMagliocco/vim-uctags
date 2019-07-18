@@ -115,7 +115,7 @@ options to be set and what they outcome will be with different combinations of
 options.  The default value for options will also be shown where applicable.
 The default of some options will require you to refer to the source code.
 
-### g:uctags\_execuable
+### g:uctags\_executable
 **Default: 'ctags-universal'**  
 Name of the universal-ctags executable.  Typically the default should suffice.
 If you built universal-ctags manually and didn't change `--program-prefix` or
@@ -336,7 +336,7 @@ in operation, thus the latter has the higher precedence.
 ### g:uctags\_args
 **Default: See plugin/uctags/uctags_globals.vim**  
 Discards all arguments vim-uctags passes to universal-ctags, in favor of what
-`g:uctags_args` is set to.  This is nott recommended, as this will likely break
+`g:uctags_args` is set to.  This is not recommended, as this will likely break
 vim-uctags, resulting in vim-uctags operating in a way that wasn't intended.
 
 #### TODO
