@@ -242,7 +242,8 @@ if has('perl')
       sub HasFile
       {
         my ($arg) = @_;
-        $arg =~ s/(??{list2re keys %trans})/$trans{$1}/g;
+        my $re = list2re keys %trans;
+        $arg =~ s/($re)/$trans{$1}/g;
         for my $tag (GetKind('file')) {
           return ReturnVim($tag->[1]) if $tag->[0] =~ /$arg/;
         }
