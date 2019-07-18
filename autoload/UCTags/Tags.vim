@@ -50,6 +50,8 @@ function! UCTags#Tags#HasFile(...)
         return l:tag[1]
       endif
     endfor
+
+    return ''
   endif
 
   perl HasFile(scalar VIM::Eval('l:args'))
