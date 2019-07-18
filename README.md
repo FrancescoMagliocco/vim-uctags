@@ -107,9 +107,6 @@ functions wont be highlighted unless the corresponding header is included.
 - [ ] Config file for
 
 
-[uctags]: https://ctags.io/ 'Universal Ctags'
-[uctags-repo]: https://github.com/universal-ctags/ctags 'Universal Ctags Repo'
-[vundle]:  https://github.com/VundleVim/Vundle.vim 'Plug-in manager for Vim'
 
 ## Global Options
 This section will break down each global option, explaining what the option
@@ -353,3 +350,22 @@ and appended to `g:uctags_args` and
 
 ### g:uctags\_lang\_map
 **Default: See plugin/uctags/uctags_globals.vim**  
+
+[uctags]: https://ctags.io/ 'Universal Ctags'
+[uctags-repo]: https://github.com/universal-ctags/ctags 'Universal Ctags Repo'
+[vundle]:  https://github.com/VundleVim/Vundle.vim 'Plug-in manager for Vim'
+[executable]: #guctags_executable 'g:uctags_executable'
+[extra-args]: #guctags_extra_args 'g:uctags_extra_args'
+[skip-non-keyword]: #guctags_skip_non_keyword 'g:uctags_skip_non_keyword'
+[use-only-match]: #guctags_use_only_match 'g:uctags_use_only_match'
+[use-keyword-over-match]: #guctags_use_keyword_over_match 'g:uctags_use_keyword_over_match'
+[max-lines-header-search]: #guctags_max_lines_header_search 'g:uctags_max_lines_header_search'
+[use-perl]: #guctags_use_perl 'g:uctags_use_perl'
+[max-syn]: #guctags_max_syn 'g:uctags_max_syn'
+[skip-kind-for]: #guctags_skip_kind_for 'g:uctags_skip_kind_for'
+[kind-to-hlg]: #guctags_kind_to_hlg 'g:uctags_kind_to_hlg'
+[default-match]: #guctags_default_match 'g:uctags_default_match'
+[match-map]: #guctags_match_map 'g:uctags_match_map'
+[args]: #guctags_args 'g:uctags_args'
+[hl-group-map]: #guctags_hl_group_map 'g:uctags_hl_group_map'
+[lang-map]: #guctags_lang_map 'g:uctags_lang_map'
