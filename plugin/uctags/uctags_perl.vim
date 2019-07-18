@@ -1,5 +1,5 @@
 " File:         uctags_perl.vim
-" Last Change:  07/12/2019
+" Last Change:  07/18/2019
 " Maintainer:   FrancescoMagliocco
 " vim: ft=perl
 
@@ -207,8 +207,6 @@ if has('perl')
         }
 
         ReturnVimList(@lines);
-        #VIM::DoCommand(
-        #  'return [' . join(', ', map { "'$_'" } @lines) . ']');
       }
 
       sub FilterVim {
@@ -219,10 +217,7 @@ if has('perl')
         chomp for @filter;
         s/\R//g for @filter;
         s/'/''/g for @filter;
-        #ReturnVimList(@filter);
         ReturnVimDict(@filter);
-        #VIM::DoCommand(
-        #  'return [' . join(', ', map { "'$_'" } @filter) . ']');
       }
 
       sub GetKindVim {
@@ -238,6 +233,21 @@ if has('perl')
       sub GetTagsWithNamespace {
         my ($namespace) = @_;
         return grep { $_->[0] eq $namespace } GetKind('namespace');
+      }
+
+      sub ReturnVim {
+        VIM::DoCommand("return '$_[0]'");
+      }
+
+      sub HasFile
+      {
+        my ($arg) = @_;
+        $arg =~ s/(??{list2re keys %trans})/$trans{$1}/g;
+        for my $tag (GetKind('file')) {
+          return ReturnVim($tag->[1]) if $tag->[0] =~ /$arg/;
+        }
+
+        ReturnVim('');
       }
 EOF
   endfunction

@@ -1,5 +1,5 @@
 " File:         Tags.vim
-" Last Change:  07/02/2019
+" Last Change:  07/18/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -40,4 +40,17 @@ function! UCTags#Tags#Namespace(namespace)
 
 
 
+endfunction
+
+function! UCTags#Tags#HasFile(...)
+  let l:args = join(a:000, '')
+  if !g:uctags_use_perl || !has('perl')
+    for l:tag in UCTags#Tags#Kind('file')
+      if l:tag[0] =~# l:args
+        return l:tag[1]
+      endif
+    endfor
+  endif
+
+  perl HasFile(scalar VIM::Eval('l:args'))
 endfunction
