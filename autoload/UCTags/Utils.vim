@@ -1,5 +1,5 @@
 " File:         Utils.vim
-" Last Change:  07/12/2019
+" Last Change:  07/18/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -44,6 +44,15 @@ function! UCTags#Utils#GetLang(lang)
   endfor
 
   return a:lang
+endfunction
+
+function! UCTags#Utils#ToDict(list)
+  let l:ret = {}
+  for l:i in a:list
+    let l:ret[l:i] = ''
+  endfor
+
+  return l:ret
 endfunction
 
 " COMBAK We need to get the namespace for files we are trying to update the syn
