@@ -56,3 +56,16 @@ function! UCTags#Tags#HasFile(...)
 
   perl HasFile(scalar VIM::Eval('l:args'))
 endfunction
+
+function! UCTags#Tags#GetLang(lang)
+  let l:lang = UCTags#Utils#GetLang(a:lang)
+  if !g:uctags_use_perl || !has('perl')
+    return filter(
+          \ UCTags#Tags#GetTags(),
+          \ "v:val[5] =~? 'language:" . (l:lang ==? 'c'
+          \   ? '\%\(c\|c++\)\>'
+          \   : l:lang . "\>") . "'")
+  endif
+
+  perl GetLangVim(scalar VIM::Eval('l:lang'))
+endfunction

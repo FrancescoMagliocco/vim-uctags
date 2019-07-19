@@ -1,5 +1,5 @@
 " File:         Highlight.vim
-" Last Change:  07/12/2019
+" Last Change:  07/18/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -79,9 +79,9 @@ endfunction
 " For cs, gets all tags of kind 'namespace'
 let s:search =
       \ {
-      \   'cpp' : 'let l:ret = filter(filter(UCTags#Parse#GetTags(), '
+      \   'cpp' : 'let l:ret = filter(filter(UCTags#Tags#GetTags(), '
       \     . "'v:val[1] =~# a:1'), \"v:val[0] ==# split(a:2, '/')[-1]\")",
-      \   'c'   : 'let l:ret = filter(filter(UCTags#Parse#GetTags(), '
+      \   'c'   : 'let l:ret = filter(filter(UCTags#Tags#GetTags(), '
       \     . "'v:val[1] =~# a:1'), \"v:val[0] ==# split(a:2, '/')[-1]\")",
       \   'cs'  : "let l:ret = filter(UCTags#Tags#Kind('namespace'), "
       \     . "\"v:val[0] ==# '\" . a:2[:-2 + (a:2[-1:] !=# ';')] . \"'\")"
