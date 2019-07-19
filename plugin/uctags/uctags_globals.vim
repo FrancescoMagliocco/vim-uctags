@@ -37,22 +37,27 @@ let g:uctags_max_syn = get(g:, 'uctags_max_syn', 0)
 " universal ctags skip kind for
 let g:uctags_skip_kind_for  = get(g:, 'uctags_skip_hl_for', {
       \   'chapter'       : ['markdown'],
+      \   'class'         : ['css'],
       \   'externvar'     : ['c', 'c++'],
       \   'file'          : ['all'],
       \   'function'      : ['vim'],
       \   'header'        : ['c', 'c++'],
       \   'heredoc'       : ['sh'],
       \   'hunk'          : ['diff'],
+      \   'id'            : ['css'],
       \   'key'           : ['javaproperties'],
       \   'label'         : ['dosbatch'],
       \   'local'         : ['c#'],
+      \   'macroparam'    : ['c', 'c++'],
       \   'modifiedfile'  : ['diff'],
       \   'package'       : ['go'],
       \   'parameter'     : ['c++', 'c', 'python'],
       \   'script'        : ['sh'],
+      \   'selector'      : ['css'],
       \   'section'       : ['markdown'],
       \   'subroutine'    : ['perl'],
       \   'subsubsection' : ['markdown'],
+      \   'target'        : ['make'],
       \   'var'           : ['vim', 'c', 'c++'],
       \   'variable'      : ['vim', 'c', 'c++']
       \ })
@@ -209,16 +214,23 @@ let g:uctags_pre_args       = get(g:, 'uctags_pre_args', {
       \   '--kinds-all='            : '*',
       \ })
 
+" XXX Disabling Target for Make because most targets are already highlighted.
+"   There are some tags generated with uctags that suggest some parts of
+"   targets aren't highlgihted however.
 " When executed, the order is not guarenteed as this is a dictionnary
 " This will define the default arguments.
+      ""\   '--kinds-cpreprocessor='  : '-{header}',
+     "" \   '--kinds-c++='            : '-{header}-{macroparam}',
+     "" \   '--kinds-c='              : '-{header}-{macroparam}',
 let g:uctags_args           = get(g:, 'uctags_args', {
-      \   '--kinds-c++='            : '-{header}-{macroparam}',
-      \   '--kinds-c='              : '-{header}-{macroparam}',
-      \   '--kinds-cpreprocessor='  : '-{header}',
+      \   '--kinds-c++='            : '-{header}{macroparam}{variable}',
+      \   '--kinds-c='              : '-{header}{macroparam}{variable}',
+      \   '--kinds-css='            : '-{id}{selector}{class}',
       \   '--kinds-html='           : '-{heading1}',
       \   '--kinds-json='           : '-{number}{object}{array}',
       \   '--kinds-maven2='         : '-{artifactId}',
       \   '--kinds-python='         : '-{unknown}',
+      \   '--kinds-make='           : '-{target}',
       \   '--languages='            : '-markdown,json,restructuredtext'
       \ })
 
