@@ -1,5 +1,5 @@
 " File:         Highlight.vim
-" Last Change:  07/18/2019
+" Last Change:  07/19/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -307,7 +307,7 @@ function! UCTags#Highlight#CreateSynFiles(tags)
 
     if l:file !=# l:tfile
       if !empty(l:lines)
-        call UCTags#Utils#Writefile(sort(l:lines), l:file)
+        call UCTags#Utils#Writefile(uniq(sort(l:lines)), l:file)
         "call writefile(uniq(sort(l:lines)), l:file)
       endif
 
@@ -371,6 +371,6 @@ function! UCTags#Highlight#CreateSynFiles(tags)
   endfor
 
   if !empty(l:lines)
-    call UCTags#Utils#Writefile(sort(l:lines), l:file)
+    call UCTags#Utils#Writefile(uniq(sort(l:lines)), l:file)
   endif
 endfunction
