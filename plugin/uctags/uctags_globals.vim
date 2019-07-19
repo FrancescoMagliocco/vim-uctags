@@ -1,5 +1,5 @@
 " File:         uctags_globals.vim
-" Last Change:  07/11/2019
+" Last Change:  07/19/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -200,16 +200,20 @@ function! s:ParseArgs(args)
         \   : {} ), g:uctags_extra_args)
 endfunction
 
-" This will define the default arguments.
-let g:uctags_args           = get(g:, 'uctags_args', {
+let g:uctags_pre_args       = get(g:, 'uctags_pre_args', {
       \   '-R'                      : '',
       \   '-f'                      : g:uctags_tags_file,
       \   '--extras='               :
       \     '*-{subword}{qualified}{fileScope}{anonymous}',
       \   '--fields='               : '*-{roles}{file}',
       \   '--kinds-all='            : '*',
-      \   '--kinds-c++='            : '-{header}',
-      \   '--kinds-c='              : '-{header}',
+      \ })
+
+" When executed, the order is not guarenteed as this is a dictionnary
+" This will define the default arguments.
+let g:uctags_args           = get(g:, 'uctags_args', {
+      \   '--kinds-c++='            : '-{header}-{macroparam}',
+      \   '--kinds-c='              : '-{header}-{macroparam}',
       \   '--kinds-cpreprocessor='  : '-{header}',
       \   '--kinds-html='           : '-{heading1}',
       \   '--kinds-json='           : '-{number}{object}{array}',
