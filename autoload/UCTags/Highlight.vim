@@ -26,7 +26,7 @@ let s:pat_lang =
       \   'c'   : ['\s*#\s*include\s\+"\{1\}.*"\{1\}', '#\s*include'],
       \   'go'  : ['import'],
       \   'cs'  : ['using\s\+.*;', '\s*namespace\s\+', '\%\(using\|namespace\)'],
-      \   'python'  : [['^\s*', 'import', '\s\+[a-zA-Z0-9.]\+'], ['^\s*', 'from\s\+[a-zA-Z0-9.]\s\+import\s.\+$', '']]
+      \   'python'  : ['^\s*import\s\+[a-zA-Z0-9._]\+', '^\s*from\s\+[a-zA-Z0-9._]\s\+import\s.\+$', '\%\(^\s*from\|\%\(^\s*\|\s\+\)import\)\s\+']
       \ }
 
 function! s:UpdateSyn(syn_file)
@@ -141,17 +141,61 @@ function! s:UpdateSynFor(src_file, ...)
   " Remove quotes
   let l:src_file  = substitute(a:src_file, "\\(\"\\|\'\\)", '', 'g')
   let l:is_py = &ft ==? 'python'
+  " Was used for when ft is go..  I think
+  let l:ofile = l:src_file
 
   " We do this here, rather than after elseif filereadable(... because the
   "   module may be relative to our current directory.
   if l:is_py && !filereadable(l:src_file)
-    " TODO merge into one line
-    let l:src_file = substitute(l:src_file, '\s.*$', '', 'g')
-    let l:src_file = (substitute(l:src_file, '\.', '/', 'g') . '.py')
+    " Don't forget to eventually parse __main__.py
+    "let l:src_file = substitute(l:src_file, '^\s*\%\(from\|import\)\s\+\(\S\+\)', '\1', 'g')
+    " FIXME This wont work if after the import, multiple lines are spanned
+    let l:dir =
+          \ substitute(
+          \   substitute(l:src_file, '^\s*from\s\+\(\S\+\)\+.*', '\1', 'g'),
+          \   '\.', '/', 'g')
+    if isdirectory(l:dir)
+      if filereadable(l:dir . '.py') | echomsg 'Readable as well!' | endif
+      let l:py_files = {}
+      let l:py_files = map()
+            \ filter(
+            \   map(
+            \     split(
+            \       substitute(
+            \         l:src_file,
+            \         '^\s*from\s\+[a-zA-Z0-9._]\+\s\+import\s\+\(.\+\)\+$',
+            \         '\1',
+            \         'g'
+            \       ), ',\s*'),
+            \     "l:dir . '/' . split(v:val)[0] . '.py'"
+            \   ), 'filereadable(v:val)')
+      echomsg l:py_files
+      " Turns 'from foo.bar import foo, bar as bar_bar, foobar' into
+      "   '[foo, bar as bar_bar, foobar]'
+      "for l:f in split(substitute(l:src_file, '^\s*from\s\+[a-zA-Z0-9._]\+\s\+import\s\+\(.\+\)\+$', '\1', 'g'), ',\s*')
+        " Removes ' as bar_bar' from 'bar as bar_bar'
+      "  let l:f = split(l:f)[0]
+      "  if filereadable(l:dir . '/' . l:f . '.py')
+      "    echomsg 'Readable'
+      "  endif
+      "  let l:shit = UCTags#Tags#HasFile('^', l:f, '\.\w\+$')
+      "  if len(l:shit)
+      "    echomsg l:shit
+      "    echomsg l:dir
+      "    echomsg l:f
+      "  endif
+        "if a:0 && has_key(a:2, l:src_file) | continue | endif
+
+        " When language in use is Python, error is thrown saying 'using List as
+        "   String'
+        "call s:UpdateSynFor(
+        "      \ l:sourced_syn, extend(a:0 ? a:2 : {}, l:list), l:ofile)
+
+      "endfor
+    endif
+    "let l:src_file = substitute(l:src_file, '\s.*$', '', 'g')
   endif
 
-  " Was used for when ft is go..  I think
-  let l:ofile = l:src_file
 
   let l:src_syn_file = l:src_file . '.syn'
   if !count(s:inc_lan, tolower(&ft))
@@ -186,25 +230,24 @@ function! s:UpdateSynFor(src_file, ...)
     let l:src_file = l:f[1]
     if !filereadable(l:src_file) | return | endif
     let l:pat = s:pat_lang[&ft]
-    let l:list = {}
+    let l:list = []
 
     for l:p in l:pat[:-2 + len(l:pat) == 1]
-      call extend(l:list, UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', l:p))
+      call extend(l:list, filter(UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', l:p), '!count(l:list, v:val)'))
     endfor
 
     let l:tmp = l:src_file
 
     " COMBAK This probably wont work as expected
     if l:is_py
-      call extend(l:list, UCTags#Utils#FilterFile(l:src_file, 'v:val=~#', '^\s*from\s\+\S\+\s\+import\s\+'))
+      call extend(l:list, filter(UCTags#Utils#FilterFile(l:src_file, 'v:val=~#', '^\s*from\s\+\S\+\s\+import\s\+'), '!count(l:list, v:val)'))
     endif
 
-    for l:src_file in keys(l:list)
-      if a:0 && has_key(a:2, l:src_file) | continue | endif
-
+    for l:src_file in l:list
+      if a:0 && count(a:2, l:src_file) | continue | endif
       call s:UpdateSynFor(substitute(
             \   l:src_file, '^.*' . l:pat[-1] . '\s\+', '', 'g'),
-            \ l:sourced_syn, extend(a:0 ? a:2 : {}, l:list), l:ofile)
+            \ l:sourced_syn, extend(a:0 ? a:2 : [], filter(l:list, '!count((a:0 ? a:2 : []), v:val)'), l:ofile))
     endfor
   endfor
 
@@ -308,7 +351,6 @@ function! UCTags#Highlight#CreateSynFiles(tags)
     if l:file !=# l:tfile
       if !empty(l:lines)
         call UCTags#Utils#Writefile(uniq(sort(l:lines)), l:file)
-        "call writefile(uniq(sort(l:lines)), l:file)
       endif
 
       let l:file = l:tfile . '.syn'
@@ -349,24 +391,10 @@ function! UCTags#Highlight#CreateSynFiles(tags)
             \ : l:match.start . escape(l:tag, '$.*~\^[]/') . l:match.end
     endif
 
-    " COMBAK Revise from here
-    "if !l:has_key && !has_key(g:uctags_match_map, l:kind)
-    "  let l:match = g:uctags_default_match
-      "continue
-    "else
-    "  let l:match = get(
-    "        \ l:has_key ? g:uctags_match_map[l:lang] : g:uctags_match_map, l:kind)
-    "endif
-    " COMBAK To here
-
     " if l:use_keyword and l:tag contains only keyword characters, use `syn
     "   keyword`, otherwise use `syn match`
     " If l:use_only_keyword or l:use_keyword, use `syn keyword`
     let l:syn =  'syn ' . l:command . l:group . ' ' . l:tag
-    "let l:syn = 'syntax match ' . l:group . ' '
-    "      \ . l:match.start
-    "      \ . escape(l:v[0], '$.*~\^[]/')
-    "      \ . l:match.end
       call add(l:lines, l:syn)
   endfor
 

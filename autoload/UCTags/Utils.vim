@@ -1,5 +1,5 @@
 " File:         Utils.vim
-" Last Change:  07/18/2019
+" Last Change:  07/19/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -82,15 +82,9 @@ endfunction
 function! UCTags#Utils#FilterFile(file, lhs, rhs, ...)
   if !filereadable(a:file) | return [] | endif
   if !g:uctags_use_perl || !has('perl')
-    let l:ret = {}
-    for l:i in UCTags#Utils#Filter(
+    return UCTags#Utils#Filter(
           \ function('UCTags#Utils#Readfile', [a:file] + a:000)(), a:lhs, a:rhs)
-      let l:ret[l:i] = l:i
-    endfor
-
-    return l:ret
   endif
-
 
   " FIXME Doens't support range for readfile on Perl side yet
   perl FilterVim(
