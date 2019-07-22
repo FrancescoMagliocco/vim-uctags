@@ -5,53 +5,207 @@ This README until it is fully finished is going to be a shit show, and
 everything will be all over the place until I have everything in place.
 
 ## Requirements
-The only requirement is [Universal-Ctags][uctags] which can either be installed
-by building it from source which is hosted on [GitHub][uctags-repo] or with
-your package manager.
+Vim-UCTags has one mandatory requirement: [Universal-CTags][uctags]; which can
+be built from source at [GitHub][uctags-repo], or installed using your package
+manager.
 
+### apt-get
 For Debian and Debian derivatives, you can run the following in a terminal of
 your choosing:
+```bash
+sudo apt-get -fV install universal-ctags --no-install-reommends
+```
 
-  `sudo apt-get -fV install universal-ctags --no-install-reommends`
+### pacman
+For Arch Linux and Arch Linux derivatives, you can run the following in a
+terminal of your choosing:
+```bash
+pacman -Syu universal-ctags-git
+```
 
-The `-fV` fixes and any broken dependencies (f) and shows full versions of
-upgraded and installed packages (V).
+Additionally, you will need the `find` command, provided by the
+*findutils*<sup>\*</sup> (Should be installed by default if on
+Linux)<sup>\*\*</sup>  
+<sup>\* Package name based on Debian repositories.</sup>  
+<sup>\*\* If not installed by default, consult your package manager.</sup>
 
-The `--no-install-recommends` makes it so no recommended packages (Unneeded
-shit) are installed.
+## Optional Dependencies
+Vim-UCTags has some optional, but **highly** recommended, dependencies.  As of
+right now, there is only one optional dependency, however, more may be
+introduced later on in development.
 
-For the command `DeleteAllSyn` you will need the `find` command provided by the
-*findutils* package, which should be installed by default.
+### Perl
+I can not emphasize enough the gain in performance when using Perl, especially
+on large projects.  You do not need any knowledge whatsoever on how to use Perl
+to take advantage of it offers.
+
+See [Compiling Vim with Perl Interface][perl-compiling] for instructions on how
+to compile Vim with the Perl Interface.  If you installed Vim using your
+package manager, all that should be required is for Perl to be installed if not
+already.
 
 <sup>**NOTE: I am unsure if vim-uctags will work on Windows or not.  If it does
 not work on Windows, I do appologize, but until this plugin is finished and in
 a working stable state, Windows support will not be a priority.**</sup>
 
 ## Installing
-I'm sure you know how to install a Plugin for Vim, but just in case you don't,
-here is a demonstration using [Vundle][vundle].
+If you don't know how to install a plugin or need assistance; this section
+will demonstrate how to do so using a few plugin managers.  Also included will
+be links to their respected repositories, in case you wish to check them out.
+If you're new to plugin managers and don't know what to choose; you can try
+them all and see which one suits your needs and prefer more.  I personally use
+[Vundle][vundle].  
+<sup>You are not limited to using these plugin managers.  If you use a
+different one that isn't listed below, Vim-UCTags will still work as
+intended.</sup>
 
 ### Vundle
-Add the following to your .vimrc in the appropriate area:
+If you use [Vundle][vundle] (What I personally use and recommend even though I
+haven't tried many others) to manage your plugins, first place the following in
+your .vimrc (Don't close Vim):
+```vim
+Plugin 'FrancescoMagliocco/vim-uctags'
+```
 
-  `Plugin 'FrancescoMagliocco/vim-uctags'`
+While still in your .vimrc, run the following commands:
+```vim
+:source %
+:PluginInstall
+```
 
-Write and Close `:wq`, followed by opening a new instance of Vim and running
-`:PluginInstall`
+<sup>For Vundle version 0.10.2, replace *Plugin* with *Bundle* above.</sup>
+
+### NeoBundle
+If you use [NeoBundle][neobundle] to manage your plugins, first place the
+following in your .vimrc (Don't close Vim):
+```vim
+NeoBundle 'FrancescoMagliocco/vim-uctags'
+```
+
+While still in your .vimrc, run the following commands:
+```vim
+:source %
+:NeoBundleInstall
+```
+
+### VimPlug
+If you use [VimPlug][vimplug] to manage your plugins, first place the following
+in your .vimrc (Don't close Vim):
+```vim
+Plug 'FrancescoMagliocco/vim-uctags'
+```
+
+While still in your .vimrc, run the following commands:
+```vim
+:source %
+:PlugInstall
+```
+
+### Pathogen
+Unlike the previous 3 plugin managers, if you're using [Pathogen][pathogen] to
+manage your plugins, the process is a bit different, but still still simple.
+Just run the following commands in a terminal of your choosing:
+```bash
+cd ~/.vim/bundle
+git clone https://github.com/FrancescoMagliocco/vim-uctags
+```
 
 ## Features
-Vim-UCTags is full of features.  Some or complete and some aren't.  Some
+Vim-UCTags is full of features; Vim-UCTags also changes how it functions on
+occasion—sometimes frequently.  I am regularly profiling function and comparing
+different approaches to achieve the same result but more efficiently.  
+
+STILL NEEDS WORK
+Some or complete and some aren't.  Some
 features still need to be implemented and some are just a thought.  The list of
 features you're about to see is not the full list, and there will be for sure
 some features left out or forgotten.
 
 ### Syn Files
-Syn files are simply a Vim script that consists of lines of `syn match`
-commands that when `sourced` will *Highlight* all tags for the corresponding
-file.  The corresponding file is determined by the name of the file itself.
+Syn Files are identical to Vim's [Syntax Files][vim-syn-files] except, rather
+than be associated for a particular language, they are associated for a single
+file; furthermore, **Syn FIles** are simply a Vim Script of either
+*syn-keyword* commands, *syn-match* commands or both<sup>\*</sup>; the latter
+being default.  
+<sup>\* The option [g:uctags\_use\_keyword][use-keyword] is the main
+contributor in using both *syn-keyword* and *syn-match* commands.</sup>
 
-For example a syn file with the name 'foobar.c.syn' would be for a file called
-'foobar.c'.
+Hereafter, *source file* will be used to identify the file in the active buffer
+of Vim.
+
+Syn Files are named by appending *.syn* to a filename; that said, you can
+easily recognize what  source file a Syn File is associated to―a Syn File with
+name 'foobar.c.syn' would be associated to the source file 'foobar.c'.
+
+Syn Files are created with the [:CreateSynFiles][createsynfiles] command.  When
+executing `:CreateSynFiles`, a Syn File will be created for every file in the
+tags file has a language homogeneous to the language of the source file
+`:CreateSynFiles` was issued from.
+
+#### Example
+The source file 'foobar.c' is where `:CreateSynFiles` is issued from (*issued*
+meaning that is where the user performed the command); all languages that are
+homogeneous to the language of `C` will have Syn Files generated for them; this
+includes `C++` as there isn't *much* distinction between the two, and in some
+cases are interchangeable.  The same goes for when `C++` is the language of the
+source file where `:CreateSynFiles` was issued from; all files in the tag file
+that consist of the language `C` will have Syn Files generated as well.
+
+### Smart Syn<sup>\*</sup>
+<sup>\* Temporary name until a more conspicuous one rises.</sup>  
+Hereafter, when referring to the term *include directive*; it will be ambiguous
+such that, *import delclarations* i.e. C# `namespace`s, Python `import`'s and
+anything alike, are validly represented.
+
+Hereafter, the term *include file* will refer to the file regarded in the
+include directive.  
+```c
+// include directive
+#include "include-file.h"
+```
+
+Hereafter, the term *source Syn File* will used to identify the [Syn
+File][synfiles] associated with the source file, whether or not it exists.
+
+Hereafter, the term *include Syn File* will used to identify the Syn File
+associated with the include file, whether or not it exists.
+
+For languages that implement use of include directives; when executing the
+[:UpdateSynFile][updatesynfile] command, the source file which `:UpdateSynFile`
+was issued from will have each line (With respect to what option
+[g:uctags\_max\_lines\_header\_search][max-lines-header-search] is set to)
+analyzed for an include directive.  If an include directive is found and the
+include file exists along with the include Syn File, each line of the include
+Syn File will be parsed retrieving the last section―a *pattern* or *keyword*;
+the latter being
+
+CHECK HOW *SYN-MATCH* and *SYN-KEYWORD* COME INTO PLAY!  ARE THEY TREATED
+DIFFERENTLY?
+
+be compared against ever line in the source file, looking for a match.  If
+there is a match, the line in the include Syn File that had its
+*pattern/keyword* matched; that whole line will be appended to the source Syn
+File―only if the source Syn File doesn't already contain an exact replica of
+the line.
+
+After the include Syn File has had each line compared against each line of the
+source Syn File, the include file is now analyzed just as the source file
+was.  The only difference is, now if an include directive is found, the include
+Syn File for the **new** include file wont be compared against each line of the
+include file which is being analyzed.  Instead, the **new** include Syn File
+(include Syn File for the previous mentioned **new** include file) will be
+compared against the source file just like before.  This is because we are
+updating the source Syn File.
+
+This process continues there are no more include directives found or if the
+limit set in option [g:uctags\_max\_syn][max-syn] is reached―whatever comes
+first.
+
+Every include file that is analyzed is kept track of so that same include file
+isn't analyzed more than once.
+
+They include Syn Files are left intact and untouched.  Only the source Syn File
+is modified.
 
 <sup>NOTE: The word 'Highlight' is *italicised* because at the current stage of
 development, *Highlighting* isn't *exactly* done automatically.  If you change
@@ -95,7 +249,7 @@ name, but only one with that name in a given path.
 - [x] Option to limit how many lines can be searched to find a header
 
 ### Smart Syntax Files
-Not to be confused with [Syn Files](#syn-files) but yes another stupid use of
+Not to be confused with [Syn Files][syn-files] but yes another stupid use of
 the word *Smart*..
 
 Syntax files for languages that have parts missing such as functions, will be
@@ -188,8 +342,9 @@ for this.
 ### g:uctags\_use\_keyword
 **Default: 0**  
 When `g:uctags_use_keyword` is enabled, Vim will use *syn-keyword* (If
-`g:uctags_use_only_match` is disabled) and *syn-match* (If
-`g:uctags_skip_non_keyword` is disabled) when highlighting.
+[g:uctags\_use\_only\_match][use-only-match] is disabled) and *syn-match* (If
+[g:uctags\_skip\_non\_keyword][skip-non-keyword] is disabled) when
+highlighting.
 
 It is not recommended to use *syn-keyword* for highlighting.  Even though
 *syn-keyword* is a lot faster, you will run into issues with that tags that
@@ -217,7 +372,7 @@ The option `g:uctags_use_only_match` has a higher precedence than
 [g:uctags\_use\_keyword][use-keyword],
 [g:uctags\_skip\_non\_keyword][skip-non-keyword] and
 [g:uctags\_use\_keyword\_over\_match][use-keyword-over-match].
-Regardless if any the forementioned options are enabled or not, will not affect
+Regardless if any the aforementioned options are enabled or not, will not affect
 `g:uctags_use_only_match`.  Thus, `g:uctags_use_only_match` will perform as
 intended no matter the situation.
 
@@ -239,9 +394,9 @@ have the same name, but are of different *kinds*.
 **Default: 0**  
 Maximum lines to search files of languages that support include directives
 (*And alike*), for an include directive.  Setting a limit will increase
-performance whole files wont be searched.  The downfall however is, if there is
-an include directive beyond what `g:uctags_max_lines_header_search` is set to,
-vim-uctags will won't know about it, and any tags that may have been defined
+performance as whole files wont be searched.  The downfall however is, if there
+is an include directive beyond what `g:uctags_max_lines_header_search` is set
+to, vim-uctags will won't know about it, and any tags that may have been defined
 with respect to the file associated with the include directive, will not be
 highlighted for the active buffer.
 
@@ -255,7 +410,7 @@ do not need any knowledge of how to use Perl.
 
 ### g:uctags\_max\_syn
 **Default: 0 (Unlimited)**  
-Maximum amount of [syn files](#syn-files) to be processed and included when
+Maximum amount of [syn files][syn-files] to be processed and included when
 updating the syn file for the active buffer.
 
 Syn files are named by appending *.syn* to the end of a file name.
@@ -351,9 +506,26 @@ and appended to `g:uctags_args` and
 ### g:uctags\_lang\_map
 **Default: See plugin/uctags/uctags_globals.vim**  
 
+## Commands
+
+### UpdateTags
+
+### CreateSynFiles
+
+### UpdateSynFile
+
+### DeleteAllSyn
+
 [uctags]: https://ctags.io/ 'Universal Ctags'
 [uctags-repo]: https://github.com/universal-ctags/ctags 'Universal Ctags Repo'
-[vundle]:  https://github.com/VundleVim/Vundle.vim 'Plug-in manager for Vim'
+[perl-compiling]: https://vimhelp.org/if_perl.txt.html#perl-compiling 'Compiling Vim with Perl Interface'
+[vundle]:  https://github.com/VundleVim/Vundle.vim 'Vundle, the plug-in manager for Vim'
+[neobundle]: https://github.com/Shougo/neobundle.vim 'Next generation Vim package manager'
+[vimplug]: https://github.com/junegunn/vim-plug 'Minimalist Vim Plugin Manager'
+[parhogen]: https://github.com/tpope/vim-pathogen 'pathogen.vim: manage your runtimepath'
+[vim-syn-files]: https://vimhelp.org/syntax.txt.html#%3Asyn-files 'Vim Syntax Files'
+[syn-files]: #synfiles 'Syn Files'
+[createsynfiles]: #createsynfiles ':CreateSynFiles'
 [executable]: #guctags_executable 'g:uctags_executable'
 [extra-args]: #guctags_extra_args 'g:uctags_extra_args'
 [skip-non-keyword]: #guctags_skip_non_keyword 'g:uctags_skip_non_keyword'
