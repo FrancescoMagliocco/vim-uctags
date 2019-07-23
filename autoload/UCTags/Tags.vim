@@ -1,5 +1,5 @@
 " File:         Tags.vim
-" Last Change:  07/19/2019
+" Last Change:  07/23/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -64,7 +64,7 @@ function! UCTags#Tags#Lang(lang)
           \ UCTags#Tags#GetTags(),
           \ "v:val[5] =~? 'language:" . (l:lang ==? 'c'
           \   ? '\%\(c\|c++\)\>'
-          \   : l:lang . "\>") . "'")
+          \   : l:lang . '\>') . "'")
   endif
 
   perl GetLangVim(scalar VIM::Eval('l:lang'))
