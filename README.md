@@ -165,7 +165,7 @@ include directive.
 ```
 
 Hereafter, the term *source Syn File* will used to identify the [Syn
-File][synfiles] associated with the source file, whether or not it exists.
+File][syn-files] associated with the source file, whether or not it exists.
 
 Hereafter, the term *include Syn File* will used to identify the Syn File
 associated with the include file, whether or not it exists.
@@ -522,12 +522,12 @@ and appended to `g:uctags_args` and
 [vundle]:  https://github.com/VundleVim/Vundle.vim 'Vundle, the plug-in manager for Vim'
 [neobundle]: https://github.com/Shougo/neobundle.vim 'Next generation Vim package manager'
 [vimplug]: https://github.com/junegunn/vim-plug 'Minimalist Vim Plugin Manager'
-[parhogen]: https://github.com/tpope/vim-pathogen 'pathogen.vim: manage your runtimepath'
+[pathogen]: https://github.com/tpope/vim-pathogen 'pathogen.vim: manage your runtimepath'
 [vim-syn-files]: https://vimhelp.org/syntax.txt.html#%3Asyn-files 'Vim Syntax Files'
 [syn-files]: #synfiles 'Syn Files'
-[createsynfiles]: #createsynfiles ':CreateSynFiles'
 [executable]: #guctags_executable 'g:uctags_executable'
 [extra-args]: #guctags_extra_args 'g:uctags_extra_args'
+[use-keyword]: #guctags_use_keyword 'g:uctags_use_keyword'
 [skip-non-keyword]: #guctags_skip_non_keyword 'g:uctags_skip_non_keyword'
 [use-only-match]: #guctags_use_only_match 'g:uctags_use_only_match'
 [use-keyword-over-match]: #guctags_use_keyword_over_match 'g:uctags_use_keyword_over_match'
@@ -541,3 +541,7 @@ and appended to `g:uctags_args` and
 [args]: #guctags_args 'g:uctags_args'
 [hl-group-map]: #guctags_hl_group_map 'g:uctags_hl_group_map'
 [lang-map]: #guctags_lang_map 'g:uctags_lang_map'
+[updatetags]: #updatetags ':UpdateTags'
+[createsynfiles]: #createsynfiles ':CreateSynFiles'
+[updatesynfile]: #updatesynfile ':UpdateSynFile'
+[deleteallsyn]: #deleteallsyn ':DeleteAllSyn'
