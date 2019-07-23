@@ -1,5 +1,5 @@
 " File:         Highlight.vim
-" Last Change:  07/19/2019
+" Last Change:  07/23/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -134,6 +134,7 @@ function! s:UpdateSynFor(src_file, ...)
 
     return
   endif
+  let l:used_src_files = a:0 ? a:3 : []
 
   let l:is_cs       = &ft ==? 'cs'
   let l:sourced_syn = a:0 ? a:1 : 0
@@ -156,8 +157,7 @@ function! s:UpdateSynFor(src_file, ...)
           \   '\.', '/', 'g')
     if isdirectory(l:dir)
       if filereadable(l:dir . '.py') | echomsg 'Readable as well!' | endif
-      let l:py_files = {}
-      let l:py_files = map()
+      let l:py_files =
             \ filter(
             \   map(
             \     split(
@@ -203,9 +203,12 @@ function! s:UpdateSynFor(src_file, ...)
     return l:src_syn_file
   " Current language supports include directives
   elseif filereadable(l:src_syn_file)
-    " Found syn file for a:src_file; update it
-    call s:UpdateSyn(l:src_syn_file)
-    let l:sourced_syn += 1
+    if !count(l:used_src_files, l:src_file)
+      " Found syn file for a:src_file; update it
+      call s:UpdateSyn(l:src_syn_file)
+      let l:sourced_syn += 1
+      call add(l:used_src_files, l:src_file)
+    endif
   else
 
     " Can't find syn file for a:src_file
@@ -220,8 +223,11 @@ function! s:UpdateSynFor(src_file, ...)
       let l:src_file = l:f[1]
       let l:src_syn_file = l:src_file . '.syn'
       if filereadable(l:src_syn_file)
-        call s:UpdateSyn(l:src_syn_file)
-        let l:sourced_syn += 1
+        if !count(l:used_src_files, l:src_file)
+          call s:UpdateSyn(l:src_syn_file)
+          let l:sourced_syn += 1
+          call add(l:used_src_files, l:src_file)
+        endif
       endif
     endfor
   endif
@@ -247,7 +253,7 @@ function! s:UpdateSynFor(src_file, ...)
       if a:0 && count(a:2, l:src_file) | continue | endif
       call s:UpdateSynFor(substitute(
             \   l:src_file, '^.*' . l:pat[-1] . '\s\+', '', 'g'),
-            \ l:sourced_syn, extend(a:0 ? a:2 : [], filter(l:list, '!count((a:0 ? a:2 : []), v:val)'), l:ofile))
+            \ l:sourced_syn, extend(a:0 ? a:2 : [], [l:src_file]), l:used_src_files)
     endfor
   endfor
 
