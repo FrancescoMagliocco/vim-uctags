@@ -128,7 +128,7 @@ function! s:UpdateSynFilter(...)
   " Just incase less than 2 argments are given
   if a:0 < 2 | echoer 'Need 2 arguments!' | endif
 
-  if !g:uctags_use_perl || !has('perl')
+  if (!g:uctags_use_perl || !has('perl')) || &ft ==? 'python'
     let l:ret = [[]]
     " Updates l:ret
     execute s:search[&ft]
@@ -136,7 +136,7 @@ function! s:UpdateSynFilter(...)
     "   dimentinal list returned.
     return empty(l:ret) ? [[]] : l:ret
   endif
-  
+
   perl UpdateSynFilter(
         \ scalar VIM::Eval('a:1'),
         \ scalar VIM::Eval('a:2'),
@@ -255,7 +255,7 @@ function! s:UpdateSynFor(src_file, ...)
   else
 
     " Can't find syn file for a:src_file
-    " During the FIRST call, 
+    " During the FIRST call,
     " Escapes special characters
     let l:safe_src_file = escape(l:src_file, '^.$\*')
     " Try to find
