@@ -128,7 +128,7 @@ function! s:UpdateSynFilter(...)
   " Just incase less than 2 argments are given
   if a:0 < 2 | echoer 'Need 2 arguments!' | endif
 
-  if (!g:uctags_use_perl || !has('perl')) || &ft ==? 'python'
+  if !g:uctags_use_perl || !has('perl') || &ft ==? 'python'
     let l:ret = [[]]
     " Updates l:ret
     execute s:search[&ft]
