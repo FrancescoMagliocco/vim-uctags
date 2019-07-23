@@ -1,5 +1,5 @@
 " File:         uctags_globals.vim
-" Last Change:  07/19/2019
+" Last Change:  07/22/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -139,6 +139,7 @@ let g:uctags_kind_to_hlg      = get(g:, 'uctags_kind_to_hlg', {
 " macro for make is already highlightedd by makeIndent, but there is too much
 "   that is highlighted by makeIndent
 "   \((\)\@! (?!\()
+      ""\   'python'  : { 'class'   : { 'start' : '/\<', 'end' : '\ze(/' }},
 let g:uctags_default_match  =  { 'start' : '/\<',  'end' : '\>/' }
 let g:uctags_match_map      = get(g:, 'uctags_match_map', {
       \   'c++'     : { 'member'  : { 'start' : '/\%\(\.\|->\)\<\zs', 'end' : '\>/' }},
@@ -147,7 +148,6 @@ let g:uctags_match_map      = get(g:, 'uctags_match_map', {
       \                 'struct'  : { 'start' : '/\<', 'end' : '\>\s*\((\)\@!/' }},
       \   'go'      : { 'member'  : g:uctags_default_match },
       \   'javascript'  : { 'method' : { 'start' : '/\<', 'end' : '\%\(\>\|\ze(\)/'}},
-      \   'python'  : { 'class'   : { 'start' : '/\<', 'end' : '\ze(/' }},
       \   'field'           : { 'start'     : '/\<',  'end' : '\ze(/' },
       \   'func'            : { 'start'     : '/\<',  'end' : '\ze(/' },
       \   'function'        : { 'start'     : '/\<',  'end' : '\s*\ze(/' },
@@ -223,8 +223,8 @@ let g:uctags_pre_args       = get(g:, 'uctags_pre_args', {
      "" \   '--kinds-c++='            : '-{header}-{macroparam}',
      "" \   '--kinds-c='              : '-{header}-{macroparam}',
 let g:uctags_args           = get(g:, 'uctags_args', {
-      \   '--kinds-c++='            : '-{header}{macroparam}{variable}',
-      \   '--kinds-c='              : '-{header}{macroparam}{variable}',
+      \   '--kinds-c++='            : '-{macroparam}{variable}',
+      \   '--kinds-c='              : '-{macroparam}{variable}',
       \   '--kinds-css='            : '-{id}{selector}{class}',
       \   '--kinds-html='           : '-{heading1}',
       \   '--kinds-json='           : '-{number}{object}{array}',
