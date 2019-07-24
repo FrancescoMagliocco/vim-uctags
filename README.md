@@ -25,7 +25,7 @@ pacman -Syu universal-ctags-git
 
 Additionally, you will need the `find` command, provided by the
 *findutils*<sup>\*</sup> (Should be installed by default if on
-Linux)<sup>\*\*</sup>  
+Linux)<sup>\*\*</sup> package.  
 <sup>\* Package name based on Debian repositories.</sup>  
 <sup>\*\* If not installed by default, consult your package manager.</sup>
 
@@ -37,7 +37,7 @@ introduced later on in development.
 ### Perl
 I can not emphasize enough the gain in performance when using Perl, especially
 on large projects.  You do not need any knowledge whatsoever on how to use Perl
-to take advantage of it offers.
+to take advantage of what it offers.
 
 See [Compiling Vim with Perl Interface][perl-compiling] for instructions on how
 to compile Vim with the Perl Interface.  If you installed Vim using your
@@ -125,7 +125,7 @@ some features left out or forgotten.
 Syn Files are identical to Vim's [Syntax Files][vim-syn-files] except, rather
 than be associated for a particular language, they are associated for a single
 file; furthermore, **Syn FIles** are simply a Vim Script of either
-*syn-keyword* commands, *syn-match* commands or both<sup>\*</sup>; the latter
+*syn-keyword* commands, *syn-match* commands or both<sup>\*</sup>―the latter
 being default.  
 <sup>\* The option [g:uctags\_use\_keyword][use-keyword] is the main
 contributor in using both *syn-keyword* and *syn-match* commands.</sup>
