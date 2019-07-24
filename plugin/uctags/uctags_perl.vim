@@ -70,8 +70,10 @@ if has('perl')
               next;
             }
 
-            next if $no_match;
-            push @buf, $line;
+            #next if $no_match;
+            # XXX Might be able to do push @buf, $line if not $no_match;
+            #push @buf, $line;
+            push @buf, $line if not $no_match;
         }
 
         Writefile("$file.syn", @buf);
@@ -90,7 +92,9 @@ if has('perl')
         open my $tags, "<", $tag_file
           or die "Couldn't open '$tag_file' $! " . (caller(0))[3];
 
-        my @lines = ();
+        # XXX If error happens, may be because I removed the parens; was
+        #   my @lines = ();
+        my @lines;
         while (my $line = <$tags>) {
           next if $line =~ /^!_TAG/;
           chomp $line;
@@ -110,7 +114,7 @@ if has('perl')
           next if $line =~ /^!_TAG/;
           chomp $line;
           $line =~ s/\R//g;
-          my @cols = split /\t/, $line;
+          my @cols = split(/\t/, $line);
           s/'/''/g for @cols;
           push @lines, '[' . join(', ', map { "'$_'" } @cols) . ']';
         }
@@ -144,37 +148,16 @@ if has('perl')
         $dir =~ s/^\s*from\s+(\S+)+.*/$1/g;
         $dir =~ s/\./\//g;
         if (-d $dir) {
-          $src_file =~ s/\s*from\s+[a-zA-Z0-9._]+\s+import\s+(.+)+$/$1/g;
-          #print "$src_file\n";
-
-          #print "onne $tmp\n";
-          #my @tmpsplit = split(',\s*', $tmp);
-          #print "two $_\n" for @tmpsplit;
-          #print Dumper(map { "[0, $dir/" . (split(' ', $_))[0] . ".py]" } @tmpsplit);
-          #return ReturnVimList(map { "[0, $dir/" . (split(' ', $_))[0] . ".py]" } split(',\s*', ($src_file =~ s/\s*from\s+[a-zA-Z0-9._]+\s+import\s+(.+)+$/$1/g)));
-          #print "$_\n" for map { "[0, $dir/" . (split(' ', $_))[0] . ".py]" } split(',\s*', ($src_file =~ s/\s*from\s+[a-zA-Z0-9._]+\s+import\s+(.+)+$/$1/g));
-          my @ret = grep { -e substr($_->[1], 1, -1) } (map { [0, "'$dir/" . (split(' ', $_))[0] .  ".py'"] } split(',\s*', $src_file));
+          $src_file =~ s/^\s*from\s+[a-zA-Z0-9._]+\s+import\s+(.+)+$/$1/g;
+          my @ret = (
+            grep { -e substr($_->[1], 1, -1) }
+            map { [0, "'$dir/" . (split(' ', $_))[0] .  ".py'"] }
+            split(',\s*', $src_file));
           return ReturnVimRawListList(scalar @ret ? @ret : []);
-          #print Dumper(@ret);
-          #for my $test (map { [0, "'$dir/" . (split(' ', $_))[0] .  ".py'"] } split(',\s*', $src_file)) {
-          #  print "exists\n" if -e substr($test->[1], 1, -1);
-          #  print "$test->[1]\n";
-          #  print ((scalar @$test) ? 2 : 0);
-            #print Dumper($test);
-            #}
-          #print Dumper(((map { [0, "'$dir/" . (split(' ', $_))[0] .  ".py'"] } split(',\s*', $src_file))));
-          #return ReturnVimRawList(scalar @{$ret[0]} ? @ret : []);
-          #print "nothing\n" if @{$ret[0]};
-          #return ReturnVimRawList(@{$ret[0]} ? @ret : []);
-          #return ReturnVimRawListList(grep { -e $_->[1] } (map { [0, "'$dir/" . (split(' ', $_))[0] . ".py'"] } split(',\s*', $src_file)));
-          return ReturnVimRawListList((map { [0, "'$dir/" . (split(' ', $_))[0] . ".py'"] } split(',\s*', $src_file)));
-          #return ReturnVimRawList(map { "[0, '$dir/" . (split(' ', $_))[0] . ".py']" } split(',\s*', $src_file));
-          #return ReturnVimListList(map { "[0, $dir/" . (split(' ', $_))[0] . ".py]" } split(',\s*', $src_file));
-          #return VIM::DoCommand("return [" . join(', ', map { "[0, '$dir/" . (split(' ', $_))[0] . ".py']" } split(',\s*', $src_file)) . "]");
         }
 
         $dir .= '.py';
-        return ReturnVimRawListList(-e -r $dir ? [0, "'$dir.py'"] : []);
+        return ReturnVimRawListList(-e -r $dir ? [0, "'$dir'"] : []);
       }
 
       # TODO New Name
@@ -183,7 +166,10 @@ if has('perl')
         return UpdateSynFilterPython($file) if $lang eq 'python';
 
         my $is_cs = $lang eq 'cs';
-        my $str = ($is_cs and ((length($file) - 1) == rindex($file, ';'))) ? substr($file, 0, -1) : (split('/', $file))[-1];
+        my $str = 
+          ($is_cs and ((length($file) - 1) == rindex($file, ';')))
+            ? substr($file, 0, -1)
+            : (split('/', $file))[-1];
         #my $str = $is_cs ? substr($file, 0, -1) : (split('/', $file))[-1];
         # XXX TODO Check if the $is_cs ? 1 .. can be done in a different way.
         my @lines = grep {
