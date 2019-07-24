@@ -1,5 +1,5 @@
 " File:         Highlight.vim
-" Last Change:  07/23/2019
+" Last Change:  07/24/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -127,8 +127,7 @@ function! s:UpdateSynFilter(...)
   " TODO Use Log namespace
   " Just incase less than 2 argments are given
   if a:0 < 2 | echoer 'Need 2 arguments!' | endif
-
-  if !g:uctags_use_perl || !has('perl') || &ft ==? 'python'
+  if !g:uctags_use_perl || !has('perl')
     let l:ret = [[]]
     " Updates l:ret
     execute s:search[&ft]
@@ -282,12 +281,14 @@ function! s:UpdateSynFor(src_file, ...)
     let l:list = []
 
     for l:p in l:pat[:-2 + len(l:pat) == 1]
+      " XXX COMBAK XXX Instead of a:2, it may be better to use l:used_src_files
       call extend(l:list, filter(UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', l:p), '!count(a:0 ? a:2 : [], v:val)'))
     endfor
 
     let l:tmp = l:src_file
 
     " COMBAK This probably wont work as expected
+    " XXX COMBAK WE MAY NOT NEED THIS ANNYMORE
     if l:is_py
       call extend(l:list, filter(UCTags#Utils#FilterFile(l:src_file, 'v:val=~#', '^\s*from\s\+\S\+\s\+import\s\+'), '!count(l:list, v:val)'))
     endif

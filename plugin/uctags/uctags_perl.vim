@@ -1,5 +1,5 @@
 " File:         uctags_perl.vim
-" Last Change:  07/19/2019
+" Last Change:  07/24/2019
 " Maintainer:   FrancescoMagliocco
 " vim: ft=perl
 
@@ -138,9 +138,49 @@ if has('perl')
         VIM::DoCommand('return [' . join(', ', @lines) . ']');
       }
 
+      sub UpdateSynFilterPython {
+        my ($src_file) = @_;
+        my $dir = $src_file;
+        $dir =~ s/^\s*from\s+(\S+)+.*/$1/g;
+        $dir =~ s/\./\//g;
+        if (-d $dir) {
+          $src_file =~ s/\s*from\s+[a-zA-Z0-9._]+\s+import\s+(.+)+$/$1/g;
+          #print "$src_file\n";
+
+          #print "onne $tmp\n";
+          #my @tmpsplit = split(',\s*', $tmp);
+          #print "two $_\n" for @tmpsplit;
+          #print Dumper(map { "[0, $dir/" . (split(' ', $_))[0] . ".py]" } @tmpsplit);
+          #return ReturnVimList(map { "[0, $dir/" . (split(' ', $_))[0] . ".py]" } split(',\s*', ($src_file =~ s/\s*from\s+[a-zA-Z0-9._]+\s+import\s+(.+)+$/$1/g)));
+          #print "$_\n" for map { "[0, $dir/" . (split(' ', $_))[0] . ".py]" } split(',\s*', ($src_file =~ s/\s*from\s+[a-zA-Z0-9._]+\s+import\s+(.+)+$/$1/g));
+          my @ret = grep { -e substr($_->[1], 1, -1) } (map { [0, "'$dir/" . (split(' ', $_))[0] .  ".py'"] } split(',\s*', $src_file));
+          return ReturnVimRawListList(scalar @ret ? @ret : []);
+          #print Dumper(@ret);
+          #for my $test (map { [0, "'$dir/" . (split(' ', $_))[0] .  ".py'"] } split(',\s*', $src_file)) {
+          #  print "exists\n" if -e substr($test->[1], 1, -1);
+          #  print "$test->[1]\n";
+          #  print ((scalar @$test) ? 2 : 0);
+            #print Dumper($test);
+            #}
+          #print Dumper(((map { [0, "'$dir/" . (split(' ', $_))[0] .  ".py'"] } split(',\s*', $src_file))));
+          #return ReturnVimRawList(scalar @{$ret[0]} ? @ret : []);
+          #print "nothing\n" if @{$ret[0]};
+          #return ReturnVimRawList(@{$ret[0]} ? @ret : []);
+          #return ReturnVimRawListList(grep { -e $_->[1] } (map { [0, "'$dir/" . (split(' ', $_))[0] . ".py'"] } split(',\s*', $src_file)));
+          return ReturnVimRawListList((map { [0, "'$dir/" . (split(' ', $_))[0] . ".py'"] } split(',\s*', $src_file)));
+          #return ReturnVimRawList(map { "[0, '$dir/" . (split(' ', $_))[0] . ".py']" } split(',\s*', $src_file));
+          #return ReturnVimListList(map { "[0, $dir/" . (split(' ', $_))[0] . ".py]" } split(',\s*', $src_file));
+          #return VIM::DoCommand("return [" . join(', ', map { "[0, '$dir/" . (split(' ', $_))[0] . ".py']" } split(',\s*', $src_file)) . "]");
+        }
+
+        $dir .= '.py';
+        return ReturnVimRawListList(-e -r $dir ? [0, "'$dir.py'"] : []);
+      }
+
       # TODO New Name
       sub UpdateSynFilter {
         my ($tfile, $file, $lang) = @_;
+        return UpdateSynFilterPython($file) if $lang eq 'python';
 
         my $is_cs = $lang eq 'cs';
         my $str = ($is_cs and ((length($file) - 1) == rindex($file, ';'))) ? substr($file, 0, -1) : (split('/', $file))[-1];
@@ -170,6 +210,23 @@ if has('perl')
         }
 
         VIM::DoCommand('return [' . join(', ', @ret) . ']');
+      }
+
+      sub ReturnVimRawListList {
+        my (@listlist) = @_;
+        my @ret;
+        for my $list (@listlist) {
+          push @ret, '[' . join(', ', @$list) . ']';
+        }
+
+        return ReturnVimRawList(@ret);
+        #VIM::DoCommand('return [' . join(', ', @ret) . ']');
+      }
+
+      sub ReturnVimRawList {
+        my (@list) = @_;
+        VIM::DoCommand(
+          'return [' . join(', ', @list) . ']');
       }
 
       sub ReturnVimList {
