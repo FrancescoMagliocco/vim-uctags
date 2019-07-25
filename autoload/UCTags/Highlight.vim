@@ -105,7 +105,6 @@ let s:search =
       \   'python' : 'let l:ret = s:SearchPython(a:2)'
       \ }
 
-
 " TODO Needs to be renamed
 "
 function! s:UpdateSynFilter(...)
@@ -262,13 +261,6 @@ function! UCTags#Highlight#CreateSynFiles(tags)
   let l:file  = ''
   let l:lines = []
 
-  " FIXME Sorting the results by index 1, i.e the file a given tag is located
-  "   in, will probably improve performance greatly as we wont have to keep
-  "   reading and writing files every time a following iteration is of a tag
-  "   that doesn't share the same location is the tag from the previous
-  "   iteration.  Instead we will only have to write and read a file after we
-  "   have parsed through each tag of a given location.
-  "
   " Filters through a:tags accepting tags where the {kind} of tag is present
   "   present in dictionary g:uctags_kind_to_hlg as a key.  We do this because
   "   we only want to accept tags that have a highlight group to be linked to.
@@ -341,10 +333,7 @@ function! UCTags#Highlight#CreateSynFiles(tags)
         call UCTags#Utils#Writefile(uniq(sort(l:lines)), l:file)
       endif
 
-      let l:file = l:tfile . '.syn'
-      " The reason why we are using silent! is bcause if l:file doesn';t
-      "   exists, an empty list is returned which is okay.
-      "silent! let l:lines = readfile(l:file)
+      let l:file  = l:tfile . '.syn'
       let l:lines = UCTags#Utils#Readfile(l:file)
     endif
 
