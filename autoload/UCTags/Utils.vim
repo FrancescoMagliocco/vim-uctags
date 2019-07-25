@@ -1,5 +1,5 @@
 " File:         Utils.vim
-" Last Change:  07/19/2019
+" Last Change:  07/24/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -39,7 +39,6 @@ function! UCTags#Utils#GetLang(lang)
   for l:v in s:lang_map
     if count(l:v, a:lang)
       return l:v[0]
-      break
     endif
   endfor
 
