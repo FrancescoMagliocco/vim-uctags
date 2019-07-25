@@ -11,23 +11,6 @@ endif
 let g:loaded_UCTags_Highlight = 1
 
 let g:uctags_enable_go = get(g:, 'uctags_enable_go', 0)
-" TODO Rename
-" Languages that use include directives, namespaces etc..
-let s:inc_lan = ['cpp', 'c', 'asm', 'cs', 'python']
-
-" TODO Rename
-" Pattern used to find include direcetives, namespaces etc.. of the given
-"   language.
-" COMBAK Python needs to be redone
-let s:pat_lang =
-      \ {
-      \   'asm' : ['%include'],
-      \   'cpp' : ['\s*#\s*include\s\+"\{1\}.*"\{1\}', '#\s*include'],
-      \   'c'   : ['\s*#\s*include\s\+"\{1\}.*"\{1\}', '#\s*include'],
-      \   'go'  : ['import'],
-      \   'cs'  : ['using\s\+.*;', '\s*namespace\s\+', '\%\(using\|namespace\)'],
-      \   'python'  : ['^\s*import\s\+[a-zA-Z0-9._]\+', '^\s*from\s\+[a-zA-Z0-9._]\s\+import\s.\+$', '\%\(^\s*from\|\%\(^\s*\|\s\+\)import\)\s\+']
-      \ }
 
 function! s:UpdateSyn(syn_file)
   if !g:uctags_use_perl || !has('perl')
@@ -39,9 +22,6 @@ function! s:UpdateSyn(syn_file)
           \ filter(readfile(l:buf_syn_file), "v:val !~# '^\\s*\\\"'")
     " Reads and iterates through a:syn_file.
     for l:t in readfile(a:syn_file)
-      "if a:syn_file ==? 'homeassistant/exceptions.py.syn'
-      "  echomsg l:t
-      "endif
       " Syntax of l:t:
       "   syn match {group-name} {pattern}
       "     Example: syn match csClassType /\<FileManager\>/
@@ -57,9 +37,6 @@ function! s:UpdateSyn(syn_file)
       " If l:buf_syn has l:t, we check the previously stored results, then
       "   continue.
       if count(l:buf_syn, l:t)
-      "if a:syn_file ==? 'homeassistant/exceptions.py.syn'
-      "  echomsg l:t
-      "endif
 
         " Before we continue, if the result is there was no match, we remove
         "   l:t from l:buf_syn, then continue.
@@ -68,7 +45,6 @@ function! s:UpdateSyn(syn_file)
       endif
 
       " If the previously stored results is there was no match, we continue.
-      "if l:no_match | if a:syn_file == 'homeassistant/exceptions.py.syn' | echomsg l:t | endif | continue | endif
       if l:no_match | continue | endif
 
       " Current buffer has match, add l:t to l:buf_syn.
@@ -104,23 +80,12 @@ function! s:SearchPython(src_file)
       if filereadable(l:dir . '/__main__.py')
         let l:ret = [[0, l:dir . '/__main__.py']] + l:ret
       endif
+
       if filereadable(l:dir . '/__init__.py')
         let l:ret = [[0, l:dir . '/__init__.py']] + l:ret
       endif
-      
+
       return l:ret
-      "return
-      "      \ filter(
-      "      \   map(
-      "      \     split(
-      "      \       substitute(
-      "      \         a:src_file,
-      "      \         '^\s*from\s\+[a-zA-Z0-9._]\+\s\+import\s\+\(.\+\)\+$',
-      "      \         '\1',
-      "      \         'g'
-      "      \       ), ',\s*'),
-      "      \     "[0, l:dir . '/' . split(v:val)[0] . '.py']"
-      "      \   ), 'filereadable(v:val[1])')
     elseif filereadable(l:dir . '.py')
       return [[0, l:dir . '.py']]
     endif
@@ -165,6 +130,27 @@ function! s:UpdateSynFilter(...)
   return [[]]
 endfunction
 
+" TODO Rename
+" Languages that use include directives, namespaces etc..
+let s:inc_lan = ['cpp', 'c', 'asm', 'cs', 'python']
+
+" TODO Rename
+" Pattern used to find include direcetives, namespaces etc.. of the given
+"   language.
+let s:pat_lang =
+      \ {
+      \   'asm'     : ['%include'],
+      \   'cpp'     : ['\s*#\s*include\s\+"\{1\}.*"\{1\}', '#\s*include'],
+      \   'c'       : ['\s*#\s*include\s\+"\{1\}.*"\{1\}', '#\s*include'],
+      \   'go'      : ['import'],
+      \   'cs'      :
+      \     ['using\s\+.*;', '\s*namespace\s\+', '\%\(using\|namespace\)'],
+      \   'python'  : [
+      \     '^\s*import\s\+[a-zA-Z0-9._]\+',
+      \     '^\s*from\s\+[a-zA-Z0-9._]\s\+import\s.\+$',
+      \     '\%\(^\s*from\|\%\(^\s*\|\s\+\)import\)\s\+']
+      \ }
+
 " TODO Document
 " Updates the syn file for the current buffer.  This function does not actually
 "   do the updating of the syn file, and barely even handles the syn file.
@@ -195,69 +181,6 @@ function! s:UpdateSynFor(src_file, ...)
   " Remove quotes
   let l:src_file  = substitute(a:src_file, "\\(\"\\|\'\\)", '', 'g')
   let l:is_py = &ft ==? 'python'
-  " Was used for when ft is go..  I think
-  "let l:ofile = l:src_file
-
-  " After the FIRST call, a:src_file is an include directive so we need to
-  "   parse it.
-  " We do this here, rather than after elseif filereadable(... because the
-  "   module may be relative to our current directory.
-  "if l:is_py && !filereadable(l:src_file)
-    " Don't forget to eventually parse __main__.py
-    "let l:src_file = substitute(l:src_file, '^\s*\%\(from\|import\)\s\+\(\S\+\)', '\1', 'g')
-    " FIXME This wont work if after the import, multiple lines are spanned
-  "  let l:dir =
-  "        \ substitute(
-  "        \   substitute(l:src_file, '^\s*from\s\+\(\S\+\)\+.*', '\1', 'g'),
-  "        \   '\.', '/', 'g')
-  "  if isdirectory(l:dir)
-  "    if filereadable(l:dir . '.py') | echomsg 'Readable as well!' | endif
-      "let l:py_files = {}
-  "    let l:py_files =
-  "          \ filter(
-  "          \   map(
-  "          \     split(
-  "          \       substitute(
-  "          \         l:src_file,
-  "          \         '^\s*from\s\+[a-zA-Z0-9._]\+\s\+import\s\+\(.\+\)\+$',
-  "          \         '\1',
-  "          \         'g'
-  "          \       ), ',\s*'),
-  "          \     "l:dir . '/' . split(v:val)[0] . '.py'"
-  "          \   ), 'filereadable(v:val)')
-      " Turns 'from foo.bar import foo, bar as bar_bar, foobar' into
-      "   '[foo, bar as bar_bar, foobar]'
-      "for l:f in split(substitute(l:src_file, '^\s*from\s\+[a-zA-Z0-9._]\+\s\+import\s\+\(.\+\)\+$', '\1', 'g'), ',\s*')
-        " Removes ' as bar_bar' from 'bar as bar_bar'
-      "  let l:f = split(l:f)[0]
-      "  if filereadable(l:dir . '/' . l:f . '.py')
-      "    echomsg 'Readable'
-      "  endif
-      "  let l:shit = UCTags#Tags#HasFile('^', l:f, '\.\w\+$')
-      "  if len(l:shit)
-      "    echomsg l:shit
-      "    echomsg l:dir
-      "    echomsg l:f
-      "  endif
-        "if a:0 && has_key(a:2, l:src_file) | continue | endif
-
-        " When language in use is Python, error is thrown saying 'using List as
-        "   String'
-        "call s:UpdateSynFor(
-        "      \ l:sourced_syn, extend(a:0 ? a:2 : {}, l:list), l:ofile)
-
-      "endfor
-  "  let l:pat = s:pat_lang[&ft]
-  "  for l:src_file in l:py_files
-  "    if a:0 && count(a:2, l:src_file) | continue | endif
-  "    call s:UpdateSynFor(substitute(
-  "          \   l:src_file, '^.*' . l:pat[-1] . '\s\+', '', 'g'),
-  "          \ l:sourced_syn, extend(a:0 ? a:2 : [], [l:src_file], l:ofile))
-  "  endfor
-  "  endif
-    "let l:src_file = substitute(l:src_file, '\s.*$', '', 'g')
-  "endif
-
 
   let l:src_syn_file = l:src_file . '.syn'
   if !count(s:inc_lan, tolower(&ft))
@@ -282,8 +205,8 @@ function! s:UpdateSynFor(src_file, ...)
     if empty(l:lines[0]) | return | endif
 
     for l:f in l:is_cs || l:is_py ? l:lines : l:lines[-1:1]
-      let l:src_file = l:f[1]
-      let l:src_syn_file = l:src_file . '.syn'
+      let l:src_file      = l:f[1]
+      let l:src_syn_file  = l:src_file . '.syn'
       if filereadable(l:src_syn_file)
         if !count(l:used_src_files, l:src_file)
           call s:UpdateSyn(l:src_syn_file)
@@ -294,11 +217,13 @@ function! s:UpdateSynFor(src_file, ...)
     endfor
   endif
 
-  for l:f in exists('l:lines') && (l:is_cs || l:is_py) ? l:lines : [[0, l:src_file]]
+  for l:f in exists('l:lines') && (l:is_cs || l:is_py)
+        \ ? l:lines
+        \ : [[0, l:src_file]]
     let l:src_file = l:f[1]
     if !filereadable(l:src_file) | return | endif
-    let l:pat = s:pat_lang[&ft]
-    let l:list = []
+    let l:pat   = s:pat_lang[&ft]
+    let l:list  = []
 
     for l:p in l:pat[:-2 + len(l:pat) == 1]
       " XXX COMBAK XXX Instead of a:2, it may be better to use l:used_src_files
@@ -313,20 +238,11 @@ function! s:UpdateSynFor(src_file, ...)
       call extend(l:list, filter(UCTags#Utils#FilterFile(l:src_file, 'v:val=~#', '^\s*from\s\+\S\+\s\+import\s\+'), '!count(l:list, v:val)'))
     endif
 
-    "for l:src_file in l:list
-    "  if a:0 && count(a:2, l:src_file) | continue | endif
-    "  call s:UpdateSynFor(substitute(
-    "        \   l:src_file, '^.*' . l:pat[-1] . '\s\+', '', 'g'),
-    "        \ l:sourced_syn, extend(a:0 ? a:2 : [], filter(l:list, '!count((a:0 ? a:2 : []), v:val)'), l:ofile))
-    "endfor
     for l:src_file in l:list
       if a:0 && count(a:2, l:src_file) | continue | endif
       call s:UpdateSynFor(substitute(
             \   l:src_file, '^.*' . l:pat[-1] . '\s\+', '', 'g'),
             \ l:sourced_syn, extend(a:0 ? a:2 : [], [l:src_file]), l:used_src_files)
-      "call s:UpdateSynFor(substitute(
-      "      \   l:src_file, '^.*' . l:pat[-1] . '\s\+', '', 'g'),
-      "      \ l:sourced_syn, extend(a:0 ? a:2 : [], [l:src_file], l:ofile))
     endfor
   endfor
 
@@ -348,9 +264,10 @@ function! UCTags#Highlight#CreateSynFiles(tags)
   let l:skip =
         \ 'has_key(g:uctags_skip_kind_for, tolower(v:val[3][5:]))'
         \ . '? !count(g:uctags_skip_kind_for[tolower(v:val[3][5:])],'
-        \     . "tolower(v:val[5][9:])) && !count(g:uctags_skip_kind_for[tolower(v:val[3][5:])], 'all')"
+        \     . 'tolower(v:val[5][9:])) '
+        \   . "&& !count(g:uctags_skip_kind_for[tolower(v:val[3][5:])], 'all')"
         \ . ': 1'
-  let l:file = ''
+  let l:file  = ''
   let l:lines = []
 
   " FIXME Sorting the results by index 1, i.e the file a given tag is located
@@ -410,11 +327,11 @@ function! UCTags#Highlight#CreateSynFiles(tags)
   let l:tags = filter(a:tags, l:skip)
   " Use keyword for kinds that have only keyword characters, and use match for
   "   kinds that contain keyword and non keyword characters.
-  let l:use_keyword = g:uctags_use_keyword && !g:uctags_use_only_match
+  let l:use_keyword       = g:uctags_use_keyword && !g:uctags_use_only_match
 
   " Use keyword for kinds that have only keyword characters, and skip kinds
   "   that have non keyword characters.
-  let l:use_only_keyword = l:use_keyword && g:uctags_skip_non_keyword
+  let l:use_only_keyword  = l:use_keyword && g:uctags_skip_non_keyword
   " if l:use_only_keyword, kinds that contain non keyword characters are
   "   skipped; otherwise all kinds are passed.
   for l:v in l:use_only_keyword
@@ -422,9 +339,9 @@ function! UCTags#Highlight#CreateSynFiles(tags)
         \ : l:tags
 
     " TODO Rename
-    let l:tfile = l:v[1]
+    let l:tfile   = l:v[1]
     if empty(l:file)
-      let l:file = l:tfile . '.syn'
+      let l:file  = l:tfile . '.syn'
     endif
 
     if l:file !=# l:tfile
@@ -445,18 +362,18 @@ function! UCTags#Highlight#CreateSynFiles(tags)
 
     " Don't forget the space
     let l:command = 'keyword '
-    let l:tag = l:v[0]
+    let l:tag     = l:v[0]
     if !l:use_only_keyword
       let l:has_key = has_key(g:uctags_match_map, l:lang)
             \ && has_key(g:uctags_match_map[l:lang], l:kind)
 
-      let l:match = !l:has_key && !has_key(g:uctags_match_map, l:kind)
+      let l:match   = !l:has_key && !has_key(g:uctags_match_map, l:kind)
             \ ? g:uctags_default_match
             \ : get(l:has_key
             \   ? g:uctags_match_map[l:lang]
             \   : g:uctags_match_map, l:kind)
 
-      let l:is_keyword = l:tag =~? '^\k\+$'
+      let l:is_keyword  = l:tag =~? '^\k\+$'
       " Use keyword if l:use_keyword and l:is_keyword only if
       "   g:uctags_use_keyword_over_match or l:match equals
       "   g:uctags_default_match
@@ -465,7 +382,7 @@ function! UCTags#Highlight#CreateSynFiles(tags)
             \   || l:match == g:uctags_default_match)
       " Don't forget the space
       let l:command = l:use_keyword ? l:command : 'match '
-      let l:tag = l:use_keyword
+      let l:tag     = l:use_keyword
             \ ? l:tag
             \ : l:match.start . escape(l:tag, '$.*~\^[]/') . l:match.end
     endif
