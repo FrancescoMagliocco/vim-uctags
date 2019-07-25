@@ -91,6 +91,15 @@ function! s:SearchPython(src_file)
     endif
 endfunction
 
+function! s:SearchJava(src_file)
+  "echomsg a:src_file
+  "let l:ret = uniq(sort(map(filter(UCTags#Tags#Kind('package'), 'v:val[0] ==# a:src_file[:-2]'), 'v:val[1]')))
+  let l:ret = filter(UCTags#Tags#Kind('package'), 'v:val[0] ==# a:src_file[:-2]')
+  "echomsg l:ret
+  return l:ret
+
+endfunction
+
 " TODO Rename
 " TODO Document this
 " For cs, gets all tags of kind 'namespace'
@@ -102,7 +111,8 @@ let s:search =
       \     . "'v:val[1] =~# a:1'), \"v:val[0] ==# split(a:2, '/')[-1]\")",
       \   'cs'  : "let l:ret = filter(UCTags#Tags#Kind('namespace'), "
       \     . "\"v:val[0] ==# '\" . a:2[:-2 + (a:2[-1:] !=# ';')] . \"'\")",
-      \   'python' : 'let l:ret = s:SearchPython(a:2)'
+      \   'python' : 'let l:ret = s:SearchPython(a:2)',
+      \   'java'  : 'let l:ret = s:SearchJava(a:2)'
       \ }
 
 " TODO Needs to be renamed
@@ -111,7 +121,7 @@ function! s:UpdateSynFilter(...)
   " TODO Use Log namespace
   " Just incase less than 2 argments are given
   if a:0 < 2 | echoer 'Need 2 arguments!' | endif
-  if !g:uctags_use_perl || !has('perl')
+  if !g:uctags_use_perl || !has('perl') || &ft ==# 'java'
     let l:ret = [[]]
     " Updates l:ret
     execute s:search[&ft]
@@ -131,7 +141,7 @@ endfunction
 
 " TODO Rename
 " Languages that use include directives, namespaces etc..
-let s:inc_lan = ['cpp', 'c', 'asm', 'cs', 'python']
+let s:inc_lan = ['cpp', 'c', 'asm', 'cs', 'python', 'java']
 
 " TODO Rename
 " Pattern used to find include direcetives, namespaces etc.. of the given
@@ -147,7 +157,8 @@ let s:pat_lang =
       \   'python'  : [
       \     '^\s*import\s\+[a-zA-Z0-9._]\+',
       \     '^\s*from\s\+[a-zA-Z0-9._]\+\s\+import\s.\+$',
-      \     '\%\(^\s*from\|\%\(^\s*\|\s\+\)import\)\s\+']
+      \     '\%\(^\s*from\|\%\(^\s*\|\s\+\)import\)\s\+'],
+      \   'java'    : ['\s*import\s\+[a-zA-Z0-9.]\+;', '\s*package\s\+[a-zA-Z0-9.]\+;', '\%\(package\|import\)']
       \ }
 
 " TODO Document
@@ -180,6 +191,7 @@ function! s:UpdateSynFor(src_file, ...)
   " Remove quotes
   let l:src_file  = substitute(a:src_file, "\\(\"\\|\'\\)", '', 'g')
   let l:is_py = &ft ==? 'python'
+  let l:is_java = &ft ==? 'java'
 
   let l:src_syn_file = l:src_file . '.syn'
   if !count(s:inc_lan, tolower(&ft))
@@ -203,7 +215,7 @@ function! s:UpdateSynFor(src_file, ...)
     let l:lines = s:UpdateSynFilter(l:safe_src_file, l:src_file)
     if empty(l:lines[0]) | return | endif
 
-    for l:f in l:is_cs || l:is_py ? l:lines : l:lines[-1:1]
+    for l:f in l:is_cs || l:is_py || l:is_java ? l:lines : l:lines[-1:1]
       let l:src_file      = l:f[1]
       let l:src_syn_file  = l:src_file . '.syn'
       if filereadable(l:src_syn_file)
@@ -216,7 +228,7 @@ function! s:UpdateSynFor(src_file, ...)
     endfor
   endif
 
-  for l:f in exists('l:lines') && (l:is_cs || l:is_py)
+  for l:f in exists('l:lines') && (l:is_cs || l:is_py || l:is_java)
         \ ? l:lines
         \ : [[0, l:src_file]]
     let l:src_file = l:f[1]
