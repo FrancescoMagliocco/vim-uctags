@@ -147,7 +147,7 @@ let s:pat_lang =
       \     ['using\s\+.*;', '\s*namespace\s\+', '\%\(using\|namespace\)'],
       \   'python'  : [
       \     '^\s*import\s\+[a-zA-Z0-9._]\+',
-      \     '^\s*from\s\+[a-zA-Z0-9._]\s\+import\s.\+$',
+      \     '^\s*from\s\+[a-zA-Z0-9._]\+\s\+import\s.\+$',
       \     '\%\(^\s*from\|\%\(^\s*\|\s\+\)import\)\s\+']
       \ }
 
@@ -229,14 +229,6 @@ function! s:UpdateSynFor(src_file, ...)
       " XXX COMBAK XXX Instead of a:2, it may be better to use l:used_src_files
       call extend(l:list, filter(UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', l:p), '!count(a:0 ? a:2 : [], v:val)'))
     endfor
-
-    let l:tmp = l:src_file
-
-    " COMBAK This probably wont work as expected
-    " XXX COMBAK WE MAY NOT NEED THIS ANNYMORE
-    if l:is_py
-      call extend(l:list, filter(UCTags#Utils#FilterFile(l:src_file, 'v:val=~#', '^\s*from\s\+\S\+\s\+import\s\+'), '!count(l:list, v:val)'))
-    endif
 
     for l:src_file in l:list
       if a:0 && count(a:2, l:src_file) | continue | endif
