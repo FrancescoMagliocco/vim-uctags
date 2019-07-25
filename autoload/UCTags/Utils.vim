@@ -54,10 +54,6 @@ function! UCTags#Utils#ToDict(list)
   return l:ret
 endfunction
 
-" COMBAK We need to get the namespace for files we are trying to update the syn
-"   file for, and get all tags for that namespace.  This is for cSharp as even
-"   code located in a different file, if it has the same namespace, it is valid
-"   and accessible in any file that uses that scoped namespace.
 function! UCTags#Utils#GetNamespace(file)
     let l:ret = UCTags#Utils#FilterFile(a:file, 'v:val =~#', '^\s*namespace\s*\(\S*\)')
     echomsg map(l:ret, 'split(v:val)[-1]')
