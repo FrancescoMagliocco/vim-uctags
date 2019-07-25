@@ -1,5 +1,5 @@
 " File:         uctags_globals.vim
-" Last Change:  07/22/2019
+" Last Change:  07/24/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -47,7 +47,7 @@ let g:uctags_skip_kind_for  = get(g:, 'uctags_skip_hl_for', {
       \   'id'            : ['css'],
       \   'key'           : ['javaproperties'],
       \   'label'         : ['dosbatch'],
-      \   'local'         : ['c#'],
+      \   'local'         : ['c#', 'python'],
       \   'macroparam'    : ['c', 'c++'],
       \   'modifiedfile'  : ['diff'],
       \   'package'       : ['go'],
@@ -62,19 +62,14 @@ let g:uctags_skip_kind_for  = get(g:, 'uctags_skip_hl_for', {
       \   'variable'      : ['vim', 'c', 'c++']
       \ })
 
-" I'M NOT SURE IF I WANT TO DISABLE THE FIELD FILE OR NOT
 " universal ctags kind to highlight group
 " The name for this is kind of relevant, but I'm not sure I like it..
 " COMBAK annotation probably needs to be linked to smoethiing else
-" COMBAK Enum needs to be linked to something else.  I don't think ther is
-"   currently a group made for it, same for enumerator
 " COMBAK I have field linked to method as it is kinnd of or acts like a method,
 "   except that it is a variable...
 " FIXME Implementation needs to be looked at
 " XXX Interface is linked to constant, it is kind of accurate
 " XXX Take a look at message
-" XXX Package
-" XXX Property
 " XXX Service
 " XXX Symbol
 " XXX Table
@@ -131,15 +126,11 @@ let g:uctags_kind_to_hlg      = get(g:, 'uctags_kind_to_hlg', {
 "   inside $() and have $() be highlighted as different.  BUT  $() may already
 "   be overriden to be highlighted on their own by the syntax file for Make and
 "   others that may be of correspondance.
-" For target we are using + as the delimiter because in the name of some
-"   targets, there is / present.
 " TODO WE ONLY WANT TO MATCH THAT OF WHAT IS INSIDE $(), so we can probably
 "   disregard some of the FIXMEs
 "
 " macro for make is already highlightedd by makeIndent, but there is too much
 "   that is highlighted by makeIndent
-"   \((\)\@! (?!\()
-      ""\   'python'  : { 'class'   : { 'start' : '/\<', 'end' : '\ze(/' }},
 let g:uctags_default_match  =  { 'start' : '/\<',  'end' : '\>/' }
 let g:uctags_match_map      = get(g:, 'uctags_match_map', {
       \   'c++'     : { 'member'  : { 'start' : '/\%\(\.\|->\)\<\zs', 'end' : '\>/' }},
@@ -219,17 +210,14 @@ let g:uctags_pre_args       = get(g:, 'uctags_pre_args', {
 "   targets aren't highlgihted however.
 " When executed, the order is not guarenteed as this is a dictionnary
 " This will define the default arguments.
-      ""\   '--kinds-cpreprocessor='  : '-{header}',
-     "" \   '--kinds-c++='            : '-{header}-{macroparam}',
-     "" \   '--kinds-c='              : '-{header}-{macroparam}',
 let g:uctags_args           = get(g:, 'uctags_args', {
-      \   '--kinds-c++='            : '-{macroparam}{variable}',
-      \   '--kinds-c='              : '-{macroparam}{variable}',
+      \   '--kinds-c++='            : '-{variable}',
+      \   '--kinds-c='              : '-{variable}',
       \   '--kinds-css='            : '-{id}{selector}{class}',
       \   '--kinds-html='           : '-{heading1}',
       \   '--kinds-json='           : '-{number}{object}{array}',
       \   '--kinds-maven2='         : '-{artifactId}',
-      \   '--kinds-python='         : '-{unknown}',
+      \   '--kinds-python='         : '-{unknown}{parameter}',
       \   '--kinds-make='           : '-{target}',
       \   '--languages='            : '-markdown,json,restructuredtext'
       \ })
