@@ -147,12 +147,16 @@ if has('perl')
         my $dir = $src_file;
         $dir =~ s/^\s*from\s+(\S+)+.*/$1/g;
         $dir =~ s/\./\//g;
+        my $main_py = $dir . '/__main__.py';
+        my $init_py = $dir . '/__init__.py';
         if (-d $dir) {
           $src_file =~ s/^\s*from\s+[a-zA-Z0-9._]+\s+import\s+(.+)+$/$1/g;
           my @ret = (
             grep { -e substr($_->[1], 1, -1) }
             map { [0, "'$dir/" . (split(' ', $_))[0] .  ".py'"] }
             split(',\s*', $src_file));
+          unshift @ret, [0, "'$main_py'"] if -e $main_py;
+          unshift @ret, [0, "'$init_py'"] if -e $init_py;
           return ReturnVimRawListList(scalar @ret ? @ret : []);
         }
 
@@ -166,7 +170,7 @@ if has('perl')
         return UpdateSynFilterPython($file) if $lang eq 'python';
 
         my $is_cs = $lang eq 'cs';
-        my $str = 
+        my $str =
           ($is_cs and ((length($file) - 1) == rindex($file, ';')))
             ? substr($file, 0, -1)
             : (split('/', $file))[-1];

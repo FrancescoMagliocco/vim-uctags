@@ -516,6 +516,15 @@ and appended to `g:uctags_args` and
 
 ### DeleteAllSyn
 
+## Some Notes and Issues
+When language is Python and using Perl, if there is a module that is just the
+literal dot (.), it will be highlighted as a module; however, when not using
+Perl, it wont be.  With that said, when Updateing a Syn File, Syn Files
+generated while using Perl may have more lines than a when not using Perl.
+
+For Python, if modules and improts span multiple lines, the wont be
+highlgihted; I haven't implemented that yet.
+
 [uctags]: https://ctags.io/ 'Universal Ctags'
 [uctags-repo]: https://github.com/universal-ctags/ctags 'Universal Ctags Repo'
 [perl-compiling]: https://vimhelp.org/if_perl.txt.html#perl-compiling 'Compiling Vim with Perl Interface'

@@ -88,8 +88,8 @@ function! s:SearchPython(src_file)
           \   substitute(a:src_file, '^\s*from\s\+\(\S\+\)\+.*', '\1', 'g'),
           \   '\.', '/', 'g')
     if isdirectory(l:dir)
-      if filereadable(l:dir . '.py') | echomsg 'Readable as well!' | endif
-      return
+      if filereadable(l:dir . '.py') | echomsg 'Readable' l:dir . '.py' | endif
+      let l:ret =
             \ filter(
             \   map(
             \     split(
@@ -101,6 +101,26 @@ function! s:SearchPython(src_file)
             \       ), ',\s*'),
             \     "[0, l:dir . '/' . split(v:val)[0] . '.py']"
             \   ), 'filereadable(v:val[1])')
+      if filereadable(l:dir . '/__main__.py')
+        let l:ret = [[0, l:dir . '/__main__.py']] + l:ret
+      endif
+      if filereadable(l:dir . '/__init__.py')
+        let l:ret = [[0, l:dir . '/__init__.py']] + l:ret
+      endif
+      
+      return l:ret
+      "return
+      "      \ filter(
+      "      \   map(
+      "      \     split(
+      "      \       substitute(
+      "      \         a:src_file,
+      "      \         '^\s*from\s\+[a-zA-Z0-9._]\+\s\+import\s\+\(.\+\)\+$',
+      "      \         '\1',
+      "      \         'g'
+      "      \       ), ',\s*'),
+      "      \     "[0, l:dir . '/' . split(v:val)[0] . '.py']"
+      "      \   ), 'filereadable(v:val[1])')
     elseif filereadable(l:dir . '.py')
       return [[0, l:dir . '.py']]
     endif
