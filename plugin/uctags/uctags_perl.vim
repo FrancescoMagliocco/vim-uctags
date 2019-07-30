@@ -121,26 +121,13 @@ if has('perl')
         }
 
         return @lines;
-        #VIM::DoCommand('return [' . join(', ', @lines) . ']');
       }
 
       sub GetTagsVim {
         my $tag_file = VIM::Eval('g:uctags_tags_file');
         open my $tags, "<", $tag_file
           or die "Couldn't open '$tag_file' $!" . (caller(0))[3];
-        #my @lines;
-        #while (my $line = <$tags>) {
-        #  next if $line =~ /^!_TAG/;
-        #  chomp $line;
-        #  $line =~ s/\R//g;
-        #  my @cols = split(/\t/, $line);
-        #  s/'/''/g for @cols;
-        #  push @lines, '[' . join(', ', map { "'$_'" } @cols) . ']';
-        #}
-
-
         ReturnVimRawList(FixTagsVim($tags));
-        #VIM::DoCommand('return [' . join(', ', @lines) . ']');
       }
 
       sub GetLangPat {
@@ -153,10 +140,7 @@ if has('perl')
       sub GetLang {
         my ($lang, $use_readtags) = @_;
         if ($use_readtags) {
-          #my $pat = "(eq \$language \"$lang\")";
-          #$pat = "(or $pat (eq? \$language \"C++\"))" if lc($lang) eq 'c';
           open(my $fh, '-|', "readtags -e -t VIM::Eval('g:uctags_tags_file') -Q '" . GetLangPat($lang) . "' -l");
-          #open(my $fh, '-|', "readtags -e -t VIM::Eval('g:uctags_tags_file') -Q '(eq? \$language \"$lang\")' -l");
           return FixTags($fh);
         }
 
@@ -185,7 +169,6 @@ if has('perl')
         }
 
         ReturnVimRawList(@lines);
-        #VIM::DoCommand('return [' . join(', ', @lines) . ']');
       }
 
       sub UpdateSynFilterPython {
@@ -220,8 +203,6 @@ if has('perl')
           ($is_cs and ((length($file) - 1) == rindex($file, ';')))
             ? substr($file, 0, -1)
             : (split('/', $file))[-1];
-        #my $str = $is_cs ? substr($file, 0, -1) : (split('/', $file))[-1];
-        # XXX TODO Check if the $is_cs ? 1 .. can be done in a different way.
         my @lines = grep {
           ($is_cs ? 1 : $_->[1] =~ /$tfile/) and $_->[0] eq $str
           # NOTE This was auto formatted..  Don't know how I feel about it..
@@ -256,7 +237,6 @@ if has('perl')
         }
 
         return ReturnVimRawList(@ret);
-        #VIM::DoCommand('return [' . join(', ', @ret) . ']');
       }
 
       sub ReturnVimRawList {
