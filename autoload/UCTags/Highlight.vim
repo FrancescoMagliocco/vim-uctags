@@ -1,5 +1,5 @@
 " File:         Highlight.vim
-" Last Change:  07/24/2019
+" Last Change:  07/29/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -13,6 +13,7 @@ let g:loaded_UCTags_Highlight = 1
 let g:uctags_enable_go = get(g:, 'uctags_enable_go', 0)
 
 function! s:UpdateSyn(syn_file)
+    echomsg a:syn_file
   if !g:uctags_use_perl || !has('perl')
     let l:buf_syn_file = expand('%') . '.syn'
     " Read the syn file for the current active buffer.
@@ -95,7 +96,9 @@ function! s:SearchJava(src_file)
   "echomsg a:src_file
   "let l:ret = uniq(sort(map(filter(UCTags#Tags#Kind('package'), 'v:val[0] ==# a:src_file[:-2]'), 'v:val[1]')))
   let l:ret = filter(UCTags#Tags#Kind('package'), 'v:val[0] ==# a:src_file[:-2]')
-  "echomsg l:ret
+  let l:split = split(a:src_file[:-2], '\.')
+  call uniq(sort(extend(l:ret, filter(filter(UCTags#Tags#Kind('package'), "v:val[0] ==# join(l:split[:-2], '.')"), "v:val[0] ==# '" . l:split[-1] . ".java'"))))
+  echomsg l:ret
   return l:ret
 
 endfunction
@@ -115,6 +118,17 @@ let s:search =
       \   'java'  : 'let l:ret = s:SearchJava(a:2)'
       \ }
 
+"let s:search =
+"      \ {
+"      \   'cpp' : "let l:ret = filter(UCTags#Tags#Kind('header'), "
+"      \     . "'v:val[1] ==# a:2')",
+"      \   'c'   : "let l:ret = filter(UCTags#Tags#Kind('header'), "
+"      \     . "'v:val[1] =~# a:1')",
+"      \   'cs'  : "let l:ret = filter(UCTags#Tags#Kind('namespace'), "
+"      \     . "\"v:val[0] ==# '\" . a:2[:-2 + (a:2[-1:] !=# ';')] . \"'\")",
+"      \   'python' : 'let l:ret = s:SearchPython(a:2)',
+"      \   'java'  : 'let l:ret = s:SearchJava(a:2)'
+"      \ }
 " TODO Needs to be renamed
 "
 function! s:UpdateSynFilter(...)
@@ -194,6 +208,7 @@ function! s:UpdateSynFor(src_file, ...)
   let l:is_java = &ft ==? 'java'
 
   let l:src_syn_file = l:src_file . '.syn'
+  let l:ofile = a:0 ? a:4 : a:src_file
   if !count(s:inc_lan, tolower(&ft))
     " Current language doesn't support include directives.
     return l:src_syn_file
@@ -228,6 +243,8 @@ function! s:UpdateSynFor(src_file, ...)
     endfor
   endif
 
+  "if a:src_file !=# l:ofile | return | endif
+
   for l:f in exists('l:lines') && (l:is_cs || l:is_py || l:is_java)
         \ ? l:lines
         \ : [[0, l:src_file]]
@@ -245,7 +262,7 @@ function! s:UpdateSynFor(src_file, ...)
       if a:0 && count(a:2, l:src_file) | continue | endif
       call s:UpdateSynFor(substitute(
             \   l:src_file, '^.*' . l:pat[-1] . '\s\+', '', 'g'),
-            \ l:sourced_syn, extend(a:0 ? a:2 : [], [l:src_file]), l:used_src_files)
+            \ l:sourced_syn, extend(a:0 ? a:2 : [], [l:src_file]), l:used_src_files, l:ofile)
     endfor
   endfor
 
@@ -263,11 +280,12 @@ let s:max_syn_msg = 'Max amount of sourced syn files for a particular file reach
 " Iterates through each tag in a:tags.  Filters out all tags that {kind} isn't
 "   present in g:uctags_kind_to_hlg
 function! UCTags#Highlight#CreateSynFiles(tags)
+  let l:index = g:uctags_use_readtags ? 4 : 5
   " COMBAK Revise
   let l:skip =
         \ 'has_key(g:uctags_skip_kind_for, tolower(v:val[3][5:]))'
         \ . '? !count(g:uctags_skip_kind_for[tolower(v:val[3][5:])],'
-        \     . 'tolower(v:val[5][9:])) '
+        \     . 'tolower(v:val[l:index][9:])) '
         \   . "&& !count(g:uctags_skip_kind_for[tolower(v:val[3][5:])], 'all')"
         \ . ': 1'
   let l:file  = ''
@@ -350,7 +368,7 @@ function! UCTags#Highlight#CreateSynFiles(tags)
     endif
 
     let l:kind  = tolower(l:v[3][5:])
-    let l:lang  = tolower(l:v[5][9:])
+    let l:lang  = tolower(l:v[l:index][9:])
     let l:group = GetGroup(l:lang, l:kind)
 
     " Don't forget the space

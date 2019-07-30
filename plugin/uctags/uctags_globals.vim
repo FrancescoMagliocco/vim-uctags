@@ -1,5 +1,5 @@
 " File:         uctags_globals.vim
-" Last Change:  07/24/2019
+" Last Change:  07/29/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -11,6 +11,7 @@ let g:loaded_uctags_globals   = 1
 let g:uctags_executable       = get(g:, 'uctags_executable', 'ctags-universal')
 
 let g:uctags_tags_file        = get(g:, 'uctags_tags_file', 'tags')
+let g:uctags_use_readtags     = get(g:, 'uctags_use_readtags', 1)
 let g:uctags_max_info         = get(g:, 'uctags_max_info', 0)
 
 let g:uctags_extra_args       = get(g:, 'uctags_extra_args', {})
@@ -47,10 +48,10 @@ let g:uctags_skip_kind_for  = get(g:, 'uctags_skip_hl_for', {
       \   'id'            : ['css'],
       \   'key'           : ['javaproperties'],
       \   'label'         : ['dosbatch'],
-      \   'local'         : ['c#', 'python'],
+      \   'local'         : ['c#', 'python', 'java'],
       \   'macroparam'    : ['c', 'c++'],
       \   'modifiedfile'  : ['diff'],
-      \   'package'       : ['go'],
+      \   'package'       : ['go', 'java'],
       \   'parameter'     : ['c++', 'c', 'python'],
       \   'script'        : ['sh'],
       \   'selector'      : ['css'],
@@ -210,16 +211,21 @@ let g:uctags_pre_args       = get(g:, 'uctags_pre_args', {
 "   targets aren't highlgihted however.
 " When executed, the order is not guarenteed as this is a dictionnary
 " This will define the default arguments.
+" COMBAK DTD does seem to have some interesting stuff that should be
+"   highlighted
+" COMBAK PHP needs to be looked at; disabled for now
+" COMBAK We are actually going to have to take a look at a lot of the langugaes
+"   we have disabled
 let g:uctags_args           = get(g:, 'uctags_args', {
       \   '--kinds-c++='            : '-{variable}',
       \   '--kinds-c='              : '-{variable}',
       \   '--kinds-css='            : '-{id}{selector}{class}',
-      \   '--kinds-html='           : '-{heading1}',
+      \   '--kinds-html='           : '-{heading1}{heading2}{heading3}',
       \   '--kinds-json='           : '-{number}{object}{array}',
       \   '--kinds-maven2='         : '-{artifactId}',
       \   '--kinds-python='         : '-{unknown}{parameter}',
       \   '--kinds-make='           : '-{target}',
-      \   '--languages='            : '-markdown,json,restructuredtext'
+      \   '--languages='            : '-markdown,json,restructuredtext,ant,xslt,javaproperties,diff,dtd,html,php,windres,dbusintrospect,yaml,maven2,man,plistxml,sml,perl,sh,svg,sql'
       \ })
 
 " Extends g:uctags_args with g:uctags_extra_args so

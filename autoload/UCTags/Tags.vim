@@ -1,5 +1,5 @@
 " File:         Tags.vim
-" Last Change:  07/23/2019
+" Last Change:  07/29/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -23,11 +23,18 @@ function! s:GetTags()
 endfunction
 
 function! UCTags#Tags#Kind(kind)
+
   if !g:uctags_use_perl || !has('perl')
+    if g:uctags_use_readtags
+      return map(split(system(
+            \ 'readtags -e -t '
+            \ . g:uctags_tags_file . ' -Q '
+            \ . "'(eq? $kind \"" . a:kind . "\")' -l"), '\n'), "split(v:val, '\t')")
+    endif
     return filter(s:GetTags(), "v:val[3] ==? 'kind:" . a:kind . "'")
   endif
 
-  perl GetKindVim(scalar VIM::Eval('a:kind'))
+  perl GetKindVim(scalar VIM::Eval('a:kind'), scalar VIM::Eval('g:uctags_use_readtags'))
 endfunction
 
 function! UCTags#Tags#Namespace(namespace)
@@ -43,6 +50,7 @@ function! UCTags#Tags#Namespace(namespace)
 endfunction
 
 function! UCTags#Tags#HasFile(...)
+  echomsg 'here'
   let l:args = join(a:000, '')
   if !g:uctags_use_perl || !has('perl')
     for l:tag in UCTags#Tags#Kind('file')
@@ -54,12 +62,37 @@ function! UCTags#Tags#HasFile(...)
     return ''
   endif
 
-  perl HasFile(scalar VIM::Eval('l:args'))
+  perl HasFile(scalar VIM::Eval('l:args'), scalar VIM::Eval('g:uctags_use_readtags'))
 endfunction
+
+"function! UCTags#Tags#Lang(lang)
+"  let l:lang = UCTags#Utils#GetLang(a:lang)
+"  if !g:uctags_use_perl || !has('perl')
+"    return filter(
+"          \ UCTags#Tags#GetTags(),
+"          \ "v:val[5] =~? 'language:" . (l:lang ==? 'c'
+"          \   ? '\%\(c\|c++\)\>'
+"          \   : l:lang . '\>') . "'")
+"  endif
+"
+"  perl GetLangVim(scalar VIM::Eval('l:lang'))
+"endfunction
 
 function! UCTags#Tags#Lang(lang)
   let l:lang = UCTags#Utils#GetLang(a:lang)
+  "if g:uctags_use_readtags
+    "return split(system('readtags -e -t ' . g:uctags_tags_file . " -Q '(eq? $language \"" . l:lang . "\")' -l"), '\n')
+    
   if !g:uctags_use_perl || !has('perl')
+    if g:uctags_use_readtags
+      return map(split(system(
+            \ 'readtags -e -t '
+            \ . g:uctags_tags_file . ' -Q '
+            \ . (l:lang ==? 'c'
+            \   ? "'(or (eq? $language \"" . l:lang . "\") (eq? $language \"C++\"))' -l"
+            \   : "'(eq? $language \"" . l:lang . "\")' -l")), '\n'), "split(v:val, '\t')")
+    endif
+
     return filter(
           \ UCTags#Tags#GetTags(),
           \ "v:val[5] =~? 'language:" . (l:lang ==? 'c'
@@ -67,5 +100,5 @@ function! UCTags#Tags#Lang(lang)
           \   : l:lang . '\>') . "'")
   endif
 
-  perl GetLangVim(scalar VIM::Eval('l:lang'))
+  perl GetLangVim(scalar VIM::Eval('l:lang'), scalar VIM::Eval('g:uctags_use_readtags'))
 endfunction

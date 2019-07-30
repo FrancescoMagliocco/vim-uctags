@@ -1,5 +1,5 @@
 " File:         uctags_perl.vim
-" Last Change:  07/24/2019
+" Last Change:  07/29/2019
 " Maintainer:   FrancescoMagliocco
 " vim: ft=perl
 
@@ -92,8 +92,11 @@ if has('perl')
         open my $tags, "<", $tag_file
           or die "Couldn't open '$tag_file' $! " . (caller(0))[3];
 
-        # XXX If error happens, may be because I removed the parens; was
-        #   my @lines = ();
+        return FixTags($tags);
+      }
+
+      sub FixTags {
+        my ($tags) = @_;
         my @lines;
         while (my $line = <$tags>) {
           next if $line =~ /^!_TAG/;
@@ -105,10 +108,8 @@ if has('perl')
         return @lines;
       }
 
-      sub GetTagsVim {
-        my $tag_file = VIM::Eval('g:uctags_tags_file');
-        open my $tags, "<", $tag_file
-          or die "Couldn't open '$tag_file' $!" . (caller(0))[3];
+      sub FixTagsVim {
+        my ($tags) = @_;
         my @lines;
         while (my $line = <$tags>) {
           next if $line =~ /^!_TAG/;
@@ -119,27 +120,72 @@ if has('perl')
           push @lines, '[' . join(', ', map { "'$_'" } @cols) . ']';
         }
 
-        VIM::DoCommand('return [' . join(', ', @lines) . ']');
+        return @lines;
+        #VIM::DoCommand('return [' . join(', ', @lines) . ']');
+      }
+
+      sub GetTagsVim {
+        my $tag_file = VIM::Eval('g:uctags_tags_file');
+        open my $tags, "<", $tag_file
+          or die "Couldn't open '$tag_file' $!" . (caller(0))[3];
+        #my @lines;
+        #while (my $line = <$tags>) {
+        #  next if $line =~ /^!_TAG/;
+        #  chomp $line;
+        #  $line =~ s/\R//g;
+        #  my @cols = split(/\t/, $line);
+        #  s/'/''/g for @cols;
+        #  push @lines, '[' . join(', ', map { "'$_'" } @cols) . ']';
+        #}
+
+
+        ReturnVimRawList(FixTagsVim($tags));
+        #VIM::DoCommand('return [' . join(', ', @lines) . ']');
+      }
+
+      sub GetLangPat {
+        my ($lang) = @_;
+        my $pat = "(eq \$language \"$lang\")";
+        $pat = "(or $pat (eq? \$language \"C++\"))" if lc($lang) eq 'c';
+        return $pat;
       }
 
       sub GetLang {
-        my ($lang) = @_;
+        my ($lang, $use_readtags) = @_;
+        if ($use_readtags) {
+          #my $pat = "(eq \$language \"$lang\")";
+          #$pat = "(or $pat (eq? \$language \"C++\"))" if lc($lang) eq 'c';
+          open(my $fh, '-|', "readtags -e -t VIM::Eval('g:uctags_tags_file') -Q '" . GetLangPat($lang) . "' -l");
+          #open(my $fh, '-|', "readtags -e -t VIM::Eval('g:uctags_tags_file') -Q '(eq? \$language \"$lang\")' -l");
+          return FixTags($fh);
+        }
+
         my $pat = lc($lang) eq 'c' ? '(?:\bc|c\+\+)(?!\S)' : "\\b$lang(?!\\S)";
+
         return grep { $_->[5] =~ /language:$pat/gi } GetTags;
       }
 
       sub GetLangVim {
-        my ($lang) = @_;
+        my ($lang, $use_readtags) = @_;
         die("Need an argument for " . (caller(0))[3]) if not $lang;
-        my $pat = lc($lang) eq 'c' ? '(?:\bc|c\+\+)(?!\S)' : "\\b$lang(?!\\S)";
         my @lines;
+
+        if ($use_readtags) {
+          open(my $fh, '-|', "readtags -e -t tags -Q '" . GetLangPat($lang) . "' -l");
+          return ReturnVimRawList(FixTagsVim($fh));
+
+          return VIM::DoCommand('return [' . join(', ', @lines) . ']');
+        }
+
+        my $pat = lc($lang) eq 'c' ? '(?:\bc|c\+\+)(?!\S)' : "\\b$lang(?!\\S)";
         foreach (grep { $_->[5] =~ /language:$pat/gi } GetTags) {
           my @cols = @$_;
           s/'/''/g for @cols;
           push @lines, '[' . join(', ', map { "'$_'" } @cols) . ']';
         }
 
-        VIM::DoCommand('return [' . join(', ', @lines) . ']');
+        ReturnVimRawList(@lines);
+        #VIM::DoCommand('return [' . join(', ', @lines) . ']');
       }
 
       sub UpdateSynFilterPython {
@@ -166,10 +212,10 @@ if has('perl')
 
       # TODO New Name
       sub UpdateSynFilter {
-        my ($tfile, $file, $lang) = @_;
-        return UpdateSynFilterPython($file) if $lang eq 'python';
+        my ($tfile, $file, $lang, $use_readtags) = @_;
+        return UpdateSynFilterPython($file) if lc($lang) eq 'python';
 
-        my $is_cs = $lang eq 'cs';
+        my $is_cs = lc($lang) eq 'cs';
         my $str =
           ($is_cs and ((length($file) - 1) == rindex($file, ';')))
             ? substr($file, 0, -1)
@@ -179,7 +225,7 @@ if has('perl')
         my @lines = grep {
           ($is_cs ? 1 : $_->[1] =~ /$tfile/) and $_->[0] eq $str
           # NOTE This was auto formatted..  Don't know how I feel about it..
-        } $is_cs ? GetKind('namespace') : GetTags;
+        } $is_cs ? GetKind('namespace', $use_readtags) : GetTags;
         return unless @lines;
         ReturnVimListList(@lines);
       }
@@ -259,18 +305,23 @@ if has('perl')
       }
 
       sub GetKindVim {
-        my ($kind) = @_;
-        ReturnVimListList(GetKind($kind));
+        my ($kind, $use_readtags) = @_;
+        ReturnVimListList(GetKind($kind, $use_readtags));
       }
 
       sub GetKind {
-        my ($kind) = @_;
+        my ($kind, $use_readtags) = @_;
+        if ($use_readtags) {
+          open(my $fh, '-|', "readtags -e -t tags -Q '(eq? \$kind \"$kind\")' -l");
+          return FixTags($fh);
+        }
+
         return grep { $_->[3] =~ /kind:$kind/g } GetTags;
       }
 
       sub GetTagsWithNamespace {
-        my ($namespace) = @_;
-        return grep { $_->[0] eq $namespace } GetKind('namespace');
+        my ($namespace, $use_readtags) = @_;
+        return grep { $_->[0] eq $namespace } GetKind('namespace', $use_readtags);
       }
 
       sub ReturnVim {
@@ -279,10 +330,10 @@ if has('perl')
 
       sub HasFile
       {
-        my ($arg) = @_;
+        my ($arg, $use_readtags) = @_;
         my $re = list2re keys %trans;
         $arg =~ s/($re)/$trans{$1}/g;
-        for my $tag (GetKind('file')) {
+        for my $tag (GetKind('file', $use_readtags)) {
           return ReturnVim($tag->[1]) if $tag->[0] =~ /$arg/;
         }
 
