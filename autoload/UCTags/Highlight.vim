@@ -243,7 +243,7 @@ function! s:UpdateSynFor(src_file, ...)
     endfor
   endif
 
-  "if a:src_file !=# l:ofile | return | endif
+  if l:is_java && a:src_file !=# l:ofile | return | endif
 
   for l:f in exists('l:lines') && (l:is_cs || l:is_py || l:is_java)
         \ ? l:lines
