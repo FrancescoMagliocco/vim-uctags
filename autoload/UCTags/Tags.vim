@@ -65,24 +65,8 @@ function! UCTags#Tags#HasFile(...)
   perl HasFile(scalar VIM::Eval('l:args'), scalar VIM::Eval('g:uctags_use_readtags'))
 endfunction
 
-"function! UCTags#Tags#Lang(lang)
-"  let l:lang = UCTags#Utils#GetLang(a:lang)
-"  if !g:uctags_use_perl || !has('perl')
-"    return filter(
-"          \ UCTags#Tags#GetTags(),
-"          \ "v:val[5] =~? 'language:" . (l:lang ==? 'c'
-"          \   ? '\%\(c\|c++\)\>'
-"          \   : l:lang . '\>') . "'")
-"  endif
-"
-"  perl GetLangVim(scalar VIM::Eval('l:lang'))
-"endfunction
-
 function! UCTags#Tags#Lang(lang)
   let l:lang = UCTags#Utils#GetLang(a:lang)
-  "if g:uctags_use_readtags
-    "return split(system('readtags -e -t ' . g:uctags_tags_file . " -Q '(eq? $language \"" . l:lang . "\")' -l"), '\n')
-    
   if !g:uctags_use_perl || !has('perl')
     if g:uctags_use_readtags
       return map(split(system(
