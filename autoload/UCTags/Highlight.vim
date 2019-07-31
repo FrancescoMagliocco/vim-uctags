@@ -1,5 +1,5 @@
 " File:         Highlight.vim
-" Last Change:  07/29/2019
+" Last Change:  07/31/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -197,6 +197,7 @@ function! s:UpdateSynFor(src_file, ...)
 
     return
   endif
+  let l:a2 = a:0 ? copy(a:2) : []
   let l:used_src_files = a:0 ? a:3 : []
 
   let l:is_cs       = &ft ==? 'cs'
@@ -255,14 +256,19 @@ function! s:UpdateSynFor(src_file, ...)
 
     for l:p in l:pat[:-2 + len(l:pat) == 1]
       " XXX COMBAK XXX Instead of a:2, it may be better to use l:used_src_files
-      call extend(l:list, filter(UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', l:p), '!count(a:0 ? a:2 : [], v:val)'))
+      call extend(l:list, filter(UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', l:p), '!count(l:a2, v:val)'))
     endfor
 
+    " We are going to change the meaning of a:2; a:2 is now going to be header
+    "   header files that we have already grabbed headers from!  Not headers
+    "   that we have compared the tags against the source file.
+    " This feature wont be implemented with the first commit changing a:2 to
+    "   l:a2.  It shouldl be implemented in the commit after that.
     for l:src_file in l:list
       if a:0 && count(a:2, l:src_file) | continue | endif
       call s:UpdateSynFor(substitute(
             \   l:src_file, '^.*' . l:pat[-1] . '\s\+', '', 'g'),
-            \ l:sourced_syn, extend(a:0 ? a:2 : [], [l:src_file]), l:used_src_files, l:ofile)
+            \ l:sourced_syn, extend(l:a2, [l:src_file]), l:used_src_files, l:ofile)
     endfor
   endfor
 
