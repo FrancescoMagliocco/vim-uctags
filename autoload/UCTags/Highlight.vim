@@ -13,7 +13,6 @@ let g:loaded_UCTags_Highlight = 1
 let g:uctags_enable_go = get(g:, 'uctags_enable_go', 0)
 
 function! s:UpdateSyn(syn_file)
-    echomsg a:syn_file
   if !g:uctags_use_perl || !has('perl')
     let l:buf_syn_file = expand('%') . '.syn'
     " Read the syn file for the current active buffer.
@@ -106,29 +105,29 @@ endfunction
 " TODO Rename
 " TODO Document this
 " For cs, gets all tags of kind 'namespace'
-let s:search =
-      \ {
-      \   'cpp' : 'let l:ret = filter(filter(UCTags#Tags#GetTags(), '
-      \     . "'v:val[1] =~# a:1'), \"v:val[0] ==# split(a:2, '/')[-1]\")",
-      \   'c'   : 'let l:ret = filter(filter(UCTags#Tags#GetTags(), '
-      \     . "'v:val[1] =~# a:1'), \"v:val[0] ==# split(a:2, '/')[-1]\")",
-      \   'cs'  : "let l:ret = filter(UCTags#Tags#Kind('namespace'), "
-      \     . "\"v:val[0] ==# '\" . a:2[:-2 + (a:2[-1:] !=# ';')] . \"'\")",
-      \   'python' : 'let l:ret = s:SearchPython(a:2)',
-      \   'java'  : 'let l:ret = s:SearchJava(a:2)'
-      \ }
-
 "let s:search =
 "      \ {
-"      \   'cpp' : "let l:ret = filter(UCTags#Tags#Kind('header'), "
-"      \     . "'v:val[1] ==# a:2')",
-"      \   'c'   : "let l:ret = filter(UCTags#Tags#Kind('header'), "
-"      \     . "'v:val[1] =~# a:1')",
+"      \   'cpp' : 'let l:ret = filter(filter(UCTags#Tags#GetTags(), '
+"      \     . "'v:val[1] =~# a:1'), \"v:val[0] ==# split(a:2, '/')[-1]\")",
+"      \   'c'   : 'let l:ret = filter(filter(UCTags#Tags#GetTags(), '
+"      \     . "'v:val[1] =~# a:1'), \"v:val[0] ==# split(a:2, '/')[-1]\")",
 "      \   'cs'  : "let l:ret = filter(UCTags#Tags#Kind('namespace'), "
 "      \     . "\"v:val[0] ==# '\" . a:2[:-2 + (a:2[-1:] !=# ';')] . \"'\")",
 "      \   'python' : 'let l:ret = s:SearchPython(a:2)',
 "      \   'java'  : 'let l:ret = s:SearchJava(a:2)'
 "      \ }
+
+let s:search =
+      \ {
+      \   'cpp' : "let l:ret = filter(UCTags#Tags#Kind('header'), "
+      \     . "'v:val[1] ==# a:2')",
+      \   'c'   : "let l:ret = filter(UCTags#Tags#Kind('header'), "
+      \     . "'v:val[1] =~# a:1')",
+      \   'cs'  : "let l:ret = filter(UCTags#Tags#Kind('namespace'), "
+      \     . "\"v:val[0] ==# '\" . a:2[:-2 + (a:2[-1:] !=# ';')] . \"'\")",
+      \   'python' : 'let l:ret = s:SearchPython(a:2)',
+      \   'java'  : 'let l:ret = s:SearchJava(a:2)'
+      \ }
 " TODO Needs to be renamed
 "
 function! s:UpdateSynFilter(...)
@@ -137,6 +136,7 @@ function! s:UpdateSynFilter(...)
   if a:0 < 2 | echoer 'Need 2 arguments!' | endif
   if !g:uctags_use_perl || !has('perl') || &ft ==# 'java'
     let l:ret = [[]]
+
     " Updates l:ret
     execute s:search[&ft]
     " The previous execution can result in a empty list.  The caller needs a 2
@@ -156,7 +156,11 @@ endfunction
 " TODO Rename
 " Languages that use include directives, namespaces etc..
 let s:inc_lan = ['cpp', 'c', 'asm', 'cs', 'python', 'java']
-
+let s:inc_kind =
+      \ {
+      \   'c'       : ['header'],
+      \   'cpp'     : ['header']
+      \ }
 " TODO Rename
 " Pattern used to find include direcetives, namespaces etc.. of the given
 "   language.
@@ -174,6 +178,20 @@ let s:pat_lang =
       \     '\%\(^\s*from\|\%\(^\s*\|\s\+\)import\)\s\+'],
       \   'java'    : ['\s*import\s\+[a-zA-Z0-9.]\+;', '\s*package\s\+[a-zA-Z0-9.]\+;', '\%\(package\|import\)']
       \ }
+
+" TODO Make more lucid
+" a:list: [['namea', 'file', 'pattern', ...], ['nameb', 'file', 'pattern', ...]]
+" l:ret: { 'namea' : ['namea', 'file', 'pattern', ...],
+"         'nameb' : ['nameb', 'file', 'pattern', ...]
+"         }
+function! s:ToTagDict(list)
+  let l:ret = {}
+  for l:i in a:list
+    let l:ret[l:i[1]] = l:i
+  endfor
+
+  return l:ret
+endfunction
 
 " TODO Document
 " Updates the syn file for the current buffer.  This function does not actually
@@ -197,7 +215,13 @@ function! s:UpdateSynFor(src_file, ...)
 
     return
   endif
-  let l:a2 = a:0 ? copy(a:2) : []
+
+  " This is so we can refer to what a:2 was initially (If defined) and modify
+  "   what a:2 was without actually chaning a:2 itself.
+  let l:a2 = a:0 ? copy(a:2) : {}
+  " Similar to l:a2 except this wont be modified; this also saves for having to
+  "   do the a:0 ? copy(a:2) : {} multiple times when we need a:2.
+  let l:raw_a2 = copy(l:a2)
   let l:used_src_files = a:0 ? a:3 : []
 
   let l:is_cs       = &ft ==? 'cs'
@@ -223,6 +247,30 @@ function! s:UpdateSynFor(src_file, ...)
     endif
   else
 
+
+
+
+
+
+  "echomsg 'can not find' l:src_file
+
+
+
+
+
+    if 0
+
+
+
+
+    echomsg 'no find'
+    echomsg l:src_file
+
+
+
+
+
+
     " Can't find syn file for a:src_file
     " During the FIRST call,
     " Escapes special characters
@@ -243,6 +291,7 @@ function! s:UpdateSynFor(src_file, ...)
       endif
     endfor
   endif
+  endif
 
   if l:is_java && a:src_file !=# l:ofile | return | endif
 
@@ -250,14 +299,88 @@ function! s:UpdateSynFor(src_file, ...)
         \ ? l:lines
         \ : [[0, l:src_file]]
     let l:src_file = l:f[1]
-    if !filereadable(l:src_file) | return | endif
+
+    " COMBAK XXX Should this be continue rather thtan return?
+    " Checking if this message is ever actually output
+    if !filereadable(l:src_file)
+      echomsg 'not readable'
+    echomsg l:src_file
+       return
+    endif
+
     let l:pat   = s:pat_lang[&ft]
     let l:list  = []
 
-    for l:p in l:pat[:-2 + len(l:pat) == 1]
+    " For C and C++, instead of searching through each file for include
+    "   directives, lets just search the tag file and grab all headers for the
+    "   file we are working with.
+    "for l:p in l:pat[:-2 + len(l:pat) == 1]
       " XXX COMBAK XXX Instead of a:2, it may be better to use l:used_src_files
-      call extend(l:list, filter(UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', l:p), '!count(l:a2, v:val)'))
+      "call extend(l:list, filter(UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', l:p), '!count(l:a2, v:val)'))
+    "  call extend(l:list, filter(UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', l:p), '!count(a:0 ? a:2 : [], v:val)'))
+    "endfor
+    "echomsg filter(ap(UCTags#Tags#KindFor('header', l:src_file), 'UCTags#Tags#FindFile(v:val[0])'), '!empty(v:val)')
+    " XXX FindInc XXX
+    let l:tmp = copy(l:a2)
+
+    for l:kind in s:inc_kind[&ft]
+      
+      " First grab all headers in l:src_file
+      " Using plural as there could be more than one file found
+      for l:tags in UCTags#Tags#KindFor(l:kind, l:src_file)
+        let l:tag = UCTags#Tags#FindFile(l:tags[0])
+        " If no file was found, l:tfile will be an empty list.  Otherwise it
+        "   will be a whole tag line
+        if len(l:tag)
+          if len(l:tag) > 1
+            echomsg l:tags
+            echomsg l:tag
+          endif
+          " Check if include file has already been found
+          if !has_key(l:tmp, l:tag[0][1])
+            if filereadable(l:tag[0][1])
+              call add(l:list, l:tag[0][1])
+            endif
+          endif
+          call extend(l:tmp, s:ToTagDict(l:list))
+        endif
+      endfor
+      " Combine both l:tmp and l:list so when filtering, we can discard include
+      "   include files that have already be crosschecked with the original
+      "   source file.  This is NOT the same as what l:used_src_files is for!
+      " We might be able to use a dictionary here to avoid large lists
+      "   requiring more memory
+    ""  call extend(l:tmp, s:ToTagDict(l:list))
+
+      " We only need the file section of the tag.
+      " We can't use a dicrioary for l:list as there is no order guaranteed.
+      "call map(extend(l:list, filter(UCTags#Tags#KindFor(l:b, l:src_file), '!has_key(l:tmp, v:val[1])')), 'v:val[1]')
+    ""  call extend(l:list, filter(UCTags#Tags#KindFor(l:b, l:src_file), '!has_key(l:tmp, v:val[1])'))
+
     endfor
+
+    if 0
+    let l:fil = UCTags#Tags#KindFor('header', l:src_file)
+    "let l:fil = map(UCTags#Tags#KindFor('header', l:src_file), 'filter(UCTags#Tags#FindFile(v:val[0]), !empty(v:val[0]))')
+    "echomsg l:fil
+    for l:a in l:fil
+      let l:z = UCTags#Tags#FindFile(l:a[0])
+      if !empty(l:z)
+        if !count(a:0 ? a:2 : [], l:z[0][1]) && !count(l:list, l:z[0][1]) && filereadable(l:z[0][1])
+        call add(l:list, l:z[0][1])
+      endif
+
+    endif
+      
+
+    endfor
+  endif
+
+    "echomsg map(UCTags#Tags#KindFor('header', l:src_file), "filter(UCTags#Tags#FindFile(v:val[0]), !empty(v:val))")
+    "echomsg map(UCTags#Tags#KindFor('header', l:src_file), '1')
+    "echomsg map(UCTags#Tags#KindFor('header', l:src_file), 'UCTags#Tags#FindFile(v:val[0])')
+    "call extend(l:list, map(UCTags#Tags#KindFor('header', l:src_file), 'UCTags#Tags#FindFile(v:val[0])'))
+    "echomsg l:list
 
     " We are going to change the meaning of a:2; a:2 is now going to be header
     "   header files that we have already grabbed headers from!  Not headers
@@ -265,11 +388,38 @@ function! s:UpdateSynFor(src_file, ...)
     " This feature wont be implemented with the first commit changing a:2 to
     "   l:a2.  It shouldl be implemented in the commit after that.
     for l:src_file in l:list
-      if a:0 && count(a:2, l:src_file) | continue | endif
-      call s:UpdateSynFor(substitute(
-            \   l:src_file, '^.*' . l:pat[-1] . '\s\+', '', 'g'),
-            \ l:sourced_syn, extend(l:a2, [l:src_file]), l:used_src_files, l:ofile)
+      " Should we do the check on l:a2?
+      " We *shouldn't* have to check if l:src_file is in a:2 because FindInc
+      "   (Look at comments for 'FindInc') should already have done that for
+      "   us.  We will do it anyway until we are certain we wont have to
+      "   anymore.
+      if has_key(l:raw_a2, l:src_file) | continue | endif
+      "if a:0 && count(a:2, l:src_file) | continue | endif
+      "call s:UpdateSynFor(substitute(
+      "      \   l:src_file, '^.*' . l:pat[-1] . '\s\+', '', 'g'),
+      "      \ l:sourced_syn, extend(l:a2, [l:src_file]), l:used_src_files, l:ofile)
+      " 
+      " If we extend the l:list to l:a2, further iterations SHOULDN'T be
+      "   affected by the check above as the check is checking a:2; we are
+      "   extending to l:a2 which is a copy of a:2, therefore wont change a:2
+      " I suppose we could also use a dictionary here and check if has key,
+      "   rather than filtering checking for count.
+      " Because l:a2 is a dictionary, {expr2} in extend() has to also be a
+      "   dicrionary.
+      "   
+      "   NOTE: extend(l:a2, {l:src_file : l:src_file} does not keep the same
+      "     structure as s:ToTagDict() does.
+      call s:UpdateSynFor(l:src_file, l:sourced_syn, extend(l:a2, {l:src_file : l:src_file}), l:used_src_files, l:ofile)
+      "call s:UpdateSynFor(substitute(
+      "      \   l:src_file, '^.*' . l:pat[-1] . '\s\+', '', 'g'),
+      "      \ l:sourced_syn, extend(a:0 ? a:2 : [], [l:src_file]), l:used_src_files, l:ofile)
     endfor
+    "for l:src_file in l:list
+    "  if a:0 && count(a:2, l:src_file) | continue | endif
+    "  call s:UpdateSynFor(substitute(
+    "        \   l:src_file, '^.*' . l:pat[-1] . '\s\+', '', 'g'),
+    "        \ l:sourced_syn, extend(a:0 ? a:2 : [], [l:src_file]), l:used_src_files, l:ofile)
+    "endfor
   endfor
 
   return l:src_syn_file
