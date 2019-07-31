@@ -1,5 +1,5 @@
 " File:         Tags.vim
-" Last Change:  07/29/2019
+" Last Change:  07/31/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -20,6 +20,20 @@ function! s:GetTags()
   return map(
         \ filter(UCTags#Utils#Readfile(g:uctags_tags_file), "v:val !~# '^!_TAG'"),
         \ "split(v:val, '\t')")
+endfunction
+
+function! s:Readtags(exp)
+  return map(split(system('readtags -e -t ' . g:uctags_tags_file . " -Q '" . a:exp . "' -l"), '\n'), "split(v:val, '\t')")
+endfunction
+
+function! UCTags#Tags#KindFor(kind, file)
+  let l:ret = s:Readtags('(and (eq? $kind "' . a:kind . '") (eq? $input "' . a:file . '"))')
+  return l:ret
+endfunction
+
+function! UCTags#Tags#FindFile(file)
+  let l:ret = s:Readtags('(and (eq? $kind "file") (suffix? $input "' . a:file . '"))')
+  return l:ret
 endfunction
 
 function! UCTags#Tags#Kind(kind)
@@ -44,9 +58,6 @@ function! UCTags#Tags#Namespace(namespace)
   endif
 
   echomsg UCTags#Utils#Filter(filter(UCTags#Tags#GetTags(), 'len(v:val) >= 7'), 'v:val[6] =~#', a:namespace . '\>')
-
-
-
 endfunction
 
 function! UCTags#Tags#HasFile(...)
