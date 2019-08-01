@@ -179,21 +179,7 @@ let s:pat_lang =
       \   'java'    : ['\s*import\s\+[a-zA-Z0-9.]\+;', '\s*package\s\+[a-zA-Z0-9.]\+;', '\%\(package\|import\)']
       \ }
 
-" TODO Make more lucid
-" a:list: [['namea', 'file', 'pattern', ...], ['nameb', 'file', 'pattern', ...]]
-" l:ret: { 'namea' : ['namea', 'file', 'pattern', ...],
-"         'nameb' : ['nameb', 'file', 'pattern', ...]
-"         }
-function! s:ToTagDict(list)
-  let l:ret = {}
-  for l:i in a:list
-    let l:ret[l:i[1]] = l:i
-  endfor
 
-  return l:ret
-endfunction
-
-let s:q = 0
 " TODO Document
 " Updates the syn file for the current buffer.  This function does not actually
 "   do the updating of the syn file, and barely even handles the syn file.
@@ -204,12 +190,11 @@ let s:q = 0
 "   located, is done the same way with expand('%').
 " All recursive calls after the FIRST call, a:src_file will be a filename that
 "   is specified in the tags file.
-" a:1 is l:sourced_syn
 function! s:UpdateSynFor(src_file, ...)
   if &ft ==? 'go' && !g:uctags_enable_go | return | endif
   " TODO Document
   " TODO Use Log namespace
-  if assert_false(g:uctags_max_syn && a:0 && a:1 >= g:uctags_max_syn, s:max_syn_msg)
+  if assert_false(g:uctags_max_syn && s:sourced_syn >= g:uctags_max_syn, s:max_syn_msg)
     if g:uctags_verbose
       echohl warningMsg | echomsg v:errors[-1] | echohl None
     endif
@@ -217,17 +202,9 @@ function! s:UpdateSynFor(src_file, ...)
     return
   endif
 
-  " This is so we can refer to what a:2 was initially (If defined) and modify
-  "   what a:2 was without actually chaning a:2 itself.
-  let l:cur_shit = copy(s:shit)
-  let l:a2 = a:0 ? copy(a:2) : []
-  " Similar to l:a2 except this wont be modified; this also saves for having to
-  "   do the a:0 ? copy(a:2) : {} multiple times when we need a:2.
-  let l:raw_a2 = copy(l:a2)
-  let l:used_src_files = a:0 ? a:3 : []
+  let l:cur_inc_files = copy(s:inc_files)
 
   let l:is_cs       = &ft ==? 'cs'
-  let l:sourced_syn = a:0 ? a:1 : 0
 
   " Remove quotes
   let l:src_file  = substitute(a:src_file, "\\(\"\\|\'\\)", '', 'g')
@@ -235,20 +212,18 @@ function! s:UpdateSynFor(src_file, ...)
   let l:is_java = &ft ==? 'java'
 
   let l:src_syn_file = l:src_file . '.syn'
-  let l:ofile = a:0 ? a:4 : a:src_file
   if !count(s:inc_lan, tolower(&ft))
     " Current language doesn't support include directives.
     return l:src_syn_file
   " Current language supports include directives
   elseif filereadable(l:src_syn_file)
-    if !count(l:used_src_files, l:src_file)
+    if !count(s:used_src_syn_files, l:src_file)
       " Found syn file for a:src_file; update it
       call s:UpdateSyn(l:src_syn_file)
       echomsg 'using' l:src_file
-      let l:sourced_syn += 1
-      call add(l:used_src_files, l:src_file)
+      let s:sourced_syn += 1
+      call add(s:used_src_syn_files, l:src_file)
     else
-      echomsg l:src_file
       echomsg "This shouldn't be reachable: !count(l:used_src_files, l:src_file)"
     endif
   else
@@ -271,10 +246,10 @@ function! s:UpdateSynFor(src_file, ...)
       let l:src_file      = l:f[1]
       let l:src_syn_file  = l:src_file . '.syn'
       if filereadable(l:src_syn_file)
-        if !count(l:used_src_files, l:src_file)
+        if !count(s:used_src_syn_files, l:src_file)
           call s:UpdateSyn(l:src_syn_file)
-          let l:sourced_syn += 1
-          call add(l:used_src_files, l:src_file)
+          let s:sourced_syn += 1
+          call add(s:used_src_syn_files, l:src_file)
         else
           echomsg "This shouldn't be reachable: !count(l:used_src_files, l:src_file)"
         endif
@@ -286,7 +261,7 @@ function! s:UpdateSynFor(src_file, ...)
   endif
 " =============================================================================
 
-  if l:is_java && a:src_file !=# l:ofile | return | endif
+  if l:is_java && a:src_file !=# s:src_file | return | endif
 
   for l:f in exists('l:lines') && (l:is_cs || l:is_py || l:is_java)
         \ ? l:lines
@@ -314,13 +289,12 @@ function! s:UpdateSynFor(src_file, ...)
     "endfor
     "echomsg filter(ap(UCTags#Tags#KindFor('header', l:src_file), 'UCTags#Tags#FindFile(v:val[0])'), '!empty(v:val)')
     " XXX FindInc XXX
-    let l:tmp = copy(l:a2)
 
     for l:kind in s:inc_kind[&ft]
       
       " First grab all headers in l:src_file
       " Using plural as there could be more than one file found
-      for l:tags in UCTags#Tags#Readtags(l:kind[1], l:src_file)
+      for l:inc_dir in UCTags#Tags#Readtags(l:kind[1], l:src_file)
         " If include file is already readable, we don't need to search for it
         " Cur dir: .
         " Active buffer file: ./foo/bar.h
@@ -329,91 +303,104 @@ function! s:UpdateSynFor(src_file, ...)
         " If originally the include directive in bar.h―foobar.h―was supposed
         "   to be located in ./foo, ./foobar.h will still be considered as the
         "   intended file even though that may have not been what was desired.
-        if filereadable(l:tags[0])
-          if !count(s:shit, l:tags[0])
-            call add(l:list, l:tags[0])
-            call add(s:shit, l:tags[0])
+        if filereadable(l:inc_dir[0])
+          if !count(s:inc_files, l:inc_dir[0])
+            call add(l:list, l:inc_dir[0])
+            call add(s:inc_files, l:inc_dir[0])
             continue
           endif
         endif
-        let l:tag = UCTags#Tags#FindFile(l:tags[0])
-        " If no file was found, l:tfile will be an empty list.  Otherwise it
-        "   will be a whole tag line
-        if len(l:tag)
-          " Multiple files found
-          if len(l:tag) > 1
-            let l:h = []
+
+        let l:inc_files = UCTags#Tags#FindFile(l:inc_dir[0])
+        " If no include files were found, l:inc_files will be an empty list;
+        "   otherwise l:inc_files will be a tag.
+        if len(l:inc_files)
+          " Multiple include files for an include directive were found
+          if len(l:inc_files) > 1
             if count(l:src_file, '/')
-              let l:h =  UCTags#Tags#HeaderGuard(toupper(join(split(l:src_file, '/')[:-2], '_') . '_' . substitute(l:tags[0], '\.', '_', 'g')))
-
+              " This is only applicable if the language is C or C++.
+              " This isn't done very cleanly. We are just truncating the file
+              "   name of l:src_file so we just have the directory.  We replace
+              "   any forward slashes (/) with underscores, concatinating the
+              "   $name of tag associeated with l:inc_dir, replacing periods
+              "   with an underscore, followed by making it all upercase―We
+              "   will call this our HeaderGuard.  With the HeaderGuard, we
+              "   search the tags file for a $name that can suffix our
+              "   HeaderGuard and make sure the $kind is a 'macro'.
+              "
+              "   Example: If l:src_file was 'libfoo/bar.h', we truncate the
+              "     file name so we have just the directory―libfoo/.  We
+              "     replace the forward slash with an underscore.  Now we have
+              "     'libfoo_'.
+              "
+              "     Lets say the $name of tag for l:inc_dir is 'header.h'.  We
+              "     concatinate 'header.h' onto 'libfoo_' to get
+              "     'libfoo_header.h'.  Finally we replace the periods with an
+              "     underscore and make it all uppercase which results in:
+              "     LIBFOO_HEADER_H
+              "
+              "     Typically a HeaderGuard wont actually be prefixed with
+              "     'lib'.  The 'lib' part is usually just what is required for
+              "     compiling; with that being said, there probably wont be a
+              "     tag $name of 'LIBFOO_HEADER_H'; however, there could be a
+              "     tag $name of 'FOO_HEADER_H' which is why we search for a
+              "     tag $name that can suffix our HeaderGuard.
+              "
+              " COMBAK Maybe move the mechanics to UCTags#Tags#HeaderGuard() so
+              "   we can take advantage of Perl when implementing the Perl
+              "   variant.
+              let l:h = UCTags#Tags#HeaderGuard(
+                    \ toupper(
+                    \   join(split(l:src_file, '/')[:-2], '_')
+                    \   . '_' . substitute(l:inc_dir[0], '\.', '_', 'g')))
             endif
-
             " Check if a headerguard was found
-            if len(l:h)
+            if exists('l:h') && len(l:h)
               " Multiple headerguards were found
               if len(l:h) > 1
                 echomsg 'Multiple headerguards found!'
-                " l:tags[0] is the $name of the tag; if there are multiple
-                "   headerguards found for any $name, we can add it to the list
-                "   of found headers so $name can be skipped whenever
-                "   encountered.
-                if !count(s:shit, l:tags[0])
-                  call add(s:shit, l:tags[0])
+                " l:inc_dir[0] is the $name of the tag; if there are multiple
+                "   HeaderGuards found for any $name, those same HeaderGuards
+                "   will always be found for that $name.  Because the results
+                "   are uniform, we can add l:inc_dir[0] to the list of include
+                "   files so it can be skipped if encountered again.
+                if !count(s:inc_files, l:inc_dir[0])
+                  call add(s:inc_files, l:inc_dir[0])
                 endif
 
                 echomsg 'This is hopefully never reached..'
                 continue
               endif
             
-              " There is only one headerguard found; process it as if there
-              "   wasn't multiple files found
-              let l:tag = filter(l:tag, 'v:val[1] ==# l:h[0][1]')
-              "let l:tag = l:h
+              " There is only one HeaderGuard found.  Use $file of the tag
+              "   accocieated with the HeaderGuard to select appropriate
+              "   include file.  Process the include file as if there was only
+              "   one found originally.
+              "let l:inc_files = filter(l:inc_files, 'v:val[1] ==# l:h[0][1]')
+              call filter(l:inc_files, 'v:val[1] ==# l:h[0][1]')
             endif
           endif
 
-
-
-
           " Check if include file has already been found
-          if !count(s:shit, l:tag[0][1])
-          "if !has_key(l:tmp, l:tag[0][1])
-            if filereadable(l:tag[0][1])
-              call add(l:list, l:tag[0][1])
-              if count(l:list, l:tag[0][1]) > 1
-                echomsg 'more than one'
-              endif
-              "call add(l:tmp, l:tag[0][1])
-              "call extend(l:tmp, s:ToTagDict(l:list))
-              "continue
+          if !count(s:inc_files, l:inc_files[0][1])
+            if filereadable(l:inc_files[0][1])
+              call add(l:list, l:inc_files[0][1])
             endif
 
-              call add(s:shit, l:tag[0][1])
+              call add(s:inc_files, l:inc_files[0][1])
           endif
 
           " We continue to the next iteration as we have already found the
-          "   include file for l:tag[0][1] (Or we know there is no include file
-          "   for l:tags[0]―$name).
+          "   include file for l:inc_files[0][1] (Or we know there is no
+          "   include file for l:inc_dir[0]―$name).
           continue
         endif
 
-        " l:tags[0] is the $name of the tag; if we can't find a file for any
-        "   $name, we can add it to the list of found headers so $name can be
-        "   skipped whenever
-        call add(s:shit, l:tags[0])
+        " l:inc_dir[0] is the $name of the tag; if we can't find a file for any
+        "   $name, we can add it to the list of found include files so $name
+        "   can be skipped if encountered again.
+        call add(s:inc_files, l:inc_dir[0])
       endfor
-      " Combine both l:tmp and l:list so when filtering, we can discard include
-      "   include files that have already be crosschecked with the original
-      "   source file.  This is NOT the same as what l:used_src_files is for!
-      " We might be able to use a dictionary here to avoid large lists
-      "   requiring more memory
-    ""  call extend(l:tmp, s:ToTagDict(l:list))
-
-      " We only need the file section of the tag.
-      " We can't use a dicrioary for l:list as there is no order guaranteed.
-      "call map(extend(l:list, filter(UCTags#Tags#KindFor(l:b, l:src_file), '!has_key(l:tmp, v:val[1])')), 'v:val[1]')
-    ""  call extend(l:list, filter(UCTags#Tags#KindFor(l:b, l:src_file), '!has_key(l:tmp, v:val[1])'))
-
     endfor
 " =============================================================================
     if 0
@@ -434,61 +421,25 @@ function! s:UpdateSynFor(src_file, ...)
   endif
 " =============================================================================
 
-    "echomsg map(UCTags#Tags#KindFor('header', l:src_file), "filter(UCTags#Tags#FindFile(v:val[0]), !empty(v:val))")
-    "echomsg map(UCTags#Tags#KindFor('header', l:src_file), '1')
-    "echomsg map(UCTags#Tags#KindFor('header', l:src_file), 'UCTags#Tags#FindFile(v:val[0])')
-    "call extend(l:list, map(UCTags#Tags#KindFor('header', l:src_file), 'UCTags#Tags#FindFile(v:val[0])'))
-    "echomsg l:list
-
-    " We are going to change the meaning of a:2; a:2 is now going to be header
-    "   header files that we have already grabbed headers from!  Not headers
-    "   that we have compared the tags against the source file.
-    " This feature wont be implemented with the first commit changing a:2 to
-    "   l:a2.  It shouldl be implemented in the commit after that.
     for l:src_file in l:list
       " We shouldn't have to check if 
-      if count(l:cur_shit, l:src_file)
+      if count(l:cur_inc_files, l:src_file)
         echomsg "This souldn't be reachable: l:src_file in l:list"
         continue
       endif
-      "if has_key(l:raw_a2, l:src_file[1]) | continue | endif
-      "if a:0 && count(a:2, l:src_file) | continue | endif
-      "call s:UpdateSynFor(substitute(
-      "      \   l:src_file, '^.*' . l:pat[-1] . '\s\+', '', 'g'),
-      "      \ l:sourced_syn, extend(l:a2, [l:src_file]), l:used_src_files, l:ofile)
-      " 
-      " If we extend the l:list to l:a2, further iterations SHOULDN'T be
-      "   affected by the check above as the check is checking a:2; we are
-      "   extending to l:a2 which is a copy of a:2, therefore wont change a:2
-      " I suppose we could also use a dictionary here and check if has key,
-      "   rather than filtering checking for count.
-      " Because l:a2 is a dictionary, {expr2} in extend() has to also be a
-      "   dicrionary.
-      "   
-      "   NOTE: extend(l:a2, {l:src_file : l:src_file} does not keep the same
-      "     structure as s:ToTagDict() does.
-      "call s:UpdateSynFor(l:src_file, l:sourced_syn, add(l:a2, l:src_file), l:used_src_files, l:ofile)
-      call s:UpdateSynFor(l:src_file, l:sourced_syn, l:a2, l:used_src_files, l:ofile)
-      "call s:UpdateSynFor(l:src_file[1], l:sourced_syn, extend(l:a2, {l:src_file[1] : l:src_file}), l:used_src_files, l:ofile)
-      "call s:UpdateSynFor(substitute(
-      "      \   l:src_file, '^.*' . l:pat[-1] . '\s\+', '', 'g'),
-      "      \ l:sourced_syn, extend(a:0 ? a:2 : [], [l:src_file]), l:used_src_files, l:ofile)
+      call s:UpdateSynFor(l:src_file)
     endfor
-    "for l:src_file in l:list
-    "  if a:0 && count(a:2, l:src_file) | continue | endif
-    "  call s:UpdateSynFor(substitute(
-    "        \   l:src_file, '^.*' . l:pat[-1] . '\s\+', '', 'g'),
-    "        \ l:sourced_syn, extend(a:0 ? a:2 : [], [l:src_file]), l:used_src_files, l:ofile)
-    "endfor
   endfor
 
   return l:src_syn_file
 endfunction
-let s:shit = []
 
 function! UCTags#Highlight#UpdateSynFile(file)
   echomsg 'Doing shit..  This may be a while'
-  let s:shit = []
+  let s:inc_files = []
+  let s:used_src_syn_files = []
+  let s:src_file = a:file
+  let s:sourced_syn = 0
   execute 'source' s:UpdateSynFor(a:file)
 
 endfunction
