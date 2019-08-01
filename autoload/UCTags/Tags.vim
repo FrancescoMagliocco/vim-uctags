@@ -26,13 +26,31 @@ function! s:Readtags(exp)
   return map(split(system('readtags -e -t ' . g:uctags_tags_file . " -Q '" . a:exp . "' -l"), '\n'), "split(v:val, '\t')")
 endfunction
 
+function! UCTags#Tags#Readtags(str, ...)
+  let l:str = trim(a:str, "'")
+  for l:i in range(1, len(a:000))
+    let l:str = substitute(l:str, 'a:' . l:i, eval('a:' . l:i), 'g')
+  endfor
+  return s:Readtags(l:str)
+endfunction
+
+function! UCTags#Tags#HeaderGuard(file)
+  let l:ret = s:Readtags('(and (eq? $name \"' . subsitute(toupper(a:file), '[/.]', '_', 'g') . ') (eq? $kind "macro"))')
+  return l:ret
+endfunction
+
 function! UCTags#Tags#KindFor(kind, file)
   let l:ret = s:Readtags('(and (eq? $kind "' . a:kind . '") (eq? $input "' . a:file . '"))')
   return l:ret
 endfunction
 
+function! UCTags#Tags#KindFor(kind, file, ...)
+  let l:ret = s:Readtags('(and (eq? $kind "' . a:kind . '") (eq? $input "' . a:file . '"))')
+  return l:ret
+endfunction
+
 function! UCTags#Tags#FindFile(file)
-  let l:ret = s:Readtags('(and (eq? $kind "file") (suffix? $input "' . a:file . '"))')
+  let l:ret = s:Readtags('(and (eq? $kind "file") (or (suffix? $input "/' . a:file . '") (eq? $input "' . a:file . '")))')
   return l:ret
 endfunction
 
