@@ -1,5 +1,5 @@
 " File:         Tags.vim
-" Last Change:  07/31/2019
+" Last Change:  08/01/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -35,7 +35,9 @@ function! UCTags#Tags#Readtags(str, ...)
 endfunction
 
 function! UCTags#Tags#HeaderGuard(file)
-  let l:ret = s:Readtags('(and (eq? $name \"' . subsitute(toupper(a:file), '[/.]', '_', 'g') . ') (eq? $kind "macro"))')
+  "let l:ret = s:Readtags('(and (eq? $name "' . substitute(toupper(substitute(a:file, '^lib', '', 'g')), '[/.]', '_', 'g') . '") (eq? $kind "macro"))')
+  let l:ret = s:Readtags('(and (suffix? "' . a:file . '" $name) (eq? $kind "macro"))')
+
   return l:ret
 endfunction
 
