@@ -1,37 +1,56 @@
-# vim-uctags
+# Vim-UCTags
 A Universal-Ctags highlighter
 
 This README until it is fully finished is going to be a shit show, and
 everything will be all over the place until I have everything in place.
 
+Vim-UCTags is a [Vim][vim] plugin that utilizes [Universal-Ctags][uctags] in
+such a way to make highlighting syntax more accurate by using the tags
+generated.  This is done efficiently where a [Syn File][syn-files] is created
+for every file that has an associated tag, rather than creating one massive Syn
+File and sourcing it.  Creating one massive Syn File and sourcing it can cause
+severe performance issues in Vim, even when doing something as simple as just
+moving the cursor; furthermore, even powerful PC's can face performance issues
+from massive Syn Files being sourced.  For accuracy, Vim-UCTags also recognizes
+[include directives][inc-dir] for a select few languages (More are to be
+supported as development continues).  An include directive that has an available
+[include file][inc-file] and [include Syn File][inc-syn-file] is used to
+highlight only tags that are present in a [source file][src-file].  If an
+include Syn File has tags that a source file doesn't, those tags will be
+ignored; why try to highlight something that isn't there.
+
 ## Requirements
-Vim-UCTags has one mandatory requirement: [Universal-CTags][uctags]; which can
+Vim-UCTags has one mandatory requirement: [Universal-Ctags][uctags], which can
 be built from source at [GitHub][uctags-repo], or installed using your package
 manager.
 
 ### apt-get
 For Debian and Debian derivatives, you can run the following in a terminal of
 your choosing:
+
 ```bash
-sudo apt-get -fV install universal-ctags --no-install-reommends
+sudo apt-get -fV install universal-ctags --no-install-recommends
 ```
 
 ### pacman
 For Arch Linux and Arch Linux derivatives, you can run the following in a
 terminal of your choosing:
+
 ```bash
 pacman -Syu universal-ctags-git
 ```
+<sup>**NOTE:** You may need to issue this through `sudo` if you do not have
+sufficient privileges.</sup>
 
-Additionally, you will need the `find` command, provided by the
+Additionally, you will need the `find` command―provided by the
 *findutils*<sup>\*</sup> (Should be installed by default if on
 Linux)<sup>\*\*</sup> package.  
 <sup>\* Package name based on Debian repositories.</sup>  
 <sup>\*\* If not installed by default, consult your package manager.</sup>
 
 ## Optional Dependencies
-Vim-UCTags has some optional, but **highly** recommended, dependencies.  As of
-right now, there is only one optional dependency, however, more may be
+Vim-UCTags has some optional, by **highliy** recommended, dependencies.  As of
+right now, there is only one optional dependency; however, more may be
 introduced later on in development.
 
 ### Perl
@@ -40,49 +59,79 @@ on large projects.  You do not need any knowledge whatsoever on how to use Perl
 to take advantage of what it offers.
 
 See [Compiling Vim with Perl Interface][perl-compiling] for instructions on how
-to compile Vim with the Perl Interface.  If you installed Vim using your
-package manager, all that should be required is for Perl to be installed if not
-already.
+to compile Vim with the Perl Interface.  If you installed Vim using your package
+manager, all that should be required is for Perl to be installed―if not already.
 
-<sup>**NOTE: I am unsure if vim-uctags will work on Windows or not.  If it does
-not work on Windows, I do appologize, but until this plugin is finished and in
-a working stable state, Windows support will not be a priority.**</sup>
+#### Perl Prerequisites
+In order for Vim-UCTags to utilize Perl , there is one prerequisite: The
+function [list2re][list2re]―provided by the [Data::Munge][data-munge]
+module―therefore `Data::Munge` being a dependent and furthermore required to be
+installed to satisfy this prerequisite.
 
-## Installing
-If you don't know how to install a plugin or need assistance; this section
-will demonstrate how to do so using a few plugin managers.  Also included will
-be links to their respected repositories, in case you wish to check them out.
-If you're new to plugin managers and don't know what to choose; you can try
-them all and see which one suits your needs and prefer more.  I personally use
-[Vundle][vundle].  
-<sup>You are not limited to using these plugin managers.  If you use a
-different one that isn't listed below, Vim-UCTags will still work as
-intended.</sup>
+You can use your package manager or [CPAN][cpan] (See [How to install CPAN
+modules][installing-modules]) to install the mentioned modules.
 
-### Vundle
-If you use [Vundle][vundle] (What I personally use and recommend even though I
-haven't tried many others) to manage your plugins, first place the following in
-your .vimrc (Don't close Vim):
-```vim
-Plugin 'FrancescoMagliocco/vim-uctags'
+##### apt-get
+If you're on Debian and Debian derivatives, enter the following into a terminal
+of your choosing):
+
+```bash
+usudo apt-get -fV install libdata-munge-perl --no-install-recommends
 ```
 
-While still in your .vimrc, run the following commands:
+##### pacman
+If you're on Arch Linux and Arch Linux derivatives, enter the following into a
+terminal of your choosing:
+
+```bash
+pacman -Syu perl-data-munge
+```
+<sup>**NOTE:** You may need to issue this through `sudo` if you do not have
+sufficient privileges.</sup>  
+<sup>I am unsure if this is the correct package as I do not use Arch
+Linux.</sup>
+
+## Installing
+If you don't know how to install a plugin or need assistance, this section will
+demonstrate how to do so using a few plugin managers.  Additionally, included
+will be links to their respected repositories, in case you wish to check them
+out.
+
+If you're new to plugin managers and don't know what to choose, you can try them
+all and see which one suites your needs and prefer more.  I personally use
+[Vundle][vundle].
+
+<sup>You are not limited to use this plugin managers.  If you use a different
+one that isn't listed above, Vim-UCTags will still work as intended.</sup>
+
+### Vundle
+If you use [Vundle][vundle] (Which is what I personally use and recommend even
+though I haven't tried many others) to manage your plugins, first place the
+following in your *.vimrc* (Don't close Vim after doing so):
+
+```vim
+Plugin 'FrancesoMagliocco/vim-uctags'
+```
+
+While still in your *.vimrc*, run the following commands:
+
 ```vim
 :source %
 :PluginInstall
 ```
 
-<sup>For Vundle version 0.10.2, replace *Plugin* with *Bundle* above.</sup>
+<sup>For Vundle version < 0.10.2, replace *Plugin* with *Bundle*.</sup>
 
 ### NeoBundle
 If you use [NeoBundle][neobundle] to manage your plugins, first place the
-following in your .vimrc (Don't close Vim):
+following in your *.vimrc* (Don't close Vim after doing so):
+
 ```vim
 NeoBundle 'FrancescoMagliocco/vim-uctags'
 ```
 
-While still in your .vimrc, run the following commands:
+While still in your *.vimrc*, run the following commands:
+
 ```vim
 :source %
 :NeoBundleInstall
@@ -90,12 +139,14 @@ While still in your .vimrc, run the following commands:
 
 ### VimPlug
 If you use [VimPlug][vimplug] to manage your plugins, first place the following
-in your .vimrc (Don't close Vim):
+in your *.vimrc* (Don't close Vim after doing so):
+
 ```vim
 Plug 'FrancescoMagliocco/vim-uctags'
 ```
 
-While still in your .vimrc, run the following commands:
+While still in your *.vimrc*, run the following commands:
+
 ```vim
 :source %
 :PlugInstall
@@ -103,429 +154,695 @@ While still in your .vimrc, run the following commands:
 
 ### Pathogen
 Unlike the previous 3 plugin managers, if you're using [Pathogen][pathogen] to
-manage your plugins, the process is a bit different, but still still simple.
-Just run the following commands in a terminal of your choosing:
+manage your plugins, the process is a bit different, but still simple.  Just run
+the following commands in a terminal of your choosing:
+
 ```bash
 cd ~/.vim/bundle
 git clone https://github.com/FrancescoMagliocco/vim-uctags
 ```
 
-## Features
-Vim-UCTags is full of features; Vim-UCTags also changes how it functions on
-occasion—sometimes frequently.  I am regularly profiling function and comparing
-different approaches to achieve the same result but more efficiently.  
+If you get an error about a directory not existing, all you need to do is create
+the directory using the following commands:
 
-STILL NEEDS WORK
-Some or complete and some aren't.  Some
-features still need to be implemented and some are just a thought.  The list of
-features you're about to see is not the full list, and there will be for sure
-some features left out or forgotten.
+```bash
+cd ~
+mkdir -p .vim/bundle
+```
 
-### Syn Files
-Syn Files are identical to Vim's [Syntax Files][vim-syn-files] except, rather
-than be associated for a particular language, they are associated for a single
-file; furthermore, **Syn FIles** are simply a Vim Script of either
-*syn-keyword* commands, *syn-match* commands or both<sup>\*</sup>―the latter
-being default.  
-<sup>\* The option [g:uctags\_use\_keyword][use-keyword] is the main
-contributor in using both *syn-keyword* and *syn-match* commands.</sup>
+## Definitions
+In order to understand this **README** more effectively, the meaning of a few
+distinct terms are to be made ambiguous, but still correlative.  Furthermore,
+recognized word will be used sequentially to form lucid phrases.  All
+definitions hold applicable throughout any encounters in this text unless
+explicitly specified.
 
-Hereafter, *source file* will be used to identify the file in the active buffer
-of Vim.
+### *source file*
+The phrase *source file* is used to identify the file in the current active of
+Vim: When you press <kbd>i</kbd> and start typing... The buffer that you're
+typing in is the *source file*.
 
-Syn Files are named by appending *.syn* to a filename; that said, you can
-easily recognize what  source file a Syn File is associated to―a Syn File with
-name 'foobar.c.syn' would be associated to the source file 'foobar.c'.
+### *source Syn File*
+The phrase *source Syn File* will be used to identify the [Syn File][syn-files]
+associated with the [source file][src-file].  The *source Syn File* may not
+always exists when being referred to.
 
-Syn Files are created with the [:CreateSynFiles][createsynfiles] command.  When
-executing `:CreateSynFiles`, a Syn File will be created for every file in the
-tags file has a language homogeneous to the language of the source file
-`:CreateSynFiles` was issued from.
+### *include directive*
+When referring to the term *include directive*, it will be ambiguous such that,
+*import delcarations* i.e. `C#` `namespace`, `Python` `import` and anything
+alike; are validly represented.
 
-#### Example
-The source file 'foobar.c' is where `:CreateSynFiles` is issued from (*issued*
-meaning that is where the user performed the command); all languages that are
-homogeneous to the language of `C` will have Syn Files generated for them; this
-includes `C++` as there isn't *much* distinction between the two, and in some
-cases are interchangeable.  The same goes for when `C++` is the language of the
-source file where `:CreateSynFiles` was issued from; all files in the tag file
-that consist of the language `C` will have Syn Files generated as well.
+### *include file*
+The phrase *include file* will refer to the file regarded in an [include
+directive][inc-dir].
 
-### Smart Syn<sup>\*</sup>
-<sup>\* Temporary name until a more conspicuous one rises.</sup>  
-Hereafter, when referring to the term *include directive*; it will be ambiguous
-such that, *import delclarations* i.e. C# `namespace`s, Python `import`'s and
-anything alike, are validly represented.
-
-Hereafter, the term *include file* will refer to the file regarded in the
-include directive.  
 ```c
 // include directive
 #include "include-file.h"
 ```
 
-Hereafter, the term *source Syn File* will used to identify the [Syn
-File][syn-files] associated with the source file, whether or not it exists.
+### *include Syn File*
+The phrase *include Syn File* will be used to identify the [Syn File][syn-files]
+associated with the [include directive][inc-dir].  The *include Syn File* may
+not always exists when being referred to.
 
-Hereafter, the term *include Syn File* will used to identify the Syn File
-associated with the include file, whether or not it exists.
+## Features
+Vim-UCTags is full of features!  Vim-UCTags also changes how it functions on
+occasion―sometimes frequently.  I am regularly profile functions and comparing
+different approaches to achieve the same results but more efficiently.
 
-For languages that implement use of include directives; when executing the
-[:UpdateSynFile][updatesynfile] command, the source file which `:UpdateSynFile`
-was issued from will have each line (With respect to what option
-[g:uctags\_max\_lines\_header\_search][max-lines-header-search] is set to)
-analyzed for an include directive.  If an include directive is found and the
-include file exists along with the include Syn File, each line of the include
-Syn File will be parsed retrieving the last section―a *pattern* or *keyword*;
-the latter being
+Missing highlighting for some languages have been added:
+- javascript
+- c
+- c#
 
-CHECK HOW *SYN-MATCH* and *SYN-KEYWORD* COME INTO PLAY!  ARE THEY TREATED
-DIFFERENTLY?
+**THIS MAY NOT HAVE TO BE INCLUDED**  
+Max depth an include Syn File can be processed
 
-be compared against ever line in the source file, looking for a match.  If
-there is a match, the line in the include Syn File that had its
-*pattern/keyword* matched; that whole line will be appended to the source Syn
-File―only if the source Syn File doesn't already contain an exact replica of
-the line.
+**STILL NEEDS WORK**  
+Some features still need to be implemented and some are just a thought.  The
+list of features you're about to see is not the full list, and there will be for
+sure some features left out or forgotten.
 
-After the include Syn File has had each line compared against each line of the
-source Syn File, the include file is now analyzed just as the source file
-was.  The only difference is, now if an include directive is found, the include
-Syn File for the **new** include file wont be compared against each line of the
-include file which is being analyzed.  Instead, the **new** include Syn File
-(include Syn File for the previous mentioned **new** include file) will be
-compared against the source file just like before.  This is because we are
-updating the source Syn File.
+### Syn Files
+Syn Files are identical to Vim's [Syntax Files][vim-syn-files] except, rather
+than be associated for a particular language, they are associated for a single
+file.  Furthermore, **Syn Files** are simply a Vim Script of either
+*syn-keyword* commands, *syn-match* commands or both<sup>\*</sup>―*syn-match*
+being the default.  
+<sup>\* The option [g:uctags\_use\_keyword][use-keyword] is the main contributor
+in using both *syn-keyword* and *syn-match* commands.</sup>
 
-This process continues there are no more include directives found or if the
-limit set in option [g:uctags\_max\_syn][max-syn] is reached―whatever comes
-first.
+Syn Files are named by appending *.syn* to a filename.  That being said, you can
+easily recognize what source file<sup>\*</sup> a Syn File is associated to: A
+syn File with name *foobar.c.syn* with be associated to the source
+file<sup>\*</sup> *foobar.c*.  
+<sup>\* *source file* is not to be confused with [source file][src-file] in this
+context.  In this context, *source file* refers to any file that can have a Syn
+File generated for.</sup>
 
-Every include file that is analyzed is kept track of so that same include file
-isn't analyzed more than once.
+Syn Files are created with the [:CreateSynFiles][createsynfiles] command.  When
+executing `:CreateSynFiles`, a Syn File will be created for every file in the
+tags file has a language homogeneous to the language of the [source
+file][src-files] which `:CreateSynFils` was issued from.
 
-They include Syn Files are left intact and untouched.  Only the source Syn File
-is modified.
-
-<sup>NOTE: The word 'Highlight' is *italicised* because at the current stage of
-development, *Highlighting* isn't *exactly* done automatically.  If you change
-buffers in a way that a buffer containing highlighted tags isn't visible
-anymore; those highlighted tags wont be highlighted anymore when coming back to
-that buffer.  This is done intentionally while in development stage.  The
-final product will maintain highlights navigating through buffers whether the
-visibility of a buffer changes or not.</sup>
+#### Example
+The source file *foobar.c* is where `:CreateSynFiles` was issued from (*issued*
+meaning: That is where the user executed the `:CreateSynFiles` command).  All
+files in the tag file that languages homogeneous to the language of `C`, will
+have Syn Files generated for them; this includes the language `C++` as there
+isn't *much* distinction between the two, and in some cases are interchangeable.
+The same goes for when `C++` is the language of the source file where
+`:CreateSynFiles` was issued from: all files in the tag file that consist of the
+language `C` will have Syn Files generated as well.
 
 ### Smart Syn
-For now I am calling this Smart Syn just because I don't know what else to call
-this feature.
+Prior to highlighting a [source file][src-file] of languages that utilize
+[include directives][inc-dir], the tags file is searched for any include
+directive that the source file has.  With those found include directives,
+Vim-UCTags attempts to locate the corresponding [include file][inc-file] for
+each of the include directives.
 
-Essentially what this feature does is, for languages that use the `#include`
-directive and equivalent (An equivalent would be the Go language using the
-`import` declaration which still needs a lot of work.  Less than bare basic
-support the `import` declarations is supported right now) such as C and C++,
-reading tags to be highlighted, the file that is to be highlighted has every
-line searched for an `#include` directive.  Once one is found, if there is a
-syn file associated with that header, that syn file is `sourced`.  Whether a
-syn file for the header existed or not, that header is now searched for
-`#include` directives as well and if there is a syn file associated with that
-header, it to is sourced.  This process is continued until there are no more
-headers.
+Each include file found is then added to two different lists:
+1. Used for iterating the found include files
+2. Used for keeping track of what include files have been found―we will refer to
+   this one as the *skip list*―so we don't analyze an [include Syn
+   File][inc-syn-file] associated with the include file more than once during
+   recursive iterations (Even if there is no include Syn File for an include
+   file, we sill keep track so we know to skip it if encountered again)
 
-The way these headers are found is done so through a long and sometimes
-confusing procedure.  If there are multiple headers in the initial file that is
-to be highlighted, they will not be skipped.  Same goes for if there are
-multiple headers inside of a header; they will not be skipped.  However, during
-this *procedure*, if the syn file for a header has already been sourced, it
-will NOT be sourced again.  No matter where a header may be; there could be a
-header foobar.h in the initial file to be highlighted, and the **exact** same
-header could be included deep 50 levels in another header..  It will not be
-sourced.  Emphasis on *exact* is because, the way a header is declared to be
-**exactly** the same as some other header is not only by the name of the
-header, but the path as well.  There can be multiple headers with the same
-name, but only one with that name in a given path.
+We iterate the found include files, skipping ones that don't have an include Syn
+File.  For include files that do have one, the *syn-pattern* or *syn-keyword*
+section in each line of the include Syn File is compared against each line in
+the source file, looking for a match.
 
-#### Planned Implementations for Smart Syn
-- [x] Option for max depth a header can be processed
-- [x] Option to limit how many lines can be searched to find a header
+If a match is found and the [source Syn File][src-syn-file] doesn't contain an
+exact replica of the whole line *syn-pattern* or *syn-keyword* was part of; that
+whole line will be appended to the source Syn File.
+
+**_SOURCE SYN FILE_ SHOULD BE CHECKED OF THE WHOLE LINE PRIOR TO SEARCHING FOR A
+MATCH!  THIS IS MORE EFFICIENT!  CHECK CODE TO VERIFY THIS MECHANIC!**
+
+After the *syn-pattern* or *syn-keyword* section in each line of the include Syn
+File has been compared to each line in the source file, the include file
+associated with the include Syn File is then treated in a similar way the source
+file was:
+
+> The tags file is searched for any include directives the include file
+> contains.  Vim-UCTags attempts to locate the include file for each found
+> include directive, ignoring ones that are already in the *skip list*.  All
+> newly found include files are added to the two previously mentioned lists and
+> each include file that has an include Syn File is compared to the source file,
+> performing the same operation as before.
+
+This process continues until there are no more include directives found or if
+the limit set in option [g:uctags\_max\_syn][max-syn] is reached―whatever comes
+first.
 
 ### Smart Syntax Files
-Not to be confused with [Syn Files][syn-files] but yes another stupid use of
-the word *Smart*..
+Not to be confused with [Syn Files][syn-files].
 
-Syntax files for languages that have parts missing such as functions, will be
-added.  For languages such as C that require a header for some functions, those
-functions wont be highlighted unless the corresponding header is included.
+Syntax files for languages that have missing highlights for such as functions,
+will be added.
+
+For languages such as `C`―languages that utilize [include
+directives][inc-dir]―those functions wont be highlighted unless the appropriate
+header is included.
+
+### Recognizes Header Guards
+This feature has just recently been implemented.  When working with the
+languages `C` and `C++`, after searching the tags for
+[include directives][inc-dir]; if multiple [include files][inc-file] are found
+for an include directive, the way the correct include file is selected is by
+taking the directory of the file the include directive was found in and prefix
+it to the file name the multiple include files were found under.  We replace any
+forward slashes (*/*) and periods (*.*) with underscores (*\_*) and make the
+whole string uppercase.  We use this to correlate a macro tag (Tags of $kind
+*"macro"*) in the tags file and cross reference the *$input* section of the
+macro tag to the *$input* section of each tag of the include files found for the
+include directive, selecting the include file where the *$inputs* cross
+referenced are indistinguishable.
 
 ## Future Features
-- [ ] Option to specify additional *external* syn and tag files
-- [ ] Config file for
-
-
+- [ ] Option to specify additional *external* [Syn][syn-files] and tag files
+- [ ] Have Vim-UCTags read a `config` file if present in the project root
+directory
 
 ## Global Options
 This section will break down each global option, explaining what the option
 does, if the option depends on another option or options, whether or not those
-options to be set and what they outcome will be with different combinations of
-options.  The default value for options will also be shown where applicable.
+options need to be set and what the outcome will be with different combinations
+of options.  The default value of options will also be shown where applicable.
 The default of some options will require you to refer to the source code.
 
 ### g:uctags\_executable
 **Default: 'ctags-universal'**  
-Name of the universal-ctags executable.  Typically the default should suffice.
-If you built universal-ctags manually and didn't change `--program-prefix` or
-`program-transform-name`, set `g:uctags_execuable` to *'ctags'* (Shown below)
-in your *.vimrc*.
-```vim
-let g:uctags_executable = 'ctags'
-```
+Name of the Universal-Ctags executable.  Typically the default should suffice.
+
+If you built Universal-Ctags manually and you didn't change `--program-prefix`
+or `--program-transform-name`, set `g:uctags_executable` to *'ctags'* (Shown
+below)
 
 #### NOTE
 If you did change `--program-prefix`, make sure to append *ctags* to
-`g:uctags_execuable`:
+`g:uctags\_executable`
 
-##### Examples
+##### Examples:
 If you're confused as to if you need to include a dash (*-*) when setting
-`g:uctags_executable`, the following should give you some clarification.
+`g:uctags\_executable`, the following should give you some clarification.
+
 `--program-prefix=my`
 ```vim
 let g:uctags_executable = 'myctags'
 ```
+
 `--program-prefix=my-`
 ```vim
 let g:uctags_executable = 'my-ctags'
 ```
+
 `--program-prefix=my-ctags`
 ```vim
 let g:uctags_executable = 'my-ctagsctags'
 ```
 
-##### TODO
-- [ ] Make the example more appealing
+#### TODO
+- [ ] Make the examples more appealing
+
+### g:uctags\_tags\_file
+**Default: 'tags'**  
+The file to be used for when generating and looking for tags.  This value will
+be passed as an argument to the `-f` parameter for Universal-Ctags.
+
+### g:uctags\_pre\_args
+**Default: See _plugin/uctags/uctags\_globals.vim_**  
+These arguments are prepended to [g:uctags\_args][uctags-args]; hence, they will
+**PREVAIL IS NOT ACCURATE** prevail over `g:uctags_args`.
+
+The purpose for this is when the precedence of arguments is significant,
+specifying them here will assure they will appear before `g:uctags_args` and
+[g:uctags\_extra\_args][extra-args].
+
+#### Example
+Take into consideration that you want to enable all *$kinds* with the exception
+of `C` *variables*.  To achieve this, one might be tempted to do the following:
+
+```vim
+if !exists('g:uctags_extra_args')
+  let g:uctags_extra_args = {}
+endif
+
+let g:uctags_extra_args['--kinds-all='] = '*'
+let g:uctags_extra_args['--kinds-c=']   = '-{variable}'
+```
+
+At first glance, this looks appropriate: `--kinds-c='-{variable}'` has a higher
+precedence, but if you recall, dictionaries in Vim guarantee no order; the order
+is arbitrary.  With that said, `--kinds-c='-{variable}'` could appear before
+`--kinds-all='*'` resulting the latter having precedence; furthermore, producing
+undesirable results: *variable* will still be enabled for the language `C` as
+`--kinds-all='*'` will override `--kinds-c='-{variable}'`.
+
+To successfully achieve the desired results, we would perform the following:
+
+```vim
+if !exists('g:uctags_pre_args')
+  let g:uctags_pre_args = {}
+endir
+
+let g:uctags_pre_args['--kinds-all='] = '*'
+
+if !exists('g:uctags_extra_args')
+  let g:uctags_extra_args = {}
+endif
+
+let g:uctags_extra_args['--kinds-c='] = '-{variable}'
+```
+
+Now *variable* for the language `C` is guaranteed to be disabled.
+
+#### Issues
+Currently, along with [g:uctags\_args][uctags-args], `g:uctags_pre_args` does
+hold some crucial arguments that Vim-UCTags depends on in order function
+accordingly.  Therefore, changing `g:uctags_pre_args` in your *.vimrc* could
+prove to be fatal.
+
+#### TODO
+- [ ] Have critical *pre-args* be defined in a script scoped variable
+- [ ] Have critical *pre-args* be also appended to
+[g:uctags\_args][uctags-args], so Vim-UCTags will function accordingly despite
+what option `g:uctags_args` and [g:uctags\_extra\_args][extra-args] are set to.
+- [ ] Have a global option to disable critical arguments―could prove useful for
+debugging.
 
 ### g:uctags\_extra\_args
 **Default: {}**  
-Extra arguments to pass to universal-ctags.  Extra arguments are specified
-using a dictionary.  The format to specify extra arguments is
-`{argument}=:{value}`.  The equal sign is needed.  If the argument you're
-specifying, doesn't take a value, such as `-R` (*Recursion*), just give an
-empty string (*''*) for `{value}`.  Even though `-R` does not take a value, the
-equal sign is needed.
+Extra arguments to pass to Universal-Ctags.
 
-Everything specified in `g:uctags_extra_args`, has a higher precedence over the
-default arguments provided internally.  `g:uctags_extra_args`
-will be appended to the internal arguments vim-uctags passes to
-universal-ctags.  If you want to change a default argument, do so here, not by
-changing  [g:uctags\_args][args].  You are likely to break
-vim-uctags if you change `g:uctags_args`.  Be careful when disabling different
-*kinds*, as that may break vim-uctags as well.
+Extra arguments are specified using a dictionary.  The format to specify extra
+arguments is:  
 
-Vim-uctags will not be able to understand the tags file, if the option
-`--fields` contains the `-K` flag.  Consequently, the `--fields` option will
-require the `+K` flag.  From the current development state, the *kind* of tag,
-must be described as a *full-name* and not a *single-letter*.  In the future
-this is likely to change.
+    {option}[=]:{value}
 
-In order for vim-uctags to parse the tag file, vim-uctags requires the option
-`--fields` to contain the `+z` or `+{kind}`, and `+l` or `+{language}` flags.
+The equal sign is only needed if the option requires a value.  `{value}` is
+always needed even if the option doesn't require a value; in such case, just
+give an empty string (*''*) for `{value}`:
 
-Universal-ctags allows a select few options to licitly be specified numerous
-times.  Unfortunately, due to the structure of dictionaries, if an option is
-specified numerously, only the latter will be validated.
+```vim
+if !exists('g:uctags_extra_args')
+  let g:uctags_extra_args = {}
+endif
 
-#### NOTE
-If both `g:uctags_args` and `g:uctags_extra_args` hold the same option,
-whatever was stored in `g:uctags_args` by that option, will be discarded and
-replaced with what `g:uctags_extra_args` holds for that option.  This includes
-the default arguments that make vim-uctags operable.  There **will** be a fix
-for this.
+let g:uctags_extra_args['-R'] = ''
+```
+
+Everything specified in `g:uctags_extra_args`, has a higher precedence than the
+arguments provided internally by [g:uctags\_args][uctags-args].  As a
+consequence, if `g:uctags_extra_args` and `g:uctags_args` have identical keys,
+the value in `g:uctags_extra_args` will replace the value in `g:uctags_args` for
+the identical key.
+
+All keys in `g:uctags_extra_args` that are unique, will be appended to
+`g:uctags_args`.
+
+```vim
+if !exists('g:uctags_args')
+  let g:uctags_args = {}
+endif
+
+if !exists('g:uctags_extra_args')
+  let g:uctags_extra_args = {}
+endif
+
+let g:uctags_args['-R']           = ''
+let g:uctags_args['--kinds-all='] = '*'
+let g:uctags_args['--kinds-c=']   = '+{header}'
+
+let g:uctags_extra_args['--recurse']  = ''
+let g:uctags_extra_args['--kind=']    = '-*'
+let g:uctags_extra_args['--kinds-C='] = '-{header}'
+
+```
+
+Every key here is unique, even though the options in keys for `g:uctags_args`
+have the exact same meaning as the options in keys for `g:uctags_extra_args`;
+however, the results are different as their `{values}` are different.
+
+For keys `-R` and `--recurse`, the results of both are equivalent; however, the
+remaining keys is where we run into confliction:
+- The key `--kinds` and `--kind` in `g:uctags_args` and `g:uctags_extra_args`
+  respectively, are unique as the former has a *s* appended, whereas the latter
+  does not.  Furthermore, the value for each of these keys have different
+  results, and which one to prove significant is inconclusive.
+- The keys `--kinds-c` and `--kinds-C` in `g:uctags_args` and
+  `g:uctags_extra_args` respectively, are unique as the *c* in the former is
+  lowercase, whereas in the latter it is uppercase.  Similar to the previous
+  point, the value for each of these keys have different results, and which one
+  to prove significant is inconclusive.
+
+If you want to change the value of a default argument, do so here, not by
+changing `g:uctags_args`.  You are likely to break Vim-UCTags if change
+`g:uctags_args`
+
+Vim-UCTags will not be able to understand the tags file if the option `--fields`
+contains the `-K` flag.  Consequently, the `--fields` option requires the `+K`
+flag to function correctly.  From the current development state, the *$kind* of
+tag must be described as a *full-name* and not a *single-letter*.  In the
+future, this is likely to change.
+
+In order for Vim-UCTags to parse the tag file, Vim-UCTags requires the option
+`--fields` to contain the `+z` (or `+{kind}`) and `+l` (or `+{language}`) flags.
+
+#### WARNING
+If both `g:uctags_args` and `g:uctags_extra_args` hold the same option―key―,
+whatever was stored in the former for that option, will be discarded and
+replaced with what `g:uctags_extra_args` held for that option.  This includes
+critical arguments that make Vim-UCTags function correctly.  There **will** be a
+fix for this.
+
+#### TODO
+- [x] Create option `g:uctags_pre_args`
+- [ ] Create option `g:uctags_post_args`
+- [ ] When parsing args, convert to lowercase
+- [ ] When parsing args, recognize similar options: `-R` and `--recurse` are the
+same.  `--kinds` and `--kind` are the same.  Doing this will have the added
+ability to warn on invalid arguments
 
 ### g:uctags\_use\_keyword
 **Default: 0**  
-When `g:uctags_use_keyword` is enabled, Vim will use *syn-keyword* (If
+When enabled, Vim will use *syn-keyword* (If
 [g:uctags\_use\_only\_match][use-only-match] is disabled) and *syn-match* (If
-[g:uctags\_skip\_non\_keyword][skip-non-keyword] is disabled) when
-highlighting.
+[g:uctags\_skip\_non\_keyword][skip-non-keyword] is disabled) when highlighting.
 
 It is not recommended to use *syn-keyword* for highlighting.  Even though
-*syn-keyword* is a lot faster, you will run into issues with that tags that
-have the same name, but are of different *kinds*.
+*syn-keyword* is a lot faster than *syn-match*, it is also a lot less accurate
+than *syn-match* and you will run into issues with tags that have the same
+*$name* but are of different *$kinds*.
 
 #### TODO
 - [ ] Explain in more detail
+- [ ] Give example
 
 ### g:uctags\_skip\_non\_keyword
 **Default: 0**  
-If `g:uctags_skip_non_keyword` is enabled, any patterns in
-[g:uctags\_match\_map][match-map] that aren't equal to
-[g:uctags\_default\_match][default-match] will be skipped.
+When enabled, any patterns in [g:uctags\_match\_map][match-map] that aren't
+equal to [g:uctags\_default\_match][default-match] will be skipped.
 
-#### NOTE
-In order for `g:uctags_skip_non_keyword` to successfully work,
-[g:uctags\_use\_keyword][use-keyword] needs to be enabled, and
-[g:uctags\_use\_only\_match][use-only-match] needs to be disabled.
+`g:uctags_skip_non_keyword` relies on [g:uctags\_use\_keyword][use-keyword]
+being enabled, and [g:uctags\_use\_only\_match][use-only-match] being disabled.
 
 ### g:uctags\_use\_only\_match
-When `g:uctags_use_only_match` is enabled, Vim will **only** use the much
-slower, but much *much* more accurate *syn-match*.
+**Default: 1**  
+When enabled, Vim will **only** use the much slower, but much **much** more
+accurate *syn-match*.
 
-The option `g:uctags_use_only_match` has a higher precedence than
-[g:uctags\_use\_keyword][use-keyword],
-[g:uctags\_skip\_non\_keyword][skip-non-keyword] and
-[g:uctags\_use\_keyword\_over\_match][use-keyword-over-match].
-Regardless if any the aforementioned options are enabled or not, will not affect
-`g:uctags_use_only_match`.  Thus, `g:uctags_use_only_match` will perform as
-intended no matter the situation.
+`g:uctags_use_only_match` has a higher precedence than:
+- [g:uctags\_use\_keyword][use-keyword]
+- [g:uctags\_skip\_non\_keyword][skip-non-keyword]
+- [g:uctags\_use\_keyword\_over\_match][use-keyword-over-match]
+
+Regardless the state of the mentioned options; if `g:uctags_use_only_match` will
+not be affected when enabled.
 
 ### g:uctags\_use\_keyword\_over\_match
 **Default: 0**  
-`g:uctags_use_keyword_over_match` applies to when a pattern in
-[g:uctags\_match\_map][match-map] is equal to
-[g:uctags\_default\_match][default-match], or if there isn't an entry
-for the patterns corresponding *kind*.
+This applies to when a pattern in [g:uctags\_match\_map][match-map] is equal to
+[g:uctags\_default\_match][default-match], or if there isn't an entry for the
+pattern corresponding to *$kind*―which in that case, `g:uctags_default_match` is
+used, resulting in the former condition binding.
 
 It is not recommended to use *syn-keyword* for highlighting.  Even though
-*syn-keyword* is a lot faster, you will run into issues with that tags that
-have the same name, but are of different *kinds*.
-
-#### TODO
-- [ ] Explain in more detail
-
-### g:uctags\_max\_lines\_header\_search
-**Default: 0**  
-Maximum lines to search files of languages that support include directives
-(*And alike*), for an include directive.  Setting a limit will increase
-performance as whole files wont be searched.  The downfall however is, if there
-is an include directive beyond what `g:uctags_max_lines_header_search` is set
-to, vim-uctags will won't know about it, and any tags that may have been defined
-with respect to the file associated with the include directive, will not be
-highlighted for the active buffer.
+*syn-keyword* is a lot faster than *syn-match*, it is also a lot less accurate
+than *syn-match* and you will run into issues with tags that have the same
+*$name* but are of different *$kinds*.
 
 ### g:uctags\_use\_perl
 **Default: 1 (If Vim is compiled with the `+perl` feature)**  
-Each function that utilizes Perl, will first check if Vim has support for Perl.
-If Perl isn't supported, the Vim variant functions will be used.  It is highly
-recommended to use Perl, especially for larger projects with an exceedingly
-amount of tags.  You **will** notice an enormous increase in performance.  You
-do not need any knowledge of how to use Perl.
+Each function that utilizes Perl will first check if Vim has support for Perl
+compiled.  If Perl isn't supported, the Vim variant functions will be used.
+
+It his highly recommended to use Perl, especially for larger projects with an
+exceedingly amount of tags.  You **will** notice an increase in performance.
+
+You do not need any knowledge whatsoever on how to use Perl to take advantage of
+what it offers.
+
+### g:uctags\_use\_readtags
+**Default: 1**  
+As mentioned on the official [Universal-Ctags][uctags] [Docs][uctags-docs] about
+[readtags][readtags]:
+
+> Currently this feature is only available on platforms where `fmemopen` is
+> available as part of libc.  Filtering in readtags is an experimental feature.
+
+Prior to the implementation of this feature into Vim-UCTags, the way tags were
+searched was by manually parsing through the entire tags file.  From a coding
+point of view, this was very tedious and on occasion was a bottleneck,
+especially when the tags file had an immense amount lines.  With that said, the
+performance increase is most likely marginal at best with hope in being greater
+in the future.
+
+Similar to [g:uctags\_use\_perl][use-perl], there are Vim and Perl variant
+procedures that are utilized when not using `readtags`.
 
 ### g:uctags\_max\_syn
 **Default: 0 (Unlimited)**  
-Maximum amount of [syn files][syn-files] to be processed and included when
-updating the syn file for the active buffer.
+Determines the max amount of [Syn Files][syn-files] to be processed and included
+when updating the [source Syn File][src-syn-file] with the command
+[:UpdateSynFile][updatesynfile].
 
-Syn files are named by appending *.syn* to the end of a file name.
+Setting this to 1 will only process and update the source Syn File.
 
-Foo.c has a syn file called Foo.c.syn.  
-The active buffer is Foo.c.  
-Foo.c contains include directives for Bar.h, FooBar.h and BarFoo.h.  
-Each header has a syn file; Bar.h.syn, FooBar.h.syn and BarFoo.h.syn.
-
-Setting `g:uctags_max_syn` to 2, will only process **one** of those syn files,
-and update the syn file for Foo.c.  This is because the syn file for Foo.c
-(Foo.c.syn) counts as one syn file.
-
-The order for which include directives are shown in Foo.c, does not determine
-the order the syn files of the aforementioned include directives will be
-processed.  There is no guarantee of the order due to sorting and removing
-duplicates.
-
-For projects that have piles of include directives in a single source file,
-setting a limit for how many syn files can be processed and included can
-improve performance substantially.  However, the same drawback as in
-[g:uctags\_max\_lines\_header\_search][max-lines-header-search] is
-perpetual.
+For projects that have an abundant amount of [include directives][inc-dir] in a
+single [source file][src-file], or where stacks of include directives are found
+several levels deep; setting a limit for how many can be processed and included
+can improve performance substantially.  The downfall however is, some
+*objectts*―and I use the term *objects* loosely here―may not be highlighted if
+the *object* was defined in a include directive deeper than what
+`g:uctags_max_syn` was set to.
 
 #### TODO
-- [ ] Make any value less than or equal to 0, unlimited
+- [ ] Make values any less than 0 be unlimited, so 0 can be specified to
+determine nothing is to be done when [Updating a Syn File][updatesynfile].
 
 ### g:uctags\_skip\_kind\_for
-**Default: See plugin/uctags/uctags_globals.vim**  
-Skips highlighting a specific *kind* for a particular language, or all
-languages.  This is done so using a dictionary.  The format is
-`{kind}:[{languages|all}]`.  The key `{kind}` is a string of the *kind* of tag.
-The value `[{languages|all}]` must be a list containing languages you wish to
-skip highlighting `{kind}` for, or all.
+**Default: See _plugin/uctags/uctags\_globals.vim_**  
+Specifies *$kinds* of tags for particular (Or all) languages be skipped and not
+have *syn-match* and/or *syn-keywords* created for, when [Syn Files][syn-files]
+are being created (Or updated) as a result from executing the
+[:CreateSynFiles][createsynfiles] command.  This is done so using a dictionary.
+The format is:
 
-To see a full of *kinds*, run the command `ctags-universal --list-kinds-full`,
-or `ctags-universal --list-kinds<language>` for language specific *kinds*.
+    {kind}: [{languages|all}]
 
-To see a list of supported languages, run the command `ctags-universal
---list-languages`.
+The key `{kind}` is a string of the *$kind* of tag you wish to disable creating
+*syn-match* and *syn-keyword* commands for, for the list of *languages*
+specified in value `[{languages|all}]`.
 
-#### TODO
-- [ ] Properly link *plugin/uctags/uctags_globals.vim*
-- [ ] Give examples
+The order for which the list of items appears in the value for key `{kind}` is
+insignificant.  If the list of items contains the item *all*, no matter the
+position, *all* languages for the key `{kind}` the item *all* was part of, will
+not have *syn-match* and *syn-keyword* commands created for the *$kind* of tag,
+key `{kind}`:
+
+```vim
+if !exists('g:uctags_skip_kind_for')
+  let g:uctags_skip_kind_for = {}
+endif
+
+let g:uctags_skip_kind_for['local'] = ['c', 'c++', 'all']
+```
+
+For the example above, not only will languages `C` and `C++` have *syn-match*
+and *syn-keywords* commands for the *local* *$kind* of tag skipped and not
+created, but no *syn-match* and *syn-keyword* commands will be created for any
+*local* *$kind* of tag.
+
+To see a full list of *$kinds*, run the following command in a terminal of your
+choosing:
+
+```bash
+universal-ctags --list-kinds-full
+```
+
+If you want to see a list language specific *$kinds*, run the following in a
+terminal of your choosing:
+
+```bash
+universal-ctags --list-kinds-<language>
+```
+
+To see a list of of languages supported by Universal-Ctags, run the following
+command in a terminal of your choosing:
+
+```bash
+ctags-universal --list-languages
+```
+
+<sup>**NOTE:** `&ft` will not always be a valid language supported by
+Universal-Ctags.  For the language `C#`, `&ft` expands to `cs`, and in all cases
+except **maybe** when using `readtags`, `cs` will not be valid.  `c#` however
+will work no matter the case.  Languages are not case sensitive.  They are all
+converted to lowercase internally in Vim-UCTags.</sup>
 
 ### g:uctags\_kind\_to\_hlg
-**Default: See plugin/uctags/uctags_globals.vim**  
-Maps each *kind* to a group-name when creating syn files.  This motive is for
-granular control on how
+**Default: See _plugin/uctags/uctags\_globals.vim_**  
+Maps each *$kind* to a *group-name* when creating [Syn Files][syn-files].  This
+motive is for granular control on how
 
 #### TODO
-- [ ] Properly link *plugin/uctags/uctags_globals.vim*
 - [ ] Finish document
 - [ ] Give examples
 
 ### g:uctags\_default\_match
-**Default: { 'start' : '/\<',  'end' : '\>/' }**  
+**Default: { 'start' : '/\\<', 'end' : '\\>/' }**  
 
 #### TODO
 - [ ] Finish document
 
 ### g:uctags\_match\_map
-**Default: See plugin/uctags/uctags_globals.vim**  
-A dictionary containing *kinds* that map to a pattern to be used for when using
-*syn-match* during highlighting.  There is two formats that can be used.
-`{kind}:{ 'start':{start-pattern}, 'end':{end-pattern} }` and `{lang}:[{kind}:{ 
-'start':{start-pattern}, 'end':{end-pattern} }]`
+**Default: See _plugins/uctags/uctags\_globals.vim_**  
+A dictionary containing *$kinds* that map to a pattern to be used for when using
+*syn-match* during creating (Or updating) [Syn Files][syn-files].
 
-The former binds for every *kind*, barring *kind* is not bound to the language
-in operation, thus the latter has the higher precedence.
+There is two formats that can be used:
+1. `{kind}: { 'start': {start-pattern}, 'end': {end-pattern} }`
+2. `{lang}: [{kind}: { 'start': {start-pattern}, 'end': {end-pattern} }]`
+
+The former binds for *$kind*, barring *$kind* is not bound to the language of
+the [source file][src-file]; thus, the latter having precedence.
+
+```vim
+if !exists('g:uctags_match_map')
+  let g:uctags_match_map = {}
+endif
+
+let g:uctags_match_map['c++'] =
+      \ { 'member': { 'start': '/\%\(\.\|->\)\<\zs', 'end': '\>/' } }
+
+let g:uctags_match_map['c#']  =
+      \ { 'method': { 'start': '/\<', 'end': '\ze\s*\%\((\|<\)/' },
+      \   'field' : { 'start': '/\<', 'end': '\>\(\s*(\)\@!/' } }
+
+let g:uctags_match_map['go']  = { 'member': g:uctags_default_match }
+
+" Lets refer to these as 'global patterns'
+let g:uctags_match_map['member'] = { 'start': '/\<', 'end': '\ze\s*(/' }
+let g:uctags_match_map['method'] = { 'start': '/\<', 'end': '\ze(/' }
+let g:uctags_match_map['field']  = { 'start': '/\<', 'end': '\ze(/' }
+
+```
+
+Lets break this down, first taking a look at the last 3 lines:
+1. The last 3 lines demonstrate how the last format is used, and define *global
+     patterns* for the following *$kinds*:
+   - *"member"*
+   - *"method"*
+   - *"field"*
+
+   These patterns will be used for every *$kind* of all languages, except for
+   languages there is already a key for, and that key has a *key-value pair*
+   that has a key of one the three *$kinds*.
+
+2. `let g:uctags_match_map['c++']` demonstrates how the first format is used,
+   and defines pattern for the *$kind* *"member"*.
+
+   In the first point, the *$kind* *"member"* was already defined, but the
+   pattern used is different than that of what was defined for the *$kind*
+   *"member"* when the language of the source file is `C++`.
+
+   The global pattern for the *$kind* *"member"* may be suitable for most
+   languages, but for some such as `C++`, and many others; using the global
+   pattern wont accurately highlight a *member*.  Therefore, using the global
+   pattern for the *syn-pattern* section of a *syn-match* command when creating
+   Syn Files, wont always be appropriate, which is why we define different
+   patterns for languages that the global patterns wouldn't be appropriate for.
+
+3. For `let g:uctags_match_map['c#']`, the principle is the same as the second
+   point: The global patterns for the *$kind* *"method"* and *"field"* aren't
+   appropriate to be used for the source file is of language `C#`.
+
+   The reason why `C#` is shown here, is just so you can see that you can
+   defined multiple *$kinds* for a particular language.
+
+4. Lastly, `let g:uctags_match_map['go']`, similar to when the language of the
+   source file was `C++`; the global pattern for the *$kind* *"member"* is not
+   appropriate for when the source file is of the language `go`.
+
+   For the language `go`, the
+   [default pattern][default-match]―`g:uctags_default_match`―is appropriate,
+   which is why we have assigned it to be used for the *$kind* *"member"* for
+   the `go` language.
+
+Languages used in `g:uctags_match_map` are required to be lowercase, and be
+specified identically to how Universal-Ctags would (Ignoring case: the languages
+need to be in lowercase).  To see a list of languages supported by
+Universal-Ctags and how a language should be represented, run the following
+command in a terminal of your choosing:
+
+```bash
+ctags-universal --list-languages
+```
+
+### g:uctags\_hl\_group\_map
+**Default: See _plugin/uctags/uctags\_globals.vim_**  
 
 #### TODO
-- [ ] Properly link *plugin/uctags/uctags_globals.vim*
-- [ ] Elaborate and enlighten
 - [ ] Finish document
 - [ ] Give examples
 
-### g:uctags\_args
-**Default: See plugin/uctags/uctags_globals.vim**  
-Discards all arguments vim-uctags passes to universal-ctags, in favor of what
-`g:uctags_args` is set to.  This is not recommended, as this will likely break
-vim-uctags, resulting in vim-uctags operating in a way that wasn't intended.
+### g:uctags\_lang\_map
+**Default: See _plugin/uctags/uctags\_globals.vim_**  
 
 #### TODO
-- [ ] Properly link *plugin/uctags/uctags_globals.vim*
-- [ ] Create a *pre* and *post* option of strings for options to be prefixed
-and appended to `g:uctags_args` and
-[g:uctags\_extra\_args][extra-args] respectively.
-
-### g:uctags\_hl\_group\_map
-**Default: See plugin/uctags/uctags_globals.vim**  
-
-### g:uctags\_lang\_map
-**Default: See plugin/uctags/uctags_globals.vim**  
+- [ ] Finish document
+- [ ] Give examples
 
 ## Commands
 
 ### UpdateTags
+Initially, the tags file ([g:uctags\_tags\_file][tags-file]) does not generate
+automatically.  First you must execute the `:UpdateTags` command.  Once you have
+done so, or if `g:uctags_tags_file` already exists, `:UpdateTags` will be
+triggered every time the [BufWritePost][bufwritepost] event is triggered (Only
+`g:uctags_tags_file` exists).
+
+The reason why tags aren't generated after `BufWritePost` event when the
+`g:uctags_tags_file` doesn't exists, is to prevent tag files being created when
+tag files aren't needed.
 
 ### CreateSynFiles
 
 ### UpdateSynFile
 
 ### DeleteAllSyn
+Simply deletes all [Syn Files][syn-files] by executing the following command:
 
-## Some Notes and Issues
-When language is Python and using Perl, if there is a module that is just the
-literal dot (.), it will be highlighted as a module; however, when not using
-Perl, it wont be.  With that said, when Updateing a Syn File, Syn Files
-generated while using Perl may have more lines than a when not using Perl.
+```bash
+find . -name '*.syn' -delete
+```
 
-For Python, if modules and improts span multiple lines, the wont be
-highlgihted; I haven't implemented that yet.
+This will effectively delete any and **all** files that are suffixed with
+*.syn*.  The command is recursive and starts from the directory the command was
+issued from.
+
+## Notes
+When the language is `Python` and using Perl, if there is a module that is just
+a literal dot (*.*), when creating [Syn Files][syn-files], the literal dot will
+be seen as a module and have highlighted accordingly; however, when not using
+Perl, it wont be.  With that said, when updating a Syn File, Syn Files generated
+while using Perl may have more lines than when not using Perl.
+
+For `Python`, if modules and imports span multiple lines, Universal-Ctags wont
+recognize so.  Highlighting will occasionally be inaccurate.  A work around
+would be to parse the files manually.
+
+## Known Issues
+I've noticed that when building Universal-Ctags from source, language `maven2`
+was not recognized.
 
 [uctags]: https://ctags.io/ 'Universal Ctags'
+[uctags-docs]: http://docs.ctags.io/en/latest/news.html 'Universal Ctags Docs'
 [uctags-repo]: https://github.com/universal-ctags/ctags 'Universal Ctags Repo'
 [perl-compiling]: https://vimhelp.org/if_perl.txt.html#perl-compiling 'Compiling Vim with Perl Interface'
 [vundle]:  https://github.com/VundleVim/Vundle.vim 'Vundle, the plug-in manager for Vim'
@@ -533,24 +850,36 @@ highlgihted; I haven't implemented that yet.
 [vimplug]: https://github.com/junegunn/vim-plug 'Minimalist Vim Plugin Manager'
 [pathogen]: https://github.com/tpope/vim-pathogen 'pathogen.vim: manage your runtimepath'
 [vim-syn-files]: https://vimhelp.org/syntax.txt.html#%3Asyn-files 'Vim Syntax Files'
-[syn-files]: #synfiles 'Syn Files'
+[bufwritepost]: https://vimhelp.org/autocmd.txt.html#BufWritePost 'BufWritePost'
+[readtags]: http://docs.ctags.io/en/latest/news.html#readtags 'Readtags'
+[data-munge]: https://metacpan.org/pod/Data::Munge 'Data::Munge - various utility functions'
+[list2re]: https://metacpan.org/pod/Data::Munge#list2re-LIST 'list2re LIST'
+[cpan]: https://www.cpan.org/ 'Comprehensive Perl Archive Network'
+[installing-modules]: https://www.cpan.org/modules/INSTALL.html 'How to install CPAN modules'
+[syn-files]: #syn-files 'Syn Files'
 [executable]: #guctags_executable 'g:uctags_executable'
+[tags-file]: #guctags_tags_file 'g:uctags_tags_file'
 [extra-args]: #guctags_extra_args 'g:uctags_extra_args'
 [use-keyword]: #guctags_use_keyword 'g:uctags_use_keyword'
 [skip-non-keyword]: #guctags_skip_non_keyword 'g:uctags_skip_non_keyword'
 [use-only-match]: #guctags_use_only_match 'g:uctags_use_only_match'
 [use-keyword-over-match]: #guctags_use_keyword_over_match 'g:uctags_use_keyword_over_match'
-[max-lines-header-search]: #guctags_max_lines_header_search 'g:uctags_max_lines_header_search'
 [use-perl]: #guctags_use_perl 'g:uctags_use_perl'
 [max-syn]: #guctags_max_syn 'g:uctags_max_syn'
 [skip-kind-for]: #guctags_skip_kind_for 'g:uctags_skip_kind_for'
 [kind-to-hlg]: #guctags_kind_to_hlg 'g:uctags_kind_to_hlg'
 [default-match]: #guctags_default_match 'g:uctags_default_match'
 [match-map]: #guctags_match_map 'g:uctags_match_map'
-[args]: #guctags_args 'g:uctags_args'
+[uctags-args]: #guctags_args 'g:uctags_args'
 [hl-group-map]: #guctags_hl_group_map 'g:uctags_hl_group_map'
 [lang-map]: #guctags_lang_map 'g:uctags_lang_map'
 [updatetags]: #updatetags ':UpdateTags'
 [createsynfiles]: #createsynfiles ':CreateSynFiles'
 [updatesynfile]: #updatesynfile ':UpdateSynFile'
 [deleteallsyn]: #deleteallsyn ':DeleteAllSyn'
+[src-file]: #source-file 'Source File Definition'
+[src-syn-file]: #src-syn-file 'Source Syn File Definition'
+[inc-dir]: #include-directive 'Include Directive Definition'
+[inc-file]: #include-file 'Include File Definition'
+[inc-syn-file]: #include-syn-file 'Include Syn File Definition'
+[vim]: https://www.vim.org/ 'Vim - the ubiquitous text editor'
