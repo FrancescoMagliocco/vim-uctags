@@ -886,7 +886,7 @@ was not recognized.
 [updatesynfile]: #updatesynfile ':UpdateSynFile'
 [deleteallsyn]: #deleteallsyn ':DeleteAllSyn'
 [src-file]: #source-file 'Source File Definition'
-[src-syn-file]: #src-syn-file 'Source Syn File Definition'
+[src-syn-file]: #source-syn-file 'Source Syn File Definition'
 [inc-dir]: #include-directive 'Include Directive Definition'
 [inc-file]: #include-file 'Include File Definition'
 [inc-syn-file]: #include-syn-file 'Include Syn File Definition'
