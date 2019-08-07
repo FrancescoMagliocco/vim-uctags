@@ -101,7 +101,7 @@ If you're new to plugin managers and don't know what to choose, you can try them
 all and see which one suites your needs and prefer more.  I personally use
 [Vundle][vundle].
 
-<sup>You are not limited to use this plugin managers.  If you use a different
+<sup>You are not limited to use these plugin managers.  If you use a different
 one that isn't listed above, Vim-UCTags will still work as intended.</sup>
 
 ### Vundle
@@ -376,7 +376,7 @@ be passed as an argument to the `-f` parameter for Universal-Ctags.
 
 ### g:uctags\_pre\_args
 **Default: See _plugin/uctags/uctags\_globals.vim_**  
-These arguments are prepended to [g:uctags\_args][uctags-args]; hence, they will
+These arguments are prepended to [g:uctags\_args][args]; hence, they will
 **PREVAIL IS NOT ACCURATE** prevail over `g:uctags_args`.
 
 The purpose for this is when the precedence of arguments is significant,
@@ -408,7 +408,7 @@ To successfully achieve the desired results, we would perform the following:
 ```vim
 if !exists('g:uctags_pre_args')
   let g:uctags_pre_args = {}
-endir
+endif
 
 let g:uctags_pre_args['--kinds-all='] = '*'
 
@@ -422,7 +422,7 @@ let g:uctags_extra_args['--kinds-c='] = '-{variable}'
 Now *variable* for the language `C` is guaranteed to be disabled.
 
 #### Issues
-Currently, along with [g:uctags\_args][uctags-args], `g:uctags_pre_args` does
+Currently, along with [g:uctags\_args][args], `g:uctags_pre_args` does
 hold some crucial arguments that Vim-UCTags depends on in order function
 accordingly.  Therefore, changing `g:uctags_pre_args` in your *.vimrc* could
 prove to be fatal.
@@ -430,7 +430,7 @@ prove to be fatal.
 #### TODO
 - [ ] Have critical *pre-args* be defined in a script scoped variable
 - [ ] Have critical *pre-args* be also appended to
-[g:uctags\_args][uctags-args], so Vim-UCTags will function accordingly despite
+[g:uctags\_args][args], so Vim-UCTags will function accordingly despite
 what option `g:uctags_args` and [g:uctags\_extra\_args][extra-args] are set to.
 - [ ] Have a global option to disable critical arguments―could prove useful for
 debugging.
@@ -457,7 +457,7 @@ let g:uctags_extra_args['-R'] = ''
 ```
 
 Everything specified in `g:uctags_extra_args`, has a higher precedence than the
-arguments provided internally by [g:uctags\_args][uctags-args].  As a
+arguments provided internally by [g:uctags\_args][args].  As a
 consequence, if `g:uctags_extra_args` and `g:uctags_args` have identical keys,
 the value in `g:uctags_extra_args` will replace the value in `g:uctags_args` for
 the identical key.
@@ -784,6 +784,14 @@ command in a terminal of your choosing:
 ctags-universal --list-languages
 ```
 
+### g:uctags\_args
+**Default: See _plugin/uctags/uctags\_globals.vim_**  
+Discards all arguments Vim-UCTags passes to Universal-Ctags, in favor of what
+this is set to.
+
+This is not recommended, as this will likely break Vim-UCTags, resulting in
+Vim-UCTags operating in a way that wasn't intended.
+
 ### g:uctags\_hl\_group\_map
 **Default: See _plugin/uctags/uctags\_globals.vim_**  
 
@@ -870,7 +878,7 @@ was not recognized.
 [kind-to-hlg]: #guctags_kind_to_hlg 'g:uctags_kind_to_hlg'
 [default-match]: #guctags_default_match 'g:uctags_default_match'
 [match-map]: #guctags_match_map 'g:uctags_match_map'
-[uctags-args]: #guctags_args 'g:uctags_args'
+[args]: #guctags_args 'g:uctags_args'
 [hl-group-map]: #guctags_hl_group_map 'g:uctags_hl_group_map'
 [lang-map]: #guctags_lang_map 'g:uctags_lang_map'
 [updatetags]: #updatetags ':UpdateTags'
