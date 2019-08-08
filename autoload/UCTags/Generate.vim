@@ -15,7 +15,13 @@ let s:critical_args =
       \   '--fields='   : '+Kzl',
       \   '--kinds-all=': '+{file}',
       \   '--kinds-c='  : '+{header}',
-      \   '--kinds-c++=': '+{header}'
+      \   '--kinds-c++=': '+{header}',
+      \   '--kinddef-c\#=': 'U,using,using namespace'
+      \ }
+
+let s:post_critical_args =
+      \ {
+      \   '--regex-c\#=': '/^\s*using\s+([a-zA-Z0-9.]+)+;/\1/U/'
       \ }
 
 function! s:ParseArgs(args)
@@ -37,4 +43,5 @@ function! UCTags#Generate#GenTags()
         \ s:DictToStr(g:uctags_pre_args)
         \ s:DictToStr(g:uctags_args)
         \ s:DictToStr(s:critical_args)
+        \ s:DictToStr(s:post_critical_args)
 endfunction
