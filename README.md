@@ -219,6 +219,12 @@ Missing highlighting for some languages have been added:
 **THIS MAY NOT HAVE TO BE INCLUDED**  
 Max depth an include Syn File can be processed
 
+Critical Args are always passed with soon an option being implemented to disable
+them.
+
+Universal-Ctags doesn't recognize `using foo.bar;` as an *import*; a custom
+regex pattern has been added to bypass this.  There is no option to turn it off.
+
 **STILL NEEDS WORK**  
 Some features still need to be implemented and some are just a thought.  The
 list of features you're about to see is not the full list, and there will be for
@@ -431,10 +437,9 @@ accordingly.  Therefore, changing `g:uctags_pre_args` in your *.vimrc* could
 prove to be fatal.
 
 #### TODO
+- [x] Have critical *args* be defined in a script scope variable
 - [ ] Have critical *pre-args* be defined in a script scoped variable
-- [ ] Have critical *pre-args* be also appended to
-[g:uctags\_args][args], so Vim-UCTags will function accordingly despite
-what option `g:uctags_args` and [g:uctags\_extra\_args][extra-args] are set to.
+- [x] Have critical *post-args* be defined in a script scoped variable
 - [ ] Have a global option to disable critical arguments―could prove useful for
 debugging.
 
@@ -849,6 +854,8 @@ while using Perl may have more lines than when not using Perl.
 For `Python`, if modules and imports span multiple lines, Universal-Ctags wont
 recognize so.  Highlighting will occasionally be inaccurate.  A work around
 would be to parse the files manually.
+
+Some *fields* in `C#` still wont have highlight lines created for.
 
 ## Known Issues
 I've noticed that when building Universal-Ctags from source, language `maven2`
