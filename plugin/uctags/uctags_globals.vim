@@ -136,7 +136,7 @@ let g:uctags_default_match  =  { 'start' : '/\<',  'end' : '\>/' }
 let g:uctags_match_map      = get(g:, 'uctags_match_map', {
       \   'c++'     : { 'member'  : { 'start' : '/\%\(\.\|->\)\<\zs', 'end' : '\>/' }},
       \   'c#'      : { 'method'  : { 'start' : '/\<', 'end' : '\ze\s*\%\((\|<\)/'  },
-      \                 'field'   : { 'start' : '/\<', 'end' : '\>\(\s*(\)\@!/' },
+      \                 'field'   : { 'start' : '/\<', 'end' : '\>\s*\((\)\@!/' },
       \                 'struct'  : { 'start' : '/\<', 'end' : '\>\s*\((\)\@!/' }},
       \   'go'      : { 'member'  : g:uctags_default_match },
       \   'javascript'  : { 'method' : { 'start' : '/\<', 'end' : '\%\(\>\|\ze(\)/'}},
