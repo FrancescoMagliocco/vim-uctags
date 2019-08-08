@@ -11,6 +11,7 @@ let g:loaded_UCTags_Generate = 1
 
 let s:critical_args =
       \ {
+      \   '--extras='   : '-{subword}',
       \   '--fields='   : '+Kzl',
       \   '--kinds-all=': '+{file}',
       \   '--kinds-c='  : '+{header}',
