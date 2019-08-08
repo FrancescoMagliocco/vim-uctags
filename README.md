@@ -63,7 +63,7 @@ to compile Vim with the Perl Interface.  If you installed Vim using your package
 manager, all that should be required is for Perl to be installed―if not already.
 
 #### Perl Prerequisites
-In order for Vim-UCTags to utilize Perl , there is one prerequisite: The
+In order for Vim-UCTags to utilize Perl, there is one prerequisite: The
 function [list2re][list2re]―provided by the [Data::Munge][data-munge]
 module―therefore `Data::Munge` being a dependent and furthermore required to be
 installed to satisfy this prerequisite.
