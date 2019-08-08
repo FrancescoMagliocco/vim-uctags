@@ -1,5 +1,5 @@
 " File:         uctags_globals.vim
-" Last Change:  07/29/2019
+" Last Change:  08/08/2019
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -188,15 +188,6 @@ let g:uctags_match_map      = get(g:, 'uctags_match_map', {
       "\   'union'           : { 'start'     : '/\<',  'end' : '\>/' },
       "\   'variable'        : { 'start'     : '/\<',  'end' : '\>/' },
 
-function! s:ParseArgs(args)
-  return extend(extend(a:args, g:uctags_max_info
-        \   ? {
-        \       '--fields='     : '*',
-        \       '--all-kinds='  : '*'
-        \     }
-        \   : {} ), g:uctags_extra_args)
-endfunction
-
 let g:uctags_pre_args       = get(g:, 'uctags_pre_args', {
       \   '-R'                      : '',
       \   '-f'                      : g:uctags_tags_file,
@@ -227,11 +218,6 @@ let g:uctags_args           = get(g:, 'uctags_args', {
       \   '--kinds-make='           : '-{target}',
       \   '--languages='            : '-markdown,json,restructuredtext,ant,xslt,javaproperties,diff,dtd,html,php,windres,dbusintrospect,yaml,maven2,man,plistxml,sml,perl,sh,svg,sql'
       \ })
-
-" Extends g:uctags_args with g:uctags_extra_args so
-" g:uctags_args can be used when needing arguments for
-" ctags-universal.  See s:ParseArgs() body for aditional details.
-let g:uctags_args           = s:ParseArgs(g:uctags_args)
 
 let s:lang_map              =
       \ {
