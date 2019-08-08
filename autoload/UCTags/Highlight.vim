@@ -1,5 +1,5 @@
 " File:         Highlight.vim
-" Last Change:  08/01/2019
+" Last Change:  08/08/2019
 " Maintainer:   FrancescoMagliocco
 " License:      GNU General Public License v3.0
 
@@ -220,7 +220,6 @@ function! s:UpdateSynFor(src_file, ...)
     if !count(s:used_src_syn_files, l:src_file)
       " Found syn file for a:src_file; update it
       call s:UpdateSyn(l:src_syn_file)
-      echomsg 'using' l:src_file
       let s:sourced_syn += 1
       call add(s:used_src_syn_files, l:src_file)
     else
