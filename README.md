@@ -73,10 +73,10 @@ modules][installing-modules]) to install the mentioned modules.
 
 ##### apt-get
 If you're on Debian and Debian derivatives, enter the following into a terminal
-of your choosing):
+of your choosing:
 
 ```bash
-usudo apt-get -fV install libdata-munge-perl --no-install-recommends
+sudo apt-get -fV install libdata-munge-perl --no-install-recommends
 ```
 
 ##### pacman
@@ -173,14 +173,14 @@ mkdir -p .vim/bundle
 ## Definitions
 In order to understand this **README** more effectively, the meaning of a few
 distinct terms are to be made ambiguous, but still correlative.  Furthermore,
-recognized word will be used sequentially to form lucid phrases.  All
+recognized words will be used sequentially to form lucid phrases.  All
 definitions hold applicable throughout any encounters in this text unless
 explicitly specified.
 
 ### *source file*
-The phrase *source file* is used to identify the file in the current active of
-Vim: When you press <kbd>i</kbd> and start typing... The buffer that you're
-typing in is the *source file*.
+The phrase *source file* is used to identify the file in the current active
+buffer of Vim: When you press <kbd>i</kbd> and start typing... The buffer that
+you're typing in is the *source file*.
 
 ### *source Syn File*
 The phrase *source Syn File* will be used to identify the [Syn File][syn-files]
@@ -203,8 +203,8 @@ directive][inc-dir].
 
 ### *include Syn File*
 The phrase *include Syn File* will be used to identify the [Syn File][syn-files]
-associated with the [include directive][inc-dir].  The *include Syn File* may
-not always exists when being referred to.
+associated with the [include file][inc-file].  The *include Syn File* may not
+always exists when being referred to.
 
 ## Features
 Vim-UCTags is full of features!  Vim-UCTags also changes how it functions on
@@ -235,7 +235,7 @@ in using both *syn-keyword* and *syn-match* commands.</sup>
 
 Syn Files are named by appending *.syn* to a filename.  That being said, you can
 easily recognize what source file<sup>\*</sup> a Syn File is associated to: A
-syn File with name *foobar.c.syn* with be associated to the source
+Syn File with name *foobar.c.syn* would be associated to the source
 file<sup>\*</sup> *foobar.c*.  
 <sup>\* *source file* is not to be confused with [source file][src-file] in this
 context.  In this context, *source file* refers to any file that can have a Syn
@@ -243,13 +243,13 @@ File generated for.</sup>
 
 Syn Files are created with the [:CreateSynFiles][createsynfiles] command.  When
 executing `:CreateSynFiles`, a Syn File will be created for every file in the
-tags file has a language homogeneous to the language of the [source
+tags file that is a language homogeneous to the language of the [source
 file][src-files] which `:CreateSynFils` was issued from.
 
 #### Example
 The source file *foobar.c* is where `:CreateSynFiles` was issued from (*issued*
 meaning: That is where the user executed the `:CreateSynFiles` command).  All
-files in the tag file that languages homogeneous to the language of `C`, will
+files in the tag file with languages homogeneous to the language of `C`, will
 have Syn Files generated for them; this includes the language `C++` as there
 isn't *much* distinction between the two, and in some cases are interchangeable.
 The same goes for when `C++` is the language of the source file where
@@ -345,11 +345,11 @@ below)
 
 #### NOTE
 If you did change `--program-prefix`, make sure to append *ctags* to
-`g:uctags\_executable`
+`g:uctags_executable`
 
 ##### Examples:
 If you're confused as to if you need to include a dash (*-*) when setting
-`g:uctags\_executable`, the following should give you some clarification.
+`g:uctags_executable`, the following should give you some clarification.
 
 `--program-prefix=my`
 ```vim
@@ -490,7 +490,7 @@ however, the results are different as their `{values}` are different.
 
 For keys `-R` and `--recurse`, the results of both are equivalent; however, the
 remaining keys is where we run into confliction:
-- The key `--kinds` and `--kind` in `g:uctags_args` and `g:uctags_extra_args`
+- The keys `--kinds` and `--kind` in `g:uctags_args` and `g:uctags_extra_args`
   respectively, are unique as the former has a *s* appended, whereas the latter
   does not.  Furthermore, the value for each of these keys have different
   results, and which one to prove significant is inconclusive.
@@ -534,6 +534,8 @@ When enabled, Vim will use *syn-keyword* (If
 [g:uctags\_use\_only\_match][use-only-match] is disabled) and *syn-match* (If
 [g:uctags\_skip\_non\_keyword][skip-non-keyword] is disabled) when highlighting.
 
+**SAYING HIGHLIGHTING IS INCORRECT...partially**
+
 It is not recommended to use *syn-keyword* for highlighting.  Even though
 *syn-keyword* is a lot faster than *syn-match*, it is also a lot less accurate
 than *syn-match* and you will run into issues with tags that have the same
@@ -551,6 +553,8 @@ equal to [g:uctags\_default\_match][default-match] will be skipped.
 `g:uctags_skip_non_keyword` relies on [g:uctags\_use\_keyword][use-keyword]
 being enabled, and [g:uctags\_use\_only\_match][use-only-match] being disabled.
 
+**MAYBE PUT THIS IN A LIST**
+
 ### g:uctags\_use\_only\_match
 **Default: 1**  
 When enabled, Vim will **only** use the much slower, but much **much** more
@@ -561,7 +565,7 @@ accurate *syn-match*.
 - [g:uctags\_skip\_non\_keyword][skip-non-keyword]
 - [g:uctags\_use\_keyword\_over\_match][use-keyword-over-match]
 
-Regardless the state of the mentioned options; if `g:uctags_use_only_match` will
+Regardless the state of the mentioned options; `g:uctags_use_only_match` will
 not be affected when enabled.
 
 ### g:uctags\_use\_keyword\_over\_match
@@ -581,7 +585,9 @@ than *syn-match* and you will run into issues with tags that have the same
 Each function that utilizes Perl will first check if Vim has support for Perl
 compiled.  If Perl isn't supported, the Vim variant functions will be used.
 
-It his highly recommended to use Perl, especially for larger projects with an
+**IT SHOULD BE MORE EFFICIENT TO JUST CHECK ONCE DURING THE SOURCE OF vim-uctags IF THERE IS SUPPORT FOR PERL, BUT NOT THIS OPTION!  THIS OPTION SHOULD CONTINUE TO BE CHECKED**
+
+It is highly recommended to use Perl, especially for larger projects with an
 exceedingly amount of tags.  You **will** notice an increase in performance.
 
 You do not need any knowledge whatsoever on how to use Perl to take advantage of
@@ -598,9 +604,9 @@ As mentioned on the official [Universal-Ctags][uctags] [Docs][uctags-docs] about
 Prior to the implementation of this feature into Vim-UCTags, the way tags were
 searched was by manually parsing through the entire tags file.  From a coding
 point of view, this was very tedious and on occasion was a bottleneck,
-especially when the tags file had an immense amount lines.  With that said, the
-performance increase is most likely marginal at best with hope in being greater
-in the future.
+especially when the tags file had an immense amount of lines.  With that said,
+the performance increase is most likely marginal at best with hope in being
+greater in the future.
 
 Similar to [g:uctags\_use\_perl][use-perl], there are Vim and Perl variant
 procedures that are utilized when not using `readtags`.
@@ -641,9 +647,8 @@ specified in value `[{languages|all}]`.
 
 The order for which the list of items appears in the value for key `{kind}` is
 insignificant.  If the list of items contains the item *all*, no matter the
-position, *all* languages for the key `{kind}` the item *all* was part of, will
-not have *syn-match* and *syn-keyword* commands created for the *$kind* of tag,
-key `{kind}`:
+position, *all* languages for the *$kind* key `{kind}` the item *all* was part
+of, will not have *syn-match* and *syn-keyword* commands created for:
 
 ```vim
 if !exists('g:uctags_skip_kind_for')
@@ -665,14 +670,14 @@ choosing:
 universal-ctags --list-kinds-full
 ```
 
-If you want to see a list language specific *$kinds*, run the following in a
+If you want to see a list of language specific *$kinds*, run the following in a
 terminal of your choosing:
 
 ```bash
 universal-ctags --list-kinds-<language>
 ```
 
-To see a list of of languages supported by Universal-Ctags, run the following
+To see a list of languages supported by Universal-Ctags, run the following
 command in a terminal of your choosing:
 
 ```bash
@@ -760,7 +765,7 @@ Lets break this down, first taking a look at the last 3 lines:
 
 3. For `let g:uctags_match_map['c#']`, the principle is the same as the second
    point: The global patterns for the *$kind* *"method"* and *"field"* aren't
-   appropriate to be used for the source file is of language `C#`.
+   appropriate to be used if the source file is of language `C#`.
 
    The reason why `C#` is shown here, is just so you can see that you can
    defined multiple *$kinds* for a particular language.
@@ -813,7 +818,7 @@ Initially, the tags file ([g:uctags\_tags\_file][tags-file]) does not generate
 automatically.  First you must execute the `:UpdateTags` command.  Once you have
 done so, or if `g:uctags_tags_file` already exists, `:UpdateTags` will be
 triggered every time the [BufWritePost][bufwritepost] event is triggered (Only
-`g:uctags_tags_file` exists).
+if `g:uctags_tags_file` exists).
 
 The reason why tags aren't generated after `BufWritePost` event when the
 `g:uctags_tags_file` doesn't exists, is to prevent tag files being created when
