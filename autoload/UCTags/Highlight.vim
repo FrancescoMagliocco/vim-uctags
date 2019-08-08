@@ -160,6 +160,8 @@ let s:inc_kind =
       \ {
       \   'c'       : [['header', "(and (eq? $kind \"header\") (eq? $input \"a:1\") (not (substr? $pattern \"<\")))"]],
       \   'cpp'       : [['header', "(and (eq? $kind \"header\") (eq? $input \"a:1\") (not (substr? $pattern \"<\")))"]],
+      \   'cs'        : [['namespace', "(and (eq? $kind \"namespace\") (eq? $input \"a:1\"))"],
+      \                   ['using', "(and (eq? $kind \"using\") (eq? $input \"a:1\") (not (prefix? $name \"System.\")) (not (eq? $name \"System\")))"]]
       \ }
 " TODO Rename
 " Pattern used to find include direcetives, namespaces etc.. of the given
