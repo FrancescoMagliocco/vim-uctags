@@ -280,8 +280,11 @@ If a match is found and the [source Syn File][src-syn-file] doesn't contain an
 exact replica of the whole line *syn-pattern* or *syn-keyword* was part of; that
 whole line will be appended to the source Syn File.
 
-**_SOURCE SYN FILE_ SHOULD BE CHECKED OF THE WHOLE LINE PRIOR TO SEARCHING FOR A
-MATCH!  THIS IS MORE EFFICIENT!  CHECK CODE TO VERIFY THIS MECHANIC!**
+<sup>Though it would be more efficient to check if the source Syn File doesn't
+already contain an exact replica of the whole line *syn-pattern* or
+*syn-keyword* was part of; we wouldn't be able to remove *syn-pattern* and
+*syn-keyword* commands from the source Syn File for *syn-patterns* or
+*syn-keywords* that aren't present in the source file.</sup>
 
 After the *syn-pattern* or *syn-keyword* section in each line of the include Syn
 File has been compared to each line in the source file, the include file
