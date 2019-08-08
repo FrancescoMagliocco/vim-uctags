@@ -553,10 +553,9 @@ than *syn-match* and you will run into issues with tags that have the same
 When enabled, any patterns in [g:uctags\_match\_map][match-map] that aren't
 equal to [g:uctags\_default\_match][default-match] will be skipped.
 
-`g:uctags_skip_non_keyword` relies on [g:uctags\_use\_keyword][use-keyword]
-being enabled, and [g:uctags\_use\_only\_match][use-only-match] being disabled.
-
-**MAYBE PUT THIS IN A LIST**
+`g:uctags_skip_non_keyword` relies on:
+- [g:uctags\_use\_keyword][use-keyword] being enabled
+- [g:uctags\_use\_only\_match][use-only-match] being disabled
 
 ### g:uctags\_use\_only\_match
 **Default: 1**  
