@@ -62,6 +62,7 @@ if has('perl')
           my $re = list2re keys %trans;
           $str =~ s/($re)/$trans{$1}/g;
           $str =~ s/\( (\S+) \) \\ @!/(?!$1)/gxx if any { m/\\ @!/gxx } $str;
+          $str =~ s/\( (\S+) \) \\ @<!/(?<!$1)/gxx if any { m/\\ @<!/gxx } $str;
             my $no_match = none { m/$str/g } @lines;
             # TODO I should be able to ommit the $_
             if (any {$_ eq $line} @buf) {
