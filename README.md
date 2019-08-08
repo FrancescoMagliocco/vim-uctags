@@ -587,8 +587,6 @@ than *syn-match* and you will run into issues with tags that have the same
 Each function that utilizes Perl will first check if Vim has support for Perl
 compiled.  If Perl isn't supported, the Vim variant functions will be used.
 
-**IT SHOULD BE MORE EFFICIENT TO JUST CHECK ONCE DURING THE SOURCE OF vim-uctags IF THERE IS SUPPORT FOR PERL, BUT NOT THIS OPTION!  THIS OPTION SHOULD CONTINUE TO BE CHECKED**
-
 It is highly recommended to use Perl, especially for larger projects with an
 exceedingly amount of tags.  You **will** notice an increase in performance.
 
