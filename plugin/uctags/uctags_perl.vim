@@ -1,5 +1,5 @@
 " File:         uctags_perl.vim
-" Last Change:  07/29/2019
+" Last Change:  08/08/2019
 " Maintainer:   FrancescoMagliocco
 " vim: ft=perl
 
@@ -132,7 +132,7 @@ if has('perl')
 
       sub GetLangPat {
         my ($lang) = @_;
-        my $pat = "(eq \$language \"$lang\")";
+        my $pat = "(eq? \$language \"$lang\")";
         $pat = "(or $pat (eq? \$language \"C++\"))" if lc($lang) eq 'c';
         return $pat;
       }
