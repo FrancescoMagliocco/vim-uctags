@@ -24,8 +24,28 @@ let s:post_critical_args =
       \   '--regex-c\#=': '/^\s*using\s+([a-zA-Z0-9.]+)+;/\1/U/'
       \ }
 
+" This would probably be ideal if we used optional arguemnts, that way we could
+"   specify which args we wanted to parse.
 function! s:ParseArgs(args)
-  return extend(a:args, g:uctags_extra_args)
+  let l:ret = {}
+
+  " I don't like using for loops, but I think this is the only way this can be
+  "   done.
+  "
+  " When a:args and g:uctags_extra_args have the same key, but the case doesn't
+  "   match, both keys are still unique and therefore the value in
+  "   g:uctags_extra_args wont override the value in a:args that has the
+  "   identical key.  To fix this, we convert each key in a:args and
+  "   g:uctags_extra_args to lowercase.
+  "
+  " I'm hoping that items(a:args) + items(g:uctags_extra_args) will ensure
+  "   g:uctags_extra_args has still the higher precedence so identical keys will
+  "   be overrided.
+  for [l:k, l:v] in items(a:args) + items(g:uctags_extra_args)
+    let l:ret[tolower(l:k)] = l:v
+  endfor
+
+  return l:ret
 endfunction
 
 function! s:DictToStr(dict)
@@ -38,10 +58,9 @@ function! UCTags#Generate#GenTags()
     finish
   endif
 
-  call s:ParseArgs(g:uctags_args)
   execute '!' . g:uctags_executable
         \ s:DictToStr(g:uctags_pre_args)
-        \ s:DictToStr(g:uctags_args)
+        \ s:DictToStr(s:ParseArgs(g:uctags_args))
         \ s:DictToStr(s:critical_args)
         \ s:DictToStr(s:post_critical_args)
 endfunction

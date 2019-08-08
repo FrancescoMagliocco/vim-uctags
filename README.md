@@ -483,12 +483,12 @@ if !exists('g:uctags_extra_args')
 endif
 
 let g:uctags_args['-R']           = ''
-let g:uctags_args['--kinds-all='] = '*'
+let g:uctags_args['--kinds='] = '*'
 let g:uctags_args['--kinds-c=']   = '+{header}'
 
 let g:uctags_extra_args['--recurse']  = ''
-let g:uctags_extra_args['--kind=']    = '-*'
-let g:uctags_extra_args['--kinds-C='] = '-{header}'
+let g:uctags_extra_args['--kind=']    = ''
+let g:uctags_extra_args['--kind-C='] = '-{header}'
 
 ```
 
@@ -502,11 +502,16 @@ remaining keys is where we run into confliction:
   respectively, are unique as the former has a *s* appended, whereas the latter
   does not.  Furthermore, the value for each of these keys have different
   results, and which one to prove significant is inconclusive.
-- The keys `--kinds-c` and `--kinds-C` in `g:uctags_args` and
-  `g:uctags_extra_args` respectively, are unique as the *c* in the former is
-  lowercase, whereas in the latter it is uppercase.  Similar to the previous
-  point, the value for each of these keys have different results, and which one
-  to prove significant is inconclusive.
+- The keys `--kinds-c` and `--kind-C` in `g:uctags_args` and
+  `g:uctags_extra_args` respectively, are unique for the same reason as
+  mentioned in the previous point: the former has a *s* appended, whereas the
+  latter does not.  Moreover, similar to the previous point, the value for each
+  of these keys have different results, and which one to prove significant is
+  inconclusive.
+  
+  You may have noticed the *c* in the former is lowercase, whereas in the latter
+  it is uppercase.  This is neglected as each key in `g:uctags_args` and
+  `g:uctags_extra_args` are converted to lowercase.
 
 If you want to change the value of a default argument, do so here, not by
 changing `g:uctags_args`.  You are likely to break Vim-UCTags if change
@@ -531,7 +536,7 @@ fix for this.
 #### TODO
 - [x] Create option `g:uctags_pre_args`
 - [ ] Create option `g:uctags_post_args`
-- [ ] When parsing args, convert to lowercase
+- [x] When parsing args, convert to lowercase
 - [ ] When parsing args, recognize similar options: `-R` and `--recurse` are the
 same.  `--kinds` and `--kind` are the same.  Doing this will have the added
 ability to warn on invalid arguments
