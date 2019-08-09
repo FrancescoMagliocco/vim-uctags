@@ -58,37 +58,61 @@ function! s:UpdateSyn(syn_file)
   endif
 endfunction
 
+" COMBAK There is a Perl variant of this, but it is only used when
+"   UpdateSynFilter is called, but we aren't calling it anymore.  I'm not sure
+"   if the Perl variant of this is more efficient and faster than this or not.
 function! s:SearchPython(src_file)
+  let l:ret = []
+  for l:src_file in a:src_file
+    let l:src_file = l:src_file[2]
     let l:dir =
           \ substitute(
-          \   substitute(a:src_file, '^\s*from\s\+\(\S\+\)\+.*', '\1', 'g'),
+          \   substitute(l:src_file, '^.*from\s\+\(\S\+\)\+.*', '\1', 'g'),
           \   '\.', '/', 'g')
     if isdirectory(l:dir)
       if filereadable(l:dir . '.py') | echomsg 'Readable' l:dir . '.py' | endif
-      let l:ret =
+      let l:reta =
             \ filter(
             \   map(
             \     split(
             \       substitute(
-            \         a:src_file,
-            \         '^\s*from\s\+[a-zA-Z0-9._]\+\s\+import\s\+\(.\+\)\+$',
+            \         l:src_file,
+            \         'from\s\+[a-zA-Z0-9._]\+\s\+import\s\+\(.\+\)\+$',
             \         '\1',
             \         'g'
             \       ), ',\s*'),
-            \     "[0, l:dir . '/' . split(v:val)[0] . '.py']"
-            \   ), 'filereadable(v:val[1])')
+            \     "[l:dir . '/' . split(v:val)[0] . '.py']"
+            \   ), 'filereadable(v:val[0])')
+      if !count(l:ret, l:reta)
+        if type(l:reta) == v:t_list
+          call extend(l:ret, filter(l:reta, '!count(l:ret, v:val)'))
+
+        else
+          call add(l:ret, l:reta)
+        endif
+      endif
       if filereadable(l:dir . '/__main__.py')
-        let l:ret = [[0, l:dir . '/__main__.py']] + l:ret
+        let l:reta = [l:dir . '/__main__.py']
+        if !count(l:ret, l:reta)
+          call add(l:ret, l:reta)
+        endif
       endif
 
       if filereadable(l:dir . '/__init__.py')
-        let l:ret = [[0, l:dir . '/__init__.py']] + l:ret
+        let l:reta = [l:dir . '/__init__.py']
+        if !count(l:ret, l:reta)
+          call add(l:ret, l:reta)
+        endif
       endif
 
-      return l:ret
     elseif filereadable(l:dir . '.py')
-      return [[0, l:dir . '.py']]
+      let l:reta = [l:dir . '.py']
+      if !count(l:ret, l:reta)
+        call add(l:ret, l:reta)
+      endif
     endif
+  endfor
+    return l:ret
 endfunction
 
 function! s:SearchJava(src_file)
@@ -229,9 +253,8 @@ function! s:UpdateSynFor(src_file, ...)
       echomsg "This shouldn't be reachable: !count(l:used_src_files, l:src_file)"
     endif
   else
-    echomsg "This shouldn't be reachable: filereadable(l:src_syn_file)"
-    " This should never be reached
-    echomsg 'how we get here?'
+    " This can be reached if a file is empty, as an empty file will not have
+    "   Syn File associated with it.
     if 0
 " =============================================================================
     echomsg 'no find'
@@ -296,7 +319,7 @@ function! s:UpdateSynFor(src_file, ...)
       
       " First grab all headers in l:src_file
       " Using plural as there could be more than one file found
-      for l:inc_dir in UCTags#Tags#Readtags(l:kind[1], l:src_file)
+      for l:inc_dir in l:is_py ? s:SearchPython(UCTags#Tags#Readtags(l:kind[1], l:src_file)) : UCTags#Tags#Readtags(l:kind[1], l:src_file)
         " If include file is already readable, we don't need to search for it
         " Cur dir: .
         " Active buffer file: ./foo/bar.h
@@ -312,6 +335,10 @@ function! s:UpdateSynFor(src_file, ...)
             continue
           endif
         endif
+
+        " When the language is Pyhon, behond this point does not need to be
+        "   reached.
+        if l:is_py | continue | endif
 
         let l:inc_files = UCTags#Tags#FindFile(l:inc_dir[0])
         " If no include files were found, l:inc_files will be an empty list;
