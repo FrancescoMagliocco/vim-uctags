@@ -58,6 +58,9 @@ function! s:UpdateSyn(syn_file)
   endif
 endfunction
 
+" TODO There is a lot of counting and adding going on, we can save some lines
+"   by creating a function to do both for us.
+
 " COMBAK There is a Perl variant of this, but it is only used when
 "   UpdateSynFilter is called, but we aren't calling it anymore.  I'm not sure
 "   if the Perl variant of this is more efficient and faster than this or not.
@@ -126,6 +129,7 @@ function! s:SearchJava(src_file)
 
 endfunction
 
+" We probably don't need this anymore
 " TODO Rename
 " TODO Document this
 " For cs, gets all tags of kind 'namespace'
@@ -141,6 +145,7 @@ endfunction
 "      \   'java'  : 'let l:ret = s:SearchJava(a:2)'
 "      \ }
 
+" We probably don't need this anymore
 let s:search =
       \ {
       \   'cpp' : "let l:ret = filter(UCTags#Tags#Kind('header'), "
@@ -153,7 +158,7 @@ let s:search =
       \   'java'  : 'let l:ret = s:SearchJava(a:2)'
       \ }
 " TODO Needs to be renamed
-"
+" This is never used anymore
 function! s:UpdateSynFilter(...)
   " TODO Use Log namespace
   " Just incase less than 2 argments are given
@@ -180,6 +185,8 @@ endfunction
 " TODO Rename
 " Languages that use include directives, namespaces etc..
 let s:inc_lan = ['cpp', 'c', 'asm', 'cs', 'python', 'java']
+
+" We can take out the first item.
 let s:inc_kind =
       \ {
       \   'c'       : [['header', "(and (eq? $kind \"header\") (eq? $input \"a:1\") (not (substr? $pattern \"<\")))"]],
@@ -188,6 +195,8 @@ let s:inc_kind =
       \                   ['using', "(and (eq? $kind \"using\") (eq? $input \"a:1\") (not (prefix? $name \"System.\")) (not (eq? $name \"System\")))"]],
       \   'python'    : [['module', "(and (eq? $input \"a:1\") (eq? $kind \"module\"))"]]
       \ }
+
+" We probably don't need this anymore
 " TODO Rename
 " Pattern used to find include direcetives, namespaces etc.. of the given
 "   language.
@@ -256,6 +265,8 @@ function! s:UpdateSynFor(src_file, ...)
     " This can be reached if a file is empty, as an empty file will not have
     "   Syn File associated with it.
     if 0
+      " We probably don't need this anymore, but just incase s:UpdateSynFilter
+      "   is used again, we will keep it here for now.
 " =============================================================================
     echomsg 'no find'
     echomsg l:src_file
@@ -288,6 +299,7 @@ function! s:UpdateSynFor(src_file, ...)
 
   if l:is_java && a:src_file !=# s:src_file | return | endif
 
+  " We can probably take out this loop, and just use the body.
   for l:f in exists('l:lines') && (l:is_cs || l:is_py || l:is_java)
         \ ? l:lines
         \ : [[0, l:src_file]]
@@ -304,22 +316,13 @@ function! s:UpdateSynFor(src_file, ...)
     let l:pat   = s:pat_lang[&ft]
     let l:list  = []
 
-    " For C and C++, instead of searching through each file for include
-    "   directives, lets just search the tag file and grab all headers for the
-    "   file we are working with.
-    "for l:p in l:pat[:-2 + len(l:pat) == 1]
-      " XXX COMBAK XXX Instead of a:2, it may be better to use l:used_src_files
-      "call extend(l:list, filter(UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', l:p), '!count(l:a2, v:val)'))
-    "  call extend(l:list, filter(UCTags#Utils#FilterFile(l:src_file, 'v:val =~#', l:p), '!count(a:0 ? a:2 : [], v:val)'))
-    "endfor
-    "echomsg filter(ap(UCTags#Tags#KindFor('header', l:src_file), 'UCTags#Tags#FindFile(v:val[0])'), '!empty(v:val)')
-    " XXX FindInc XXX
-
     for l:kind in s:inc_kind[&ft]
       
       " First grab all headers in l:src_file
       " Using plural as there could be more than one file found
-      for l:inc_dir in l:is_py ? s:SearchPython(UCTags#Tags#Readtags(l:kind[1], l:src_file)) : UCTags#Tags#Readtags(l:kind[1], l:src_file)
+      for l:inc_dir in l:is_py
+            \ ? s:SearchPython(UCTags#Tags#Readtags(l:kind[1], l:src_file))
+            \ : UCTags#Tags#Readtags(l:kind[1], l:src_file)
         " If include file is already readable, we don't need to search for it
         " Cur dir: .
         " Active buffer file: ./foo/bar.h
@@ -431,24 +434,6 @@ function! s:UpdateSynFor(src_file, ...)
         call add(s:inc_files, l:inc_dir[0])
       endfor
     endfor
-" =============================================================================
-    if 0
-    let l:fil = UCTags#Tags#KindFor('header', l:src_file)
-    "let l:fil = map(UCTags#Tags#KindFor('header', l:src_file), 'filter(UCTags#Tags#FindFile(v:val[0]), !empty(v:val[0]))')
-    "echomsg l:fil
-    for l:a in l:fil
-      let l:z = UCTags#Tags#FindFile(l:a[0])
-      if !empty(l:z)
-        if !count(a:0 ? a:2 : [], l:z[0][1]) && !count(l:list, l:z[0][1]) && filereadable(l:z[0][1])
-        call add(l:list, l:z[0][1])
-      endif
-
-    endif
-      
-
-    endfor
-  endif
-" =============================================================================
 
     for l:src_file in l:list
       " We shouldn't have to check if 
@@ -489,6 +474,8 @@ function! UCTags#Highlight#CreateSynFiles(tags)
   let l:file  = ''
   let l:lines = []
 
+  " NOTE: This is taking up a lot of lines, possibly move this to the documents
+  "   to save lines
   " Filters through a:tags accepting tags where the {kind} of tag is present
   "   present in dictionary g:uctags_kind_to_hlg as a key.  We do this because
   "   we only want to accept tags that have a highlight group to be linked to.
