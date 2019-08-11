@@ -250,7 +250,7 @@ File generated for.</sup>
 Syn Files are created with the [:CreateSynFiles][createsynfiles] command.  When
 executing `:CreateSynFiles`, a Syn File will be created for every file in the
 tags file that is a language homogeneous to the language of the [source
-file][src-files] which `:CreateSynFils` was issued from.
+file][src-file] which `:CreateSynFils` was issued from.
 
 #### Example
 The source file *foobar.c* is where `:CreateSynFiles` was issued from (*issued*
