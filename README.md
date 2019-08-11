@@ -547,7 +547,13 @@ When enabled, Vim will use *syn-keyword* (If
 [g:uctags\_use\_only\_match][use-only-match] is disabled) and *syn-match* (If
 [g:uctags\_skip\_non\_keyword][skip-non-keyword] is disabled) when highlighting.
 
+The way Vim-UCTags determines whether or not a tag can be highlighted using *syn-keyword*, is if the pattern in [g:uctags\_match\_map][match-map] for the *$kind* being highlighted is equal to [g:uctags\_default\_match][default-match].  If there is no key for *$kind* in `g:uctags_match_map`, `g:uctags_default_match` is used, resulting in *syn-keyword* being applicable.
+
+If the pattern for *$kind* is not equal to `g:uctags_default_match`, then *$kind* isn't applicable to use *syn-keyword*.
+
 **SAYING HIGHLIGHTING IS INCORRECT...partially**
+
+If [g:uctags\_use\_only\_match][use-only-match] is enabled, any option that requires `g:uctags_use_keyword`, will be disabled implicitly, regardless the state of `g:uctags_use_keyword`.
 
 It is not recommended to use *syn-keyword* for highlighting.  Even though
 *syn-keyword* is a lot faster than *syn-match*, it is also a lot less accurate
@@ -585,7 +591,13 @@ not be affected when enabled.
 This applies to when a pattern in [g:uctags\_match\_map][match-map] is equal to
 [g:uctags\_default\_match][default-match], or if there isn't an entry for the
 pattern corresponding to *$kind*―which in that case, `g:uctags_default_match` is
-used, resulting in the former condition binding.
+used, resulting in the former condition binding.  In these conditions, *syn-keyword* will be used instead of *syn-match*.
+
+If a pattern in `g:uctags_match_map` does exist, then *syn-match* will still be used for the *$kind* key `{kind}` that pattern was a value of.
+
+`g:uctags_use_keyword_over_match` relies on:
+- [g:uctags\_use\_keyword][use-keyword] being enabled
+- [g:uctags\_use\_only\_match][use-only-match] being disabled
 
 It is not recommended to use *syn-keyword* for highlighting.  Even though
 *syn-keyword* is a lot faster than *syn-match*, it is also a lot less accurate
@@ -711,6 +723,9 @@ motive is for granular control on how
 
 ### g:uctags\_default\_match
 **Default: { 'start' : '/\\<', 'end' : '\\>/' }**  
+If there isn't a key for a *$kind* in [g:uctags\_match\_map][match-map], this will be used.
+
+This is also used to determine whether or not a *$kind* in `g:uctags_match_map` can be highlighted using the *syn-keyword* command.
 
 #### TODO
 - [ ] Finish document
@@ -807,15 +822,84 @@ this is set to.
 This is not recommended, as this will likely break Vim-UCTags, resulting in
 Vim-UCTags operating in a way that wasn't intended.
 
+#### TODO
+- [ ] Have an internal variable be the default args, that way this variable can be the one that overrides the default args resulting in `g:uctags_extra_args` actually being used for *extra* args.
+
 ### g:uctags\_hl\_group\_map
 **Default: See _plugin/uctags/uctags\_globals.vim_**  
+Using a dictionary, changes how *$kinds* are represented for when forming a *group-name* during the creation of [Syn Files][syn-files].
+
+Most entries in this dictionary only modify the first letter in a *$kind* by making it an uppercase.  This makes the *group-name* easier to read making the *$language* (See [g:uctags\_lang\_map][lang-map]) and *$kind* section more transparent.
+
+The format for this dictionary is very simple:
+
+    {original-kind}: {modified-kind}
+
+Keys must be of how *$kinds* are represented by Universal-Ctags, with the exception of case: the case must be lower.  For value `{modified-kind}`, this is where the textual representation is changed.  Make sure the change palpable.  As mentioned previously, typically the first letter of *$kind* is made uppercase:
+
+```vim
+if !exists('g:uctags_hl_group_map')
+  let g:uctags_hl_group_map = {}
+endif
+
+let g:uctags_hl_group_map['header'] = 'Header'
+```
+
+Another common use is to shorten the form of some *$kinds* whether it be to follow the naming convention used in Vim, or Syntax plugins.
+
+```vim
+if !exists('g:uctags_hl_group_map')
+  let g:uctags_hl_group_map = {}
+endif
+
+let g:uctags_hl_group_map['function'] = 'Func'
+```
+
+Some Syntax plugins like to use the phrase *Func* for the *$kind* *function*.  Unfortunately, at the current state of development, there is no way to specify and change the textual representation of *$kinds* for each individual language.  Further on in development, this is likely to change as the naming convention for one Syntax plugin, may be different for another.  
 
 #### TODO
+- [ ] Rename this variable; it's not exactly correlative
 - [ ] Finish document
 - [ ] Give examples
+- [ ] Ability to change textual representation of *$kinds* for each individual language
 
 ### g:uctags\_lang\_map
 **Default: See _plugin/uctags/uctags\_globals.vim_**  
+Changes how languages are represented for when creating a *group-name* during the creation of [Syn Files][syn-files].
+
+Some languages have long names and are inconvenient to type out and can take up a lot of screen space.  An example would be the language `reStructuredText`.
+
+Some languages also have special characters that depending on where the language is used, could possibly cause problems such as during parsing, or when used in regular expression.  Some examples are: `C++` and `C#`.  Moreover, there may already be a prototypical *group-name* for a particular language and *$kind*, and if it is ubiquitous—like for *group-names* in Vim—it is ideal to follow it.
+
+To achieve this, we use a simple dictionary of the following format:
+
+    {full-language}: {short-language}
+
+Both `{full-langauge}` and `{short-lanfuage}` are pretty unequivocal:
+
+- `{full-language}` would be the full representation of a language.
+- `{short-language}` would be a shorter or conventional representation of `{full-language}`
+
+```vim
+if !exists('g:uctags_lang_map')
+  let g:uctags_lang_map = {}
+endif
+
+let g:uctags_lang_map['reStructuredText`] = 'rst'
+let g:uctags_lang_map['c++']              = 'cpp'
+let g:uctags_lang_map['c#']               = 'cs'
+```
+
+Language `reStructredText`, customarily uses *rst* as its formal representation—primarily for convenience.
+
+For the remaining two: c++` and `c#`; it is encouraged to use *cpp* and *cs* as their representation respectively.
+
+Any *$kind* of language `reStructuredText' will have `rst` prefixed to the *group-name*.  For *$kind* *header*: *rst* will be prefixed to the value in [g:uctags\_hl\_group\_map][uctags-hl-group-map].  If there is no key *header* in `g:uctags_hl_group_map`, the *$kind* will be used as is: *rstheader*
+
+Keys are required to be lowercase as when searching for a key, the key used to lookup a key in the dictionary is converted to lowercase.
+
+Acronym 
+
 
 #### TODO
 - [ ] Finish document
@@ -835,6 +919,9 @@ The reason why tags aren't generated after `BufWritePost` event when the
 tag files aren't needed.
 
 ### CreateSynFiles
+When executed, a [Syn File][syn-files] is created for every tag that is of a language homogeneous to the language of the [source file][src-file] `:CreateSynFiles` was issued from.
+
+If Syn Files already exist or have been updated with the command [:UpdateSynFile][updatesynfile], th
 
 ### UpdateSynFile
 
