@@ -1,8 +1,12 @@
+---
+
+---
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" type="text/css" href="style.css">
+ <link href="https://fonts.googleapis.com/css?family=Lexend+Exa|Noto+Sans&display=swap" rel="stylesheet"> <link rel="stylesheet" type="text/css" href="style.css">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="Francesco Magliocco">
   <meta name="keywords" content="Vim, plugin, Universal-Ctags, highlighting, syntax">
@@ -16,67 +20,6 @@
 </head>
 <body>
 
-  <div class="header">
-    <h1>Vim-UCTags</h1>
-  </div>
 
-
-<div class="sidenav">
-  <a href="#about">Home</a>
-  <a href="#about">Open On Github</a>
-
-  <button class="dropdown-btn">Requirements
-    <i class="fa fa-caret-down"></i>
-  </button>
-  <div class="dropdown-container">
-    <a href="#">apt-get</a>
-    <a href="#">pacman</a>
-  </div>
-
-  <button class="dropdown-btn">Optional Dependencies
-    <i class="fa fa-caret-down"></i>
-  </button>
-  <div class="dropdown-container">
-    <button class="dropdown-btn">Perl
-      <i class="fa fa-caret-down"></i>
-    </button>
-    <div class="dropdown-container">
-      <button class="dropdown-btn">Perl Prerequisites
-        <i class="fa fa-caret-down"></i>
-      </button>
-      <div class="dropdown-container">
-        <a href="#">apt-get</a>
-        <a href="#">pacman</a>
-      </div>
-    </div>
-  </div>
-
-  <a href="#contact">Search</a>
-</div>
-
-<div class="main">
-  <h2>Sidebar Dropdown</h2>
-  <p>Click on the dropdown button to open the dropdown menu inside the side navigation.</p>
-  <p>This sidebar is of full height (100%) and always shown.</p>
-  <p>Some random text..</p>
-</div>
-
-<script>
-/* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - This allows the user to have multiple dropdowns without any conflict */
-var dropdown = document.getElementsByClassName("dropdown-btn");
-var i;
-
-for (i = 0; i < dropdown.length; i++) {
-  dropdown[i].addEventListener("click", function() {
-  this.classList.toggle("active");
-  var dropdownContent = this.nextElementSibling;
-  if (dropdownContent.style.display === "block") {
-  dropdownContent.style.display = "none";
-  } else {
-  dropdownContent.style.display = "block";
-  }
-  });
-}
-</script>
 </body>
 </html>
