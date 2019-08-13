@@ -16,19 +16,19 @@ p {
 }
 
 a:link {
-  color: green; 
+  color: #ffa000; 
   background-color: transparent; 
   text-decoration: none;
 }
 
 a:visited {
-  color: pink;
+  color: #ff9048;
   background-color: transparent;
   text-decoration: none;
 }
 
 a:hover {
-  color: red;
+  color: #ff8000;
   background-color: transparent;
   text-decoration: underline;
 }
@@ -67,7 +67,7 @@ a:active {
 .topnav a {
   float: left;
   display: block;
-  color: orange;
+  color: #ff8000;
   text-align: center;
   padding: 10px 16px;
   text-decoration: none;
@@ -99,7 +99,7 @@ a:active {
   padding: 6px 8px 6px 16px;
   text-decoration: none;
   font-size: .6em;
-  color: orange;
+  color: #ff8000;
   display: block;
   border: none;
   background: none;
