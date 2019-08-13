@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css?family=Barlow+Condensed:400,400i,700,700i|Barlow:400,400i,700,700i|Lexend+Exa&display=swap');
+@font-face {
+  font-family: "Iosevka Web Term";
+  src: url("/assets/fonts/woff/iosevka-term-regular.woff");
+  font-style: normal;
+  font-weight: 400;
+}
+
+body {
+  font-family: 'Barlow', sans-serif;
+  background-color: #3f3f3f;
+  margin: 0;
+}
+
+h1 h2 h3 h4 h5 h6 {
+  font-family: 'Barlow Condensed', sans-serif;
+  color: white;
+}
+
+p {
+  color: white;
+}
+
+code {
+  background-color: #303030;
+  font-family: 'Iosevka Web Term';
+}
+
+a:link {
+  color: #ffa000; 
+  background-color: transparent; 
+  text-decoration: none;
+}
+
+a:visited {
+  color: #ff9048;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #ff8000;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+a:active {
+  color: yellow;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+.header h1, .footer h1 {
+    color: white;
+}
+
+.header h6, .footer h6 {
+  color: black;
+}
+
+.header, .footer {
+  background-color: #5f5f5f;
+  text-align: center;
+  padding: 15px;
+  border-bottom: .075em solid black;
+  font-family: 'Lexend Exa', sans-serif;
+}
+
+
+/* Style the top navigation bar */
+.topnav {
+  overflow: hidden;
+  background-color: #2f2f2f;
+  border-bottom: .075em solid black;
+}
+
+/* Style the topnav links */
+.topnav a {
+  float: left;
+  display: block;
+  color: #ff8000;
+  text-align: center;
+  padding: 10px 16px;
+  text-decoration: none;
+}
+
+/* Change color on hover */
+.topnav a:hover {
+  background-color: red;
+  color: white;
+}
+
+/* Fixed sidenav, full height */
+.sidenav {
+  height: 100%;
+  width: 200px;
+  float: left;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background-color: #2f2f2f;
+  overflow-x: hidden;
+  padding-top: 20px;
+  border-right: .075em solid red;
+}
+
+/* Style the sidenav links and the dropdown button */
+.sidenav a, .dropdown-btn {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: .6em;
+  color: #ff8000;
+  display: block;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+}
+
+/* On mouse-over */
+.sidenav a:hover, .dropdown-btn:hover {
+  background-color: red;
+  color: #f1f1f1;
+}
+
+/* Main content */
+.main {
+  margin-left: 200px; /* Same as the width of the sidenav */
+  font-size: .75em; /* Increased text to enable scrolling */
+  padding: 0px 10px;
+}
+
+/* Add an active class to the active dropdown button */
+.active {
+  background-color: #aa0000;
+  color: white;
+}
+
+/* Dropdown container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
+.dropdown-container {
+  display: none;
+  background-color: #282828;
+  padding-left: 8px;
+}
+
+/* Optional: Style the caret down icon */
+.fa-caret-down {
+  float: right;
+  padding-right: 8px;
+}
+
+/* Some media queries for responsiveness */
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+.main {
+  margin-left: 200px; /* Same as the width of the sidenav */
+  font-size: 12px; /* Increased text to enable scrolling */
+  padding: 0px 10px;
+}
