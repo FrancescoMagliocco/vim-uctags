@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css?family=Barlow+Condensed:400,400i,700,700i|Barlow:400,400i,700,700i|Lexend+Exa&display=swap');
+
 body {
-  font-family: 'Noto Sans', sans-serif;
+  font-family: 'Barlow', sans-serif;
   background-color: #3f3f3f;
   margin: 0;
 }
