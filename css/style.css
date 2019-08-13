@@ -1,4 +1,10 @@
 @import url('https://fonts.googleapis.com/css?family=Barlow+Condensed:400,400i,700,700i|Barlow:400,400i,700,700i|Lexend+Exa&display=swap');
+@font-face {
+  font-family: "Iosevka Web Term";
+  src: url("/assets/fonts/woff/iosevka-term-regular.woff");
+  font-style: normal;
+  font-weight: 400;
+}
 
 body {
   font-family: 'Barlow', sans-serif;
@@ -13,6 +19,11 @@ h1 h2 h3 h4 h5 h6 {
 
 p {
   color: white;
+}
+
+code {
+  background-color: #303030;
+  font-family: 'Iosevka Web Term';
 }
 
 a:link {
