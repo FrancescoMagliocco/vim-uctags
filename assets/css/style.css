@@ -22,6 +22,12 @@ p {
 }
 
 code {
+  padding: 0em .1em 0em .1em;
+  margin: 1em 0em 1em 0em;
+  color: black;
+  border-bottom: .05em solid #404040;
+  border-top: .05em solid #202020;
+  border-radius: .15em;
   background-color: #303030;
   font-family: 'Iosevka Web Term';
 }
@@ -161,4 +167,20 @@ a:active {
   margin-left: 200px; /* Same as the width of the sidenav */
   font-size: 12px; /* Increased text to enable scrolling */
   padding: 0px 10px;
+}
+
+.note #icon {
+  padding-right: 1em;
+}
+
+.note {
+  padding: .5em;
+  float: left;
+  background-color: green;
+  margin: 1em 0em 1em 0em;
+  color: black;
+  border-bottom: .05em solid darkgreen;
+  border-top: .05em solid lightgreen;
+  border-radius: .15em;
+  box-shadow: .05em .05em .025em black;
 }
