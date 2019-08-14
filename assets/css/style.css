@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Barlow+Condensed:400,400i,700,700i|Barlow:400,400i,700,700i|Lexend+Exa&display=swap');
 @font-face {
   font-family: "Iosevka Web Term";
-  src: url("/assets/fonts/woff/iosevka-term-regular.woff");
+  src: url("assets/fonts/woff/iosevka-term-regular.woff");
   font-style: normal;
   font-weight: 400;
 }
