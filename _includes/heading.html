@@ -1,0 +1,8 @@
+{% assign level = include.level | default: 1 %}
+{% assign level = level | at_least: 1 %}
+{% assign level = level | at_most: 6 %}
+
+<h{{ level }}>
+  <i class="{{ include.icon | default: 'fas fa-hashtag' }}"></i>
+  {{ include.title | default: "No include.title" }}
+</h{{ level }}>
