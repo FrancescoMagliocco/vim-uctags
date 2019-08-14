@@ -1,5 +1,19 @@
 ---
 ---
-{% include header.html %}
-{% include topbar.html %}
-{% include sidebar.html %}
+<div class="main">
+  <p>Vim-UCTags is a <a id="vim">Vim</a> plugin that utilizes <a id="ctags">
+  Universal-Ctags</a> in such a way to make highlighting syntax more accurate by
+  using the tags generated.  This is done efficiently where a <a id="synFiles">
+  Syn File</a> is created for every file that has an associated tag, rather than
+  creating one massive Syn File and sourcing it.  Creating one massive Syn File
+  and sourcing it can cause severe performance issues in Vim, even when doing
+  something as simple as just moving the cursor; furthermore, even powerful
+  PC's can face performance issues from massive Syn Files being sourced.  For
+  accuracy, Vim-UCTags also recognizes <a id="incDir">include directives</a> for
+  a select few languages (More are to be supported as development continues).
+  An include directive that has an available <a id="incFile">include file</a>
+  and <a id="incSynFile"> include Syn File</a> highlight only tags that are
+  present in a <a id="srcFile">source file</a>.  If an include Syn File has tags
+  that a source file doesn't, those tags will be ignored; why try to highlight
+  something that isn't there.</p>
+</div>
