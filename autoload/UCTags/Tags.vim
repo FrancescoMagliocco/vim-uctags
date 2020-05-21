@@ -1,5 +1,5 @@
 " File:         Tags.vim
-" Last Change:  08/01/2019
+" Last Change:  05/20/2020
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -23,7 +23,7 @@ function! s:GetTags()
 endfunction
 
 function! s:Readtags(exp)
-  return map(split(system('readtags -e -t ' . g:uctags_tags_file . " -Q '" . a:exp . "' -l"), '\n'), "split(v:val, '\t')")
+  return map(split(system(g:uctags_readtags . ' -e -t ' . g:uctags_tags_file . " -Q '" . a:exp . "' -l"), '\n'), "split(v:val, '\t')")
 endfunction
 
 function! UCTags#Tags#Readtags(str, ...)
@@ -61,7 +61,7 @@ function! UCTags#Tags#Kind(kind)
   if !g:uctags_use_perl || !has('perl')
     if g:uctags_use_readtags
       return map(split(system(
-            \ 'readtags -e -t '
+            \ g:uctags_readtags . ' -e -t '
             \ . g:uctags_tags_file . ' -Q '
             \ . "'(eq? $kind \"" . a:kind . "\")' -l"), '\n'), "split(v:val, '\t')")
     endif
@@ -101,7 +101,7 @@ function! UCTags#Tags#Lang(lang)
   if !g:uctags_use_perl || !has('perl')
     if g:uctags_use_readtags
       return map(split(system(
-            \ 'readtags -e -t '
+            \ g:uctags_readtags . ' -e -t '
             \ . g:uctags_tags_file . ' -Q '
             \ . (l:lang ==? 'c'
             \   ? "'(or (eq? $language \"" . l:lang . "\") (eq? $language \"C++\"))' -l"

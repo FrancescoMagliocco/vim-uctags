@@ -1,5 +1,5 @@
 " File:         uctags_globals.vim
-" Last Change:  08/08/2019
+" Last Change:  05/20/2020
 " Maintainer:   FrancescoMagliocco
 
 if (exists('g:uctags_enabled') && !g:uctags_enabled)
@@ -9,6 +9,7 @@ if (exists('g:uctags_enabled') && !g:uctags_enabled)
 endif
 let g:loaded_uctags_globals   = 1
 let g:uctags_executable       = get(g:, 'uctags_executable', 'ctags-universal')
+let g:uctags_readtags         = get(g:, 'uctags_readtags', 'readtags')
 
 let g:uctags_tags_file        = get(g:, 'uctags_tags_file', 'tags')
 let g:uctags_use_readtags     = get(g:, 'uctags_use_readtags', 1)

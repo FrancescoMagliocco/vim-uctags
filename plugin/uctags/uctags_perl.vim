@@ -1,5 +1,5 @@
 " File:         uctags_perl.vim
-" Last Change:  08/08/2019
+" Last Change:  05/20/2020
 " Maintainer:   FrancescoMagliocco
 " vim: ft=perl
 
@@ -141,7 +141,7 @@ if has('perl')
       sub GetLang {
         my ($lang, $use_readtags) = @_;
         if ($use_readtags) {
-          open(my $fh, '-|', "readtags -e -t VIM::Eval('g:uctags_tags_file') -Q '" . GetLangPat($lang) . "' -l");
+          open(my $fh, '-|', "VIM::Eval('g:uctags_readtags') -e -t VIM::Eval('g:uctags_tags_file') -Q '" . GetLangPat($lang) . "' -l");
           return FixTags($fh);
         }
 
@@ -156,7 +156,8 @@ if has('perl')
         my @lines;
 
         if ($use_readtags) {
-          open(my $fh, '-|', "readtags -e -t tags -Q '" . GetLangPat($lang) . "' -l");
+            my $readtags = VIM::Eval('g:uctags_readtags');
+          open(my $fh, '-|', "$readtags -e -t tags -Q '" . GetLangPat($lang) . "' -l");
           return ReturnVimRawList(FixTagsVim($fh));
 
           return VIM::DoCommand('return [' . join(', ', @lines) . ']');
@@ -293,7 +294,11 @@ if has('perl')
       sub GetKind {
         my ($kind, $use_readtags) = @_;
         if ($use_readtags) {
-          open(my $fh, '-|', "readtags -e -t tags -Q '(eq? \$kind \"$kind\")' -l");
+          # Why wont the VIM::Eval work inside where $readtags is?
+          # I have it working like that above somehwere (Not exactly tested, but
+          #   seemed to have been working for the one that was in there prior.
+            my $readtags = VIM::Eval('g:uctags_readtags');
+          open(my $fh, '-|', "$readtags -e -t tags -Q '(eq? \$kind \"$kind\")' -l");
           return FixTags($fh);
         }
 
